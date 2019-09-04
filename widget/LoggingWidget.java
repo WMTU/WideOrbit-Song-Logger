@@ -318,7 +318,8 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     gbc = createGbc( 0, 7 );
     gbc.fill = GridBagConstraints.NONE;
     addLog = new JButton( "Log Song" );
-    addLog.setUI( new NButtonUI( addLog, ButtonStyle.GREEN_GLOSSY ) );
+    logButton = new NButtonUI( addLog, ButtonStyle.GREEN_GLOSSY );
+    addLog.setUI( logButton );
     addLog.setActionCommand( "submit" );
     addLog.addActionListener( this );
     panel.add( addLog, gbc );
