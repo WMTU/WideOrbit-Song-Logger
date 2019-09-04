@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest PUBLIC "gra-plugin-manifest-1.0.dtd" "">
+
+<manifest version="1.0">
+
+<plugin type="AppWidget" entryPoint="fm.wmtu.LoggingWidget">
+    <id>loggingWidget</id>
+    <version>2.1</version>
+    <name>Song Logging Widget</name>
+    <description>Logs played songs from automation, and allows DJs to log their own played songs.</description>
+    <icon>LoggingWidget.png</icon>
+</plugin>
+
+</manifest>

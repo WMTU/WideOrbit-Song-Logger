@@ -1,5 +1,6 @@
 # WideOrbit Song Logger
 
 This project has two parts:
+
 1. A WideOrbit Automation for Radio widget written in Java
-2. Backend API that takes queries from clients and works with a PostgreSQL database accordingly
+2. Webapp backend API that takes queries from clients and works with a PostgreSQL database accordingly
