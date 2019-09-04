@@ -1,0 +1,26 @@
+# Configuration file
+
+# Database Connection
+DB_HOSTNAME = "pgsql://db.wmtu.fm"
+DB_USERNAME = ""
+DB_PASSWORD = ""
+DB_DATABASE = "song_log"
+
+# Last.FM API Credentials
+LAST_FM_API_URL     = "https://ws.audioscrobbler.com/2.0/"
+LASTFM_API_KEY      = ""
+LASTFM_API_SECRET   = ""
+LASTFM_USERNAME     = ""
+LASTFM_PASSWORD     = ""
+
+# TuneIn API Credentials
+TUNEIN_API_URL      = "http://air.radiotime.com/Playing.ashx"
+TUNEIN_PARTNER_ID   = ""
+TUNEIN_PARTNER_KEY  = ""
+TUNEIN_STATION_ID   = ""
+
+# Icecast2 Stream
+ICECAST_URL         = "https://stream.wmtu.fm"
+ICECAST_MOUNTPOINT  = "/wmtu-live"
+ICECAST_USERNAME    = ""
+ICECAST_PASSWORD    = ""
