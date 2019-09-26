@@ -24,20 +24,60 @@ The backend API is built as a Flask app using Python 3.
 
 We use Nginx as our webserver of choice. We have an example vhost configuration included.
 
-## PostgreSQL Table
+## PostgreSQL Database
 
 We are using PostgreSQL as our database of choice for logging our songs. There's no big advantage for us, but PostgreSQL is a more modern database package versus MySQL.
 
+### Song Log Table
+
 Here is our table structure for logging our songs:
 
-play_date       => date the song was played
+#### play_log
+
+play_year       => year the song was played
+play_month      => month the song was played
+play_day        => day the song was played
 play_time       => time the song was played
 unix_date*      => unix-style date string
 song            => song name
 artist          => artist name
 album           => album name
 genre           => genre of song
+location        => library the song came from
+asset_id        => WMTU library CD ID
+artwork         => url for artwork
+
+'*' = key
+
+### Play Statistics Table
+
+Here is our table for keeping track of play statistics:
+
+#### play_stats
+
+song*           => song name
+artist*         => artist name
+album*          => album name
 play_count      => number of times played
 artwork_url     => url to an image of the album art
+
+'*' = key
+
+### Song Discrepancy Table
+
+This table is for keeping track of songs that swear on air:
+
+#### play_discrepancy
+
+play_year       => year the song was played
+play_month      => month the song was played
+play_day        => day the song was played
+play_time       => time the song was played
+unix_date*      => unix-style date string
+song            => song name
+artist          => artist name
+dj_name         => name of the current dj
+word            => swear word played
+button_hit      => boolean for if the swear button was pressed
 
 '*' = key

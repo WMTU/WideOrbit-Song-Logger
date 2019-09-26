@@ -1,0 +1,4 @@
+flask
+flask_marshmallow
+datetime
+psycopg2

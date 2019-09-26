@@ -32,7 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 
-
 // import libraries
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.text.WordUtils;
@@ -584,12 +583,13 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
 
       // Build map of request parameters
       Map<String, Object> params = new LinkedHashMap<String, Object>();
-      params.put( "location", location );
-      params.put( "asset_id", cdNumber );
-      params.put( "title", song );
+      params.put( "api_key", log_key);
+      params.put( "song", song );
       params.put( "artist", artist );
       params.put( "album", album );
       params.put( "genre", genre );
+      params.put( "location", location );
+      params.put( "asset_id", cdNumber );
 
       // Form request body from parameter map
       StringBuilder postData = new StringBuilder();

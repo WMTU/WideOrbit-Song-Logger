@@ -1,0 +1,3 @@
+# WMTU Discrepancy Log Widget Properties
+log_endpoint=https://log.wmtu.fm/api/2.0/add
+log_key=<API key for the backend>
