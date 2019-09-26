@@ -54,3 +54,5 @@ def scrobbleSong(song, artist, album, timestamp):
     ti_url = app.config['TUNEIN_API_URL'] + '?' + urllib.parse.urlencode(ti_query)
     ti_request = urllib.request.Request(ti_url)
     urllib.request.urlopen(ti_request)
+
+    return

@@ -1,7 +1,6 @@
 # Initialize the log module
 
 from flask import Flask
-from flask_restful import Api
 
 # Place where app is defined
 app = Flask(__name__)

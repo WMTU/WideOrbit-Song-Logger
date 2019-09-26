@@ -20,9 +20,80 @@ The interface is built using bootstrap and common web development practices.
 
 The backend API is built as a Flask app using Python 3.
 
-## Nginx
+### Using the API
 
-We use Nginx as our webserver of choice. We have an example vhost configuration included.
+**Logging a Song**
+
+Required Parameters:
+
+- api_key   : api key
+- song      : name of the song
+- artist    : name of the artist
+
+Optional Parameters:
+
+- album     : name of the album
+- genre     : genre of the song
+- location  : library location for the song
+- cd_id     : WMTU library CD ID
+
+Example:
+
+```text
+https://log.wmtu.fm/api/2.0/log?api_key=<api key here>?song=<song name>?artist=<artist name>
+```
+
+**Logging a Discrepancy**
+
+Required Parameters:
+
+- api_key       : API key
+- song          : song name
+- artist        : artist name
+- dj_name       : DJ name
+- word          : swear word
+- button_hit    : True/False if the swear button was hit
+
+```text
+https://log.wmtu.fm/api/2.0/discrepancy?api_key=<api key>?song=<song name>?artist=<artist name>...
+```
+
+**Submitting a Song Request**
+
+Required Parameters:
+
+- api_key       : API key
+- song          : song name
+- artist        : artist name
+
+Optional Parameters:
+
+- album         : album name
+- rq_name       : requester name
+- rq_message    : request message
+
+```text
+https://log.wmtu.fm/api/2.0/request?api_key=<api key>?song=<song name>?artist=<artist name>...
+```
+
+**Requesting a Log**
+
+Optional Paramters:
+
+- type  : the type of record to request (song, discrepancy, request)
+- n     : number of items to list
+- date  : list items for a specific date (yyyy-mm-dd)
+- delay : (only for song records) apply a 40 second delay to the logged songs list
+
+Default Action:
+
+If no arguments are supplied the default is to return the last song logged.
+
+Example:
+
+```text
+https://log.wmtu.fm/api/2.0/log?type=<song, discrepancy, request>?n=<#>
+```
 
 ## PostgreSQL Database
 
@@ -66,7 +137,7 @@ play_count      => number of times played
 '*' = key
 ```
 
-### Song Discrepancy Table
+### Discrepancy Table
 
 This table is for keeping track of songs that swear on air:
 
@@ -103,3 +174,7 @@ rq_message      => request message
 
 '*' = key
 ```
+
+## Nginx
+
+We use Nginx as our webserver of choice. We have an example vhost configuration included.
