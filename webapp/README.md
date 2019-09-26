@@ -35,17 +35,16 @@ Here is our table structure for logging our songs:
 **play_log**
 
 ```text
-play_year       => year the song was played
-play_month      => month the song was played
-play_day        => day the song was played
-play_time       => time the song was played
-unix_date*      => unix-style date string
+play_id*        => incrementing count of played songs
+play_date       => date the song was played (yyyy-mm-dd)
+play_time       => time the song was played (hh:mm:ss)
+timestamp       => timestamp with date and time
 song            => song name
 artist          => artist name
 album           => album name
 genre           => genre of song
 location        => library the song came from
-asset_id        => WMTU library CD ID
+cd_id           => WMTU library CD ID
 artwork         => url for artwork
 
 '*' = key
@@ -58,11 +57,11 @@ Here is our table for keeping track of play statistics:
 **play_stats**
 
 ```text
+song_id         => incrementing count of played songs
 song*           => song name
 artist*         => artist name
 album*          => album name
 play_count      => number of times played
-artwork_url     => url to an image of the album art
 
 '*' = key
 ```
@@ -71,14 +70,13 @@ artwork_url     => url to an image of the album art
 
 This table is for keeping track of songs that swear on air:
 
-**play_discrepancy**
+**discrepancy_log**
 
 ```text
-play_year       => year the song was played
-play_month      => month the song was played
-play_day        => day the song was played
-play_time       => time the song was played
-unix_date*      => unix-style date string
+dis_count*      => incrementing count of discrepancies
+play_date       => date the song was played (yyyy-mm-dd)
+play_time       => time the song was played (hh:mm:ss)
+timestamp       => timestamp with date and time
 song            => song name
 artist          => artist name
 dj_name         => name of the current dj
@@ -93,11 +91,10 @@ button_hit      => boolean for if the swear button was pressed
 **song_requests**
 
 ```text
-rq_year         => year the song was played
-rq_month        => month the song was played
-rq_day          => day the song was played
-rq_time         => time the song was played
-unix_date*      => unix-style date string
+rq_id*          => incrementing request id number
+rq_date         => date the song was played (yyyy-mm-dd)
+rq_time         => time the song was played (hh:mm:ss)
+timestamp       => timestamp with date and time
 song            => song name
 artist          => artist name
 album           => album name

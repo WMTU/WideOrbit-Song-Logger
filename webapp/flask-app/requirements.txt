@@ -1,4 +1,5 @@
 flask
-flask_marshmallow
+flask_restful
 datetime
 psycopg2
+pylast

@@ -1,10 +1,10 @@
 # Configuration file
 
 # Database Connection
-DB_HOSTNAME = "pgsql://db.wmtu.fm"
+DB_HOSTNAME = "db.wmtu.fm"
 DB_USERNAME = ""
 DB_PASSWORD = ""
-DB_DATABASE = "song_log"
+DB_DATABASE = "song_logs"
 
 # Last.FM API Credentials
 LAST_FM_API_URL     = "https://ws.audioscrobbler.com/2.0/"
