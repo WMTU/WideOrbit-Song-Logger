@@ -81,3 +81,20 @@ word            => swear word played
 button_hit      => boolean for if the swear button was pressed
 
 '*' = key
+
+### Song Request Table
+
+#### song_requests
+
+rq_year         => year the song was played
+rq_month        => month the song was played
+rq_day          => day the song was played
+rq_time         => time the song was played
+unix_date*      => unix-style date string
+song            => song name
+artist          => artist name
+album           => album name
+rq_name         => name of the requester
+rq_message      => request message
+
+'*' = key
