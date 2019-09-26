@@ -1,17 +1,28 @@
 # WideOrbit Song Logger
 
-This project has two parts:
+This project has three parts:
 
-1. A WideOrbit Automation for Radio widget written in Java
-2. Webapp backend API that takes queries from clients and works with a PostgreSQL database accordingly
+1. A WideOrbit Automation for Radio logging widget written in Java
+2. A WideOrbit Automation for Radio discrepancy widget written in Java
+3. Webapp backend API that takes queries from clients and works with a PostgreSQL database accordingly
 
-## WideOrbit Widget
+## WideOrbit Logging Widget
 
 The widget is an updated version of a currently existing WMTU project from 2015.
 
 [Link to Project on GitHub](https://github.com/WMTU/woafr-song-log)
 
 This version has updated libraries and slightly modified text in the UI, along with a reworking of how the widget connects to the backend to log songs.
+
+View the README in the widget directory for more information.
+
+## WideOrbit Discrepancy Widget
+
+The widget is an updated version of a currently existing WMTU project from 2015.
+
+[Link to Project on GitHub](https://github.com/WMTU/woafr-discrepancy-log)
+
+This version has updated libraries and now submits using the API instead of writing directly to the database.
 
 View the README in the widget directory for more information.
 
