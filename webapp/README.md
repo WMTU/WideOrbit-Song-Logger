@@ -32,8 +32,9 @@ We are using PostgreSQL as our database of choice for logging our songs. There's
 
 Here is our table structure for logging our songs:
 
-#### play_log
+**play_log**
 
+```text
 play_year       => year the song was played
 play_month      => month the song was played
 play_day        => day the song was played
@@ -48,13 +49,15 @@ asset_id        => WMTU library CD ID
 artwork         => url for artwork
 
 '*' = key
+```
 
 ### Play Statistics Table
 
 Here is our table for keeping track of play statistics:
 
-#### play_stats
+**play_stats**
 
+```text
 song*           => song name
 artist*         => artist name
 album*          => album name
@@ -62,13 +65,15 @@ play_count      => number of times played
 artwork_url     => url to an image of the album art
 
 '*' = key
+```
 
 ### Song Discrepancy Table
 
 This table is for keeping track of songs that swear on air:
 
-#### play_discrepancy
+**play_discrepancy**
 
+```text
 play_year       => year the song was played
 play_month      => month the song was played
 play_day        => day the song was played
@@ -81,11 +86,13 @@ word            => swear word played
 button_hit      => boolean for if the swear button was pressed
 
 '*' = key
+```
 
 ### Song Request Table
 
-#### song_requests
+**song_requests**
 
+```text
 rq_year         => year the song was played
 rq_month        => month the song was played
 rq_day          => day the song was played
@@ -98,3 +105,4 @@ rq_name         => name of the requester
 rq_message      => request message
 
 '*' = key
+```
