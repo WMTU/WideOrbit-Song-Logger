@@ -72,12 +72,9 @@ class DB:
 
     def addSong(self, song):
         now = datetime.now()
-        curr_date = now.date()
-        curr_time = now.time()
-        timestamp = now.timestamp()
 
         query = "INSERT ({}, {}, {}, '{}', '{}', '{}', '{}', '{}', '{}', '{}') INTO play_log;".format(
-            curr_date.strftime('%Y-%m-%d'), curr_time.strftime('%H:%M:%S'), timestamp.strftime('%Y-%m-%d %H:%M:%S'), 
+            now.strftime('%Y-%m-%d'), now.strftime('%H:%M:%S'), now.strftime('%Y-%m-%d %H:%M:%S'), 
             song.song, song.artist, song.album, song.genre, song.location, song.cd_id, song.artwork)
 
         if(self.cursor):
@@ -131,12 +128,9 @@ class DB:
 
     def addDiscrepancy(self, discrepancy):
         now = datetime.now()
-        curr_date = now.date()
-        curr_time = now.time()
-        timestamp = now.timestamp()
 
         query = "INSERT ({}, {}, {}, '{}', '{}', '{}', '{}', '{}') INTO discrepancy_log;".format(
-            curr_date.strftime('%Y-%m-%d'), curr_time.strftime('%H:%M:%S'), timestamp.strftime('%Y-%m-%d %H:%M:%S'), 
+            now.strftime('%Y-%m-%d'), now.strftime('%H:%M:%S'), now.strftime('%Y-%m-%d %H:%M:%S'), 
             discrepancy.song, discrepancy.artist, discrepancy.dj_name, discrepancy.word, discrepancy.button_hit)
 
         try:
@@ -158,12 +152,9 @@ class DB:
 
     def addRequest(self, request):
         now = datetime.now()
-        curr_date = now.date()
-        curr_time = now.time()
-        timestamp = now.timestamp()
 
         query = "INSERT ({}, {}, {}, '{}', '{}', '{}', '{}', '{}') INTO song_requests;".format(
-            curr_date.strftime('%Y-%m-%d'), curr_time.strftime('%H:%M:%S'), timestamp.strftime('%Y-%m-%d %H:%M:%S'), 
+            now.strftime('%Y-%m-%d'), now.strftime('%H:%M:%S'), now.strftime('%Y-%m-%d %H:%M:%S'), 
             request.song, request.artist, request.album, request.rq_name, request.rq_message)
         try:
             if(self.cursor):
@@ -186,9 +177,6 @@ class DB:
 
         # current time
         now = datetime.now()
-        curr_date = now.date()
-        curr_time = now.time()
-        timestamp = now.timestamp()
 
         end_query = " ORDER BY play_id DESC LIMIT {};".format(n)
 
@@ -201,7 +189,7 @@ class DB:
                 date_query = "WHERE play_date = {}".format(date)
 
             if delay is True:
-                delay_query = "WHERE play_time < {}".format(curr_time - timedelta(seconds = 40).strftime('%H:%M:%S'))
+                delay_query = "WHERE play_time < {}".format(now - timedelta(seconds = 40).strftime('%H:%M:%S'))
 
             if date_query is not None and delay_query is not None:
                 query = base_query + date_query + " AND " + delay_query + end_query
