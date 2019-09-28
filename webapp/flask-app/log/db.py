@@ -195,6 +195,8 @@ class DB:
         if type is "song":
             base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM song_log"
             end_query = "ORDER BY play_id DESC LIMIT {}".format(n)
+            date_query = None
+            delay_query = None
 
             if date is not None:
                 date_query = "WHERE play_date = {}".format(date)
@@ -202,11 +204,11 @@ class DB:
             if delay is True:
                 delay_query = "WHERE play_time < {}".format(curr_time - timedelta(seconds = 40).strftime('%H:%M:%S'))
 
-            if date_query and delay_query:
+            if date_query is not None and delay_query is not None:
                 query = base_query + date_query + " AND " + delay_query + end_query
-            elif date_query and not delay_query:
+            elif date_query is not None and not delay_query is None:
                 query = base_query + date_query + end_query
-            elif delay_query and not date_query:
+            elif delay_query is not None and not date_query is None:
                 query = base_query + delay_query + end_query
             else:
                 query = base_query + end_query
@@ -218,7 +220,7 @@ class DB:
             if date is not None:
                 date_query = "WHERE play_date = {}".format(date)
 
-            if date_query:
+            if date_query is not None:
                 query = base_query + date_query + end_query
             else:
                 query = base_query + end_query
@@ -230,7 +232,7 @@ class DB:
             if date is not None:
                 date_query = "WHERE rq_date = {}".format(date)
 
-            if date_query:
+            if date_query is not None:
                 query = base_query + date_query + end_query
             else:
                 query = base_query + end_query
