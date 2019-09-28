@@ -61,7 +61,7 @@ class DB:
             try:
                 self.cursor.execute(query)
                 query_result = self.cursor.fetchall()
-                if (len(query_result) is 1):
+                if (len(query_result.keys()) is 1):
                     return True
                 else:
                     return False
