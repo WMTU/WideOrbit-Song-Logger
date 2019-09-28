@@ -44,7 +44,7 @@ class DB:
             self.conn.close()
 
     def genKey(self):
-        key = secrets.token_urlsafe(20)
+        key = secrets.token_urlsafe(30)
 
         if(self.cursor):
             while self.validateKey(key) is False:
