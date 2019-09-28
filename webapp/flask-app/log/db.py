@@ -73,7 +73,7 @@ class DB:
     def addSong(self, song):
         now = datetime.now()
 
-        query = "INSERT INTO play_log VALUES(default, {}, {}, {}, '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
+        query = "INSERT INTO play_log VALUES(default, '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
             now.strftime('%Y-%m-%d'), now.strftime('%H:%M:%S'), now.strftime('%Y-%m-%d %H:%M:%S'), 
             song.song, song.artist, song.album, song.genre, song.location, song.cd_id, song.artwork)
 
@@ -129,7 +129,7 @@ class DB:
     def addDiscrepancy(self, discrepancy):
         now = datetime.now()
 
-        query = "INSERT INTO discrepancy_log VALUES(default, {}, {}, {}, '{}', '{}', '{}', '{}', '{}')".format(
+        query = "INSERT INTO discrepancy_log VALUES(default, '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
             now.strftime('%Y-%m-%d'), now.strftime('%H:%M:%S'), now.strftime('%Y-%m-%d %H:%M:%S'), 
             discrepancy.song, discrepancy.artist, discrepancy.dj_name, discrepancy.word, discrepancy.button_hit)
 
@@ -153,7 +153,7 @@ class DB:
     def addRequest(self, request):
         now = datetime.now()
 
-        query = "INSERT INTO song_requests VALUES(default, {}, {}, {}, '{}', '{}', '{}', '{}', '{}')".format(
+        query = "INSERT INTO song_requests VALUES(default, '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
             now.strftime('%Y-%m-%d'), now.strftime('%H:%M:%S'), now.strftime('%Y-%m-%d %H:%M:%S'), 
             request.song, request.artist, request.album, request.rq_name, request.rq_message)
         try:
@@ -186,10 +186,10 @@ class DB:
             delay_query = None
 
             if date is not None:
-                date_query = "WHERE play_date = {}".format(date)
+                date_query = "WHERE play_date = '{}'".format(date)
 
             if delay is True:
-                delay_query = "WHERE play_time < {}".format(now - timedelta(seconds = 40).strftime('%H:%M:%S'))
+                delay_query = "WHERE play_time < '{}'".format(now - timedelta(seconds = 40).strftime('%H:%M:%S'))
 
             if date_query is not None and delay_query is not None:
                 query = base_query + date_query + " AND " + delay_query + end_query
@@ -204,7 +204,7 @@ class DB:
             base_query = "SELECT dis_count, timestamp, song, artist, dj_name, word, button_hit FROM discrepancy_log "
 
             if date is not None:
-                date_query = "WHERE play_date = {}".format(date)
+                date_query = "WHERE play_date = '{}'".format(date)
 
             if date_query is not None:
                 query = base_query + date_query + end_query
@@ -215,7 +215,7 @@ class DB:
             base_query = "SELECT rq_id, timestamp, song, artist, album, rq_name, rq_message FROM song_requests "
 
             if date is not None:
-                date_query = "WHERE rq_date = {}".format(date)
+                date_query = "WHERE rq_date = '{}'".format(date)
 
             if date_query is not None:
                 query = base_query + date_query + end_query
