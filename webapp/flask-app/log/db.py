@@ -55,7 +55,7 @@ class DB:
             return False
 
     def validateKey(self, key):
-        query = "SELECT uid FROM users WHERE api_key = '{}';".format(key)
+        query = "SELECT uid FROM users WHERE api_key = '{}'".format(key)
 
         if(self.cursor):
             try:
