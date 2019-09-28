@@ -43,6 +43,8 @@ class SongAPI(Resource):
         super(SongAPI, self).__init__()
 
     def post(self):
+        post_result = None
+
         new_song = Song(
             self.args['song'], 
             self.args['artist'], 
@@ -88,6 +90,8 @@ class DiscrepancyAPI(Resource):
         super(DiscrepancyAPI, self).__init__()
 
     def post(self):
+        post_result = None
+
         new_discrepancy = Discrepancy(
             self.args['api_key'], 
             self.args['song'], 
@@ -134,6 +138,8 @@ class RequestAPI(Resource):
         super(RequestAPI, self).__init__()
 
     def post(self):
+        post_result = None
+
         new_req = Request(
             self.args['song'], 
             self.args['artist'], 
