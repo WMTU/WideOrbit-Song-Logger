@@ -46,8 +46,6 @@ class DB:
     def genKey(self):
         key = secrets.token_urlsafe(20)
 
-        query = "SELECT * FROM users WHERE api_key = '{}'".format(key)
-
         if(self.cursor):
             while self.validateKey(key) is False:
                 key = secrets.token_urlsafe(30)
@@ -57,7 +55,7 @@ class DB:
             return False
 
     def validateKey(self, key):
-        query = "SELECT uid FROM users WHERE api_key = '{}'".format(key)
+        query = "SELECT uid FROM users WHERE api_key = '{}';".format(key)
 
         if(self.cursor):
             try:
@@ -78,7 +76,7 @@ class DB:
         curr_time = now.time()
         timestamp = now.timestamp()
 
-        query = "INSERT ({}, {}, {}, '{}', '{}', '{}', '{}', '{}', '{}', '{}') INTO play_log".format(
+        query = "INSERT ({}, {}, {}, '{}', '{}', '{}', '{}', '{}', '{}', '{}') INTO play_log;".format(
             curr_date.strftime('%Y-%m-%d'), curr_time.strftime('%H:%M:%S'), timestamp.strftime('%Y-%m-%d %H:%M:%S'), 
             song.song, song.artist, song.album, song.genre, song.location, song.cd_id, song.artwork)
 
@@ -108,11 +106,11 @@ class DB:
         else:
             album = song.album
 
-        select_query = "SELECT * FROM play_stats WHERE song = '{}' AND artist = '{}' AND album = '{}', ".format(
+        select_query = "SELECT * FROM play_stats WHERE song = '{}' AND artist = '{}' AND album = '{}';".format(
             song.song, song.artist, album)
-        add_query    = "INSERT ('{}', '{}', '{}') INTO play_stats".format(
+        add_query    = "INSERT ('{}', '{}', '{}') INTO play_stats;".format(
             song.song, song.artist, album)
-        update_query = "UPDATE play_stats SET play_count = play_count + 1 WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
+        update_query = "UPDATE play_stats SET play_count = play_count + 1 WHERE song = '{}' AND artist = '{}' AND album = '{}';".format(
             song.song, song.artist, album)
 
         try:
@@ -137,7 +135,7 @@ class DB:
         curr_time = now.time()
         timestamp = now.timestamp()
 
-        query = "INSERT ({}, {}, {}, '{}', '{}', '{}', '{}', '{}') INTO discrepancy_log".format(
+        query = "INSERT ({}, {}, {}, '{}', '{}', '{}', '{}', '{}') INTO discrepancy_log;".format(
             curr_date.strftime('%Y-%m-%d'), curr_time.strftime('%H:%M:%S'), timestamp.strftime('%Y-%m-%d %H:%M:%S'), 
             discrepancy.song, discrepancy.artist, discrepancy.dj_name, discrepancy.word, discrepancy.button_hit)
 
@@ -164,7 +162,7 @@ class DB:
         curr_time = now.time()
         timestamp = now.timestamp()
 
-        query = "INSERT ({}, {}, {}, '{}', '{}', '{}', '{}', '{}') INTO song_requests".format(
+        query = "INSERT ({}, {}, {}, '{}', '{}', '{}', '{}', '{}') INTO song_requests;".format(
             curr_date.strftime('%Y-%m-%d'), curr_time.strftime('%H:%M:%S'), timestamp.strftime('%Y-%m-%d %H:%M:%S'), 
             request.song, request.artist, request.album, request.rq_name, request.rq_message)
         try:
@@ -192,9 +190,10 @@ class DB:
         curr_time = now.time()
         timestamp = now.timestamp()
 
+        end_query = " ORDER BY play_id DESC LIMIT {};".format(n)
+
         if type is "song":
-            base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM song_log"
-            end_query = "ORDER BY play_id DESC LIMIT {}".format(n)
+            base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM song_log "
             date_query = None
             delay_query = None
 
@@ -214,8 +213,7 @@ class DB:
                 query = base_query + end_query
 
         elif type is "discrepancy":
-            base_query = "SELECT dis_count, timestamp, song, artist, dj_name, word, button_hit FROM discrepancy_log"
-            end_query = "ORDER BY dis_count DESC LIMIT {}".format(n)
+            base_query = "SELECT dis_count, timestamp, song, artist, dj_name, word, button_hit FROM discrepancy_log "
 
             if date is not None:
                 date_query = "WHERE play_date = {}".format(date)
@@ -226,8 +224,7 @@ class DB:
                 query = base_query + end_query
 
         elif type is "request":
-            base_query = "SELECT rq_id, timestamp, song, artist, album, rq_name, rq_message FROM song_requests"
-            end_query = "ORDER BY rq_id DESC LIMIT {}".format(n)
+            base_query = "SELECT rq_id, timestamp, song, artist, album, rq_name, rq_message FROM song_requests "
 
             if date is not None:
                 date_query = "WHERE rq_date = {}".format(date)
