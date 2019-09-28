@@ -22,21 +22,21 @@ class SongAPI(Resource):
 
         # required arguments
         self.reqparse.add_argument('api_key', type = str, required = True, 
-            help = 'An API Key is required!', location = 'args')
+            help = 'An API Key is required!', location = 'json')
         self.reqparse.add_argument('song', type = str, required = True, 
-            help = 'Song name is required!', location = 'args')
+            help = 'Song name is required!', location = 'json')
         self.reqparse.add_argument('artist', type = str, required = True, 
-            help = 'Artist name is required!', location = 'args')
+            help = 'Artist name is required!', location = 'json')
 
         # optional arguments
         self.reqparse.add_argument('album', type = str, required = False, 
-            default = "", location = 'args')
+            default = "", location = 'json')
         self.reqparse.add_argument('genre', type = str, required = False, 
-            default = "", location = 'args')
+            default = "", location = 'json')
         self.reqparse.add_argument('location', type = str, required = False, 
-            default = "CD Library", location = 'args')
+            default = "CD Library", location = 'json')
         self.reqparse.add_argument('cd_id', type = str, required = False, 
-            default = "", location = 'args')
+            default = "", location = 'json')
 
         self.args = self.reqparse.parse_args()
 
@@ -71,17 +71,17 @@ class DiscrepancyAPI(Resource):
 
         # required arguments
         self.reqparse.add_argument('api_key', type = str, required = True, 
-            help = 'An API Key is required!', location = 'args')
+            help = 'An API Key is required!', location = 'json')
         self.reqparse.add_argument('song', type = str, required = True, 
-            help = 'Song name is required!', location = 'args')
+            help = 'Song name is required!', location = 'json')
         self.reqparse.add_argument('artist', type = str, required = True, 
-            help = 'Artist name is required!', location = 'args')
+            help = 'Artist name is required!', location = 'json')
         self.reqparse.add_argument('dj_name', type = str, required = True, 
-            help = 'DJ name is required!', location = 'args')
+            help = 'DJ name is required!', location = 'json')
         self.reqparse.add_argument('word', type = str, required = True, 
-            help = 'Word is required!', location = 'args')
+            help = 'Word is required!', location = 'json')
         self.reqparse.add_argument('button_hit', type = bool, required = True, 
-            help = 'Button press status is required!', location = 'args')
+            help = 'Button press status is required!', location = 'json')
 
         self.args = self.reqparse.parse_args()
 
@@ -115,19 +115,19 @@ class RequestAPI(Resource):
 
         # required arguments
         self.reqparse.add_argument('api_key', type = str, required = True, 
-            help = 'An API Key is required!', location = 'args')
+            help = 'An API Key is required!', location = 'json')
         self.reqparse.add_argument('song', type = str, required = True, 
-            help = 'Song name is required!', location = 'args')
+            help = 'Song name is required!', location = 'json')
         self.reqparse.add_argument('artist', type = str, required = True, 
-            help = 'Artist name is required!', location = 'args')
+            help = 'Artist name is required!', location = 'json')
 
         # optional arguments
         self.reqparse.add_argument('album', type = str, required = False, 
-            default = "Any album", location = 'args')
+            default = "Any album", location = 'json')
         self.reqparse.add_argument('rq_name', type = str, required = False, 
-            default = "WMTU Listener", location = 'args')
+            default = "WMTU Listener", location = 'json')
         self.reqparse.add_argument('rq_message', type = str, required = False, 
-            default = "No message given", location = 'args')
+            default = "No message given", location = 'json')
 
         self.args = self.reqparse.parse_args()
 
