@@ -31,16 +31,20 @@ ti_query = {
 def scrobbleSong(song, artist, album, timestamp):
     
     # push song to Icecast
+    password_mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+    server_url = "app.config['ICECAST_URL]"
+    password_mgr.add_password(None, server_url, app.config['ICECAST_USERNAME'], app.config['ICECAST_PASSWORD'])
+    handler = urllib.request.HTTPBasicAuthHandler(password_mgr)
+    opener = urllib.request.build_opener(handler)
+
     ic_query = {'mode': 'updinfo', 'song': artist + " | " + song}
     for m in app.config['ICECAST_MOUNTPOINTS']:
         ic_query['mount'] = m
         ic_url_m = ic_url + '?' + urllib.parse.urlencode(ic_query)
         ic_request = urllib.request.Request(ic_url_m)
 
-        # add the basic auth header for the request
-        ic_request.add_header("Authorization", "Basic %s" % ic_auth)
-
-        urllib.request.urlopen(ic_request)
+        opener.open(ic_request)
+        urllib.request.install_opener(opener)
 
     # scrobble to last.fm
     lastfm.scrobble(artist = artist, title = song, timestamp = timestamp, album = album)
