@@ -67,7 +67,7 @@ class DB:
                     return False
             
             except (Exception, psycopg2.DatabaseError) as error :
-                print ("Error executing validateKey query! " + len(query_result), error)
+                print ("Error executing validateKey query!", error)
                 return False
 
     def addSong(self, song):
