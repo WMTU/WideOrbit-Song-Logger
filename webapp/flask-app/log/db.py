@@ -49,6 +49,7 @@ class DB:
         if(self.cursor):
             while self.validateKey(key) is False:
                 key = secrets.token_urlsafe(30)
+                print(key)
 
             return {'key': key}
         else:
