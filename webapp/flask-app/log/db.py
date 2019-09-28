@@ -1,4 +1,4 @@
-# database manipulation module
+# module for working with the database
 
 # import app
 from log import app
