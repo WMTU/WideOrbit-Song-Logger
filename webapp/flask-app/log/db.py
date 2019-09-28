@@ -81,9 +81,10 @@ class DB:
         if(self.cursor):
             try:
                 self.cursor.execute(query)
+                self.conn.commit()
                 self.addStat(song)
                 return {
-                    'timestamp': timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                    'timestamp': now.strftime('%Y-%m-%d %H:%M:%S'),
                     'song': song.song, 
                     'artist': song.artist, 
                     'album': song.album, 
@@ -116,6 +117,7 @@ class DB:
         try:
             if(self.cursor):
                 self.cursor.execute(select_query)
+                self.conn.commit()
                 if(len(self.cursor.fetchall()) is 0):
                     self.cursor.execute(add_query)
                 else:
@@ -140,8 +142,9 @@ class DB:
         try:
             if(self.cursor):
                 self.cursor.execute(query)
+                self.conn.commit()
                 return {
-                    'timestamp': timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                    'timestamp': now.strftime('%Y-%m-%d %H:%M:%S'),
                     'song': discrepancy.song, 
                     'artist': discrepancy.artist, 
                     'dj_name': discrepancy.dj_name,
@@ -164,8 +167,9 @@ class DB:
         try:
             if(self.cursor):
                 self.cursor.execute(query)
+                self.conn.commit()
                 return {
-                    'timestamp': timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                    'timestamp': now.strftime('%Y-%m-%d %H:%M:%S'),
                     'song': request.song,
                     'artist': request.artist,
                     'album': request.album,
