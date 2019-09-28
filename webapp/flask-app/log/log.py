@@ -177,8 +177,23 @@ class LogAPI(Resource):
 
         return log_result, 200
 
+class KeyAPI(Resource):
+    def get(self):
+        db = DB(
+            app.config['DB_USERNAME'], 
+            app.config['DB_PASSWORD'], 
+            app.config['DB_HOSTNAME'], 
+            app.config['DB_PORT'], 
+            app.config['DB_DATABASE'])
+        db.connect()
+        key_result = db.genKey()
+        db.close()
+
+        return key_result, 200
+
 # add endpoints for the api
 api.add_resource(SongAPI, '/api/2.0/song', endpoint = 'song')
 api.add_resource(DiscrepancyAPI, '/api/2.0/discrepancy', endpoint = 'discrepancy')
 api.add_resource(RequestAPI, '/api/2.0/request', endpoint = 'request')
 api.add_resource(LogAPI, '/api/2.0/log', endpoint = 'log')
+api.add_resource(KeyAPI, '/api/2.0/key', endpoint = 'key')

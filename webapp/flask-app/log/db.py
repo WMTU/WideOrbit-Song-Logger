@@ -52,7 +52,7 @@ class DB:
             while self.validateKey(key) is False:
                 key = secrets.token_urlsafe(20)
 
-            return key
+            return {'key': key}
         else:
             return False
 
