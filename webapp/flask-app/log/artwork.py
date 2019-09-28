@@ -19,7 +19,7 @@ def fetchArtwork(artist, album):
 
     if album is not "":
         lfm_album = lastfm.get_album(artist, album)
-        image = album.get_cover_image()
+        image = lfm_album.get_cover_image()
     else:
         image = "-"
     
