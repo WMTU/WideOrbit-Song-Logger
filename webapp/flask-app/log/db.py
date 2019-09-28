@@ -35,7 +35,7 @@ class DB:
             self.cursor = self.conn.cursor(cursor_factory = RealDictCursor)
 
         except (Exception, psycopg2.DatabaseError) as error :
-            print ("Error connecting to database!", error)
+            print ("Error connecting to database! => ", error)
 
     # close the db connection
     def close(self):
@@ -67,7 +67,7 @@ class DB:
                     return False
             
             except (Exception, psycopg2.DatabaseError) as error :
-                print ("Error executing validateKey query!", error)
+                print ("Error executing validateKey query! => ", error)
                 return False
 
     def addSong(self, song):
@@ -94,7 +94,7 @@ class DB:
                     'artwork': song.artwork}
 
             except (Exception, psycopg2.DatabaseError) as error :
-                print ("Error executing addSong query!", error)
+                print ("Error executing addSong query! => ", error)
                 return False
         else:
             return False
@@ -128,7 +128,7 @@ class DB:
                 return False
 
         except (Exception, psycopg2.DatabaseError) as error :
-            print ("Error executing addStat query!", error)
+            print ("Error executing addStat query! => ", error)
             return False
 
     def addDiscrepancy(self, discrepancy):
@@ -154,7 +154,7 @@ class DB:
                 return False
 
         except (Exception, psycopg2.DatabaseError) as error :
-            print ("Error executing addDiscrepancy query!", error)
+            print ("Error executing addDiscrepancy query! => ", error)
             return False
 
     def addRequest(self, request):
@@ -179,7 +179,7 @@ class DB:
                 return False
 
         except (Exception, psycopg2.DatabaseError) as error :
-            print ("Error executing addRequest query!", error)
+            print ("Error executing addRequest query! => ", error)
             return False
 
     def getLog(self, type, n, date, delay):
@@ -240,7 +240,7 @@ class DB:
                 return query_result
             
             except (Exception, psycopg2.DatabaseError) as error :
-                print ("Error executing query!", error)
+                print ("Error executing query! => ", error)
                 return False
 
 
