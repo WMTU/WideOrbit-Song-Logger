@@ -11,7 +11,7 @@ import urllib, urllib.parse, urllib.request
 import pylast
 
 # Icecast Info
-ic_url = app.config['ICECAST_SERVER_URL'] + "/admin/metadata"
+ic_url = app.config['ICECAST_URL'] + "/admin/metadata"
 ic_auth = base64.encodestring('%s:%s' % (app.config['ICECAST_USERNAME'], app.config['ICECAST_PASSWORD'])).replace('\n', '')
 
 # LastFM API Info
