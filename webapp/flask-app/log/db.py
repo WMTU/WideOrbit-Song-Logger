@@ -105,8 +105,7 @@ class DB:
         else:
             album = song.album
 
-        select_query = "SELECT * FROM play_stats \
-            WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
+        select_query = "SELECT * FROM play_stats WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
             song.song, song.artist, album)
         add_query    = "INSERT INTO play_stats(song, artist, album) \
             VALUES('{}', '{}', '{}')".format(song.song, song.artist, album)
@@ -118,7 +117,7 @@ class DB:
             if(self.cursor):
                 self.cursor.execute(select_query)
                 self.conn.commit()
-                if(len(self.cursor.fetchall()) is 0):
+                if len(self.cursor.fetchall()) is 0:
                     self.cursor.execute(add_query)
                 else:
                     self.cursor.execute(update_query)
