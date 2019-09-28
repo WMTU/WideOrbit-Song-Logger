@@ -193,7 +193,7 @@ class DB:
         end_query = " ORDER BY play_id DESC LIMIT {};".format(n)
 
         if type is "song":
-            base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM song_log "
+            base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM play_log "
             date_query = None
             delay_query = None
 
