@@ -61,7 +61,7 @@ class DB:
             try:
                 self.cursor.execute(query)
                 query_result = self.cursor.fetchall()
-                if len(query_result) >= 1:
+                if len(query_result) is 1:
                     return True
                 else:
                     return False
@@ -107,10 +107,9 @@ class DB:
 
         select_query = "SELECT * FROM play_stats WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
             song.song, song.artist, album)
-        add_query    = "INSERT INTO play_stats(song, artist, album) \
-            VALUES('{}', '{}', '{}')".format(song.song, song.artist, album)
-        update_query = "UPDATE play_stats SET play_count = play_count + 1 \
-            WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
+        add_query    = "INSERT INTO play_stats(song, artist, album) VALUES('{}', '{}', '{}')".format(
+            song.song, song.artist, album)
+        update_query = "UPDATE play_stats SET play_count = (play_count + 1) WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
             song.song, song.artist, album)
 
         try:
