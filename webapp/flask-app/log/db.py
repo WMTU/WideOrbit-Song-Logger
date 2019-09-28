@@ -73,7 +73,8 @@ class DB:
     def addSong(self, song):
         now = datetime.now()
 
-        query = "INSERT INTO play_log VALUES(default, '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
+        query = "INSERT INTO play_log(play_date, play_time, timestamp, song, artist, album, genre, location, cd_id, artwork) \
+            VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
             now.strftime('%Y-%m-%d'), now.strftime('%H:%M:%S'), now.strftime('%Y-%m-%d %H:%M:%S'), 
             song.song, song.artist, song.album, song.genre, song.location, song.cd_id, song.artwork)
 
@@ -103,11 +104,13 @@ class DB:
         else:
             album = song.album
 
-        select_query = "SELECT * FROM play_stats WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
+        select_query = "SELECT * FROM play_stats \
+            WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
             song.song, song.artist, album)
-        add_query    = "INSERT INTO play_stats VALUES(default, '{}', '{}', '{}')".format(
-            song.song, song.artist, album)
-        update_query = "UPDATE play_stats SET play_count = play_count + 1 WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
+        add_query    = "INSERT INTO play_stats(song, artist, album) \
+            VALUES('{}', '{}', '{}')".format(song.song, song.artist, album)
+        update_query = "UPDATE play_stats SET play_count = play_count + 1 \
+            WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
             song.song, song.artist, album)
 
         try:
@@ -129,7 +132,8 @@ class DB:
     def addDiscrepancy(self, discrepancy):
         now = datetime.now()
 
-        query = "INSERT INTO discrepancy_log VALUES(default, '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
+        query = "INSERT INTO discrepancy_log(play_date, play_time, timestamp, song, artist, dj_name, word, button_hit) \
+            VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
             now.strftime('%Y-%m-%d'), now.strftime('%H:%M:%S'), now.strftime('%Y-%m-%d %H:%M:%S'), 
             discrepancy.song, discrepancy.artist, discrepancy.dj_name, discrepancy.word, discrepancy.button_hit)
 
@@ -153,7 +157,8 @@ class DB:
     def addRequest(self, request):
         now = datetime.now()
 
-        query = "INSERT INTO song_requests VALUES(default, '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
+        query = "INSERT INTO song_requests(rq_datem, rq_time, timestamp, song, artist, album, rq_name, rq_nessage) \
+            VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
             now.strftime('%Y-%m-%d'), now.strftime('%H:%M:%S'), now.strftime('%Y-%m-%d %H:%M:%S'), 
             request.song, request.artist, request.album, request.rq_name, request.rq_message)
         try:
