@@ -47,7 +47,7 @@ class DB:
         key = secrets.token_urlsafe(30)
 
         if(self.cursor):
-            while self.validateKey(key) is False:
+            while self.validateKey(key) is True:
                 key = secrets.token_urlsafe(30)
 
             return {'key': key}
@@ -61,9 +61,7 @@ class DB:
             try:
                 self.cursor.execute(query)
                 query_result = self.cursor.fetchall()
-                print(query)
-                print(query_result)
-                if (len(query_result) is 1):
+                if len(query_result) >= 1:
                     return True
                 else:
                     return False
