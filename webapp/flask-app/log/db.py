@@ -32,6 +32,7 @@ class DB:
                 port        = self.port,
                 database    = self.database
             )
+            self.conn.set_session(autocommit = True)
             self.cursor = self.conn.cursor(cursor_factory = RealDictCursor)
 
         except (Exception, psycopg2.DatabaseError) as error :
@@ -81,7 +82,6 @@ class DB:
         if(self.cursor):
             try:
                 self.cursor.execute(query)
-                self.conn.commit()
                 self.addStat(song)
                 return {
                     'timestamp': now.strftime('%Y-%m-%d %H:%M:%S'),
@@ -105,17 +105,19 @@ class DB:
         else:
             album = song.album
 
-        select_query = "SELECT * FROM play_stats WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
+        select_query = "SELECT * FROM play_stats \
+            WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
             song.song, song.artist, album)
-        add_query    = "INSERT INTO play_stats(song, artist, album) VALUES('{}', '{}', '{}')".format(
+        add_query    = "INSERT INTO play_stats(song, artist, album) \
+            VALUES('{}', '{}', '{}')".format(
             song.song, song.artist, album)
-        update_query = "UPDATE play_stats SET play_count = (play_count + 1) WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
+        update_query = "UPDATE play_stats SET play_count = (play_count + 1) \
+            WHERE song = '{}' AND artist = '{}' AND album = '{}'".format(
             song.song, song.artist, album)
 
         try:
             if(self.cursor):
                 self.cursor.execute(select_query)
-                self.conn.commit()
                 if len(self.cursor.fetchall()) is 0:
                     self.cursor.execute(add_query)
                 else:
@@ -140,7 +142,6 @@ class DB:
         try:
             if(self.cursor):
                 self.cursor.execute(query)
-                self.conn.commit()
                 return {
                     'timestamp': now.strftime('%Y-%m-%d %H:%M:%S'),
                     'song': discrepancy.song, 
@@ -165,7 +166,6 @@ class DB:
         try:
             if(self.cursor):
                 self.cursor.execute(query)
-                self.conn.commit()
                 return {
                     'timestamp': now.strftime('%Y-%m-%d %H:%M:%S'),
                     'song': request.song,
