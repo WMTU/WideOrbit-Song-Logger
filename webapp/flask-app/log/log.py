@@ -38,17 +38,19 @@ class SongAPI(Resource):
         self.reqparse.add_argument('cd_id', type = str, required = False, 
             default = "", location = 'args')
 
+        self.args = self.reqparse.parse_args()
+
         super(SongAPI, self).__init__()
 
     def post(self):
         new_song = Song(
-            self.reqparse['song'], 
-            self.reqparse['artist'], 
-            self.reqparse['album'], 
-            self.reqparse['genre'], 
-            self.reqparse['location'], 
-            self.reqparse['cd_id'], 
-            fetchArtwork(self.reqparse['artist'], self.reqparse['album']))
+            self.args['song'], 
+            self.args['artist'], 
+            self.args['album'], 
+            self.args['genre'], 
+            self.args['location'], 
+            self.args['cd_id'], 
+            fetchArtwork(self.args['artist'], self.args['album']))
 
         db = DB(
             app.config['DB_USERNAME'], 
@@ -57,7 +59,7 @@ class SongAPI(Resource):
             app.config['DB_PORT'], 
             app.config['DB_DATABASE'])
         db.connect()
-        if db.validateKey(self.reqparse['api_key']) is True:
+        if db.validateKey(self.args['api_key']) is True:
             post_result = db.addSong(new_song)
         db.close()
 
@@ -81,16 +83,18 @@ class DiscrepancyAPI(Resource):
         self.reqparse.add_argument('button_hit', type = bool, required = True, 
             help = 'Button press status is required!', location = 'args')
 
+        self.args = self.reqparse.parse_args()
+
         super(DiscrepancyAPI, self).__init__()
 
     def post(self):
         new_discrepancy = Discrepancy(
-            self.reqparse['api_key'], 
-            self.reqparse['song'], 
-            self.reqparse['artist'], 
-            self.reqparse['dj_name'], 
-            self.reqparse['word'], 
-            self.reqparse['button_hit'])
+            self.args['api_key'], 
+            self.args['song'], 
+            self.args['artist'], 
+            self.args['dj_name'], 
+            self.args['word'], 
+            self.args['button_hit'])
 
         db = DB(
             app.config['DB_USERNAME'], 
@@ -99,7 +103,7 @@ class DiscrepancyAPI(Resource):
             app.config['DB_PORT'], 
             app.config['DB_DATABASE'])
         db.connect()
-        if db.validateKey(self.reqparse['api_key']) is True:
+        if db.validateKey(self.args['api_key']) is True:
             post_result = db.addDiscrepancy(new_discrepancy)
         db.close()
 
@@ -125,15 +129,17 @@ class RequestAPI(Resource):
         self.reqparse.add_argument('rq_message', type = str, required = False, 
             default = "No message given", location = 'args')
 
+        self.args = self.reqparse.parse_args()
+
         super(RequestAPI, self).__init__()
 
     def post(self):
         new_req = Request(
-            self.reqparse['song'], 
-            self.reqparse['artist'], 
-            self.reqparse['album'], 
-            self.reqparse['rq_name'], 
-            self.reqparse['rq_message'])
+            self.args['song'], 
+            self.args['artist'], 
+            self.args['album'], 
+            self.args['rq_name'], 
+            self.args['rq_message'])
 
         db = DB(
             app.config['DB_USERNAME'], 
@@ -142,7 +148,7 @@ class RequestAPI(Resource):
             app.config['DB_PORT'], 
             app.config['DB_DATABASE'])
         db.connect()
-        if db.validateKey(self.reqparse['api_key']) is True:
+        if db.validateKey(self.args['api_key']) is True:
             post_result = db.addRequest(new_req)
         db.close()
 
@@ -162,6 +168,8 @@ class LogAPI(Resource):
         self.reqparse.add_argument('date', type = str, required = False, 
             default = None, location = 'args')
 
+        self.args = self.reqparse.parse_args()
+
         super(LogAPI, self).__init__()
 
     def get(self):
@@ -172,7 +180,7 @@ class LogAPI(Resource):
             app.config['DB_PORT'], 
             app.config['DB_DATABASE'])
         db.connect()
-        log_result = db.getLog(self.reqparse['type'], self.reqparse['n'], self.reqparse['delay'], self.reqparse['date'])
+        log_result = db.getLog(self.args['type'], self.args['n'], self.args['delay'], self.args['date'])
         db.close()
 
         return log_result, 200
