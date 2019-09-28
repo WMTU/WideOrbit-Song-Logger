@@ -1,10 +1,11 @@
 # Configuration file
 
 # Database Connection
-DB_HOSTNAME = "db.wmtu.fm"
+DB_HOSTNAME = ""
+DB_PORT     = ""
 DB_USERNAME = ""
 DB_PASSWORD = ""
-DB_DATABASE = "song_logs"
+DB_DATABASE = ""
 
 # Last.FM API Credentials
 LAST_FM_API_URL     = "https://ws.audioscrobbler.com/2.0/"
@@ -20,7 +21,7 @@ TUNEIN_PARTNER_KEY  = ""
 TUNEIN_STATION_ID   = ""
 
 # Icecast2 Stream
-ICECAST_URL         = "https://stream.wmtu.fm"
-ICECAST_MOUNTPOINT  = "/wmtu-live"
+ICECAST_URL         = ""
+ICECAST_MOUNTPOINT  = ""
 ICECAST_USERNAME    = ""
 ICECAST_PASSWORD    = ""

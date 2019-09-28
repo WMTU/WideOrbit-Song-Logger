@@ -2,8 +2,9 @@
 
 # import the app
 from log import app
-from .artwork import fetchArtwork
-from .scrobble import scrobbleSong
+from .db import *
+from .artwork import *
+from .scrobble import *
 
 # import system libraries
 from datetime import datetime, date, time, timedelta
@@ -11,9 +12,6 @@ from datetime import datetime, date, time, timedelta
 # import Flask libraries
 from flask import jsonify, request
 from flask_restful import Resource, Api, reqparse
-
-# import other libraries
-import psycopg2
 
 # define the api
 api = Api(app)
@@ -43,7 +41,27 @@ class SongAPI(Resource):
         super(SongAPI, self).__init__()
 
     def post(self):
-        pass
+        new_song = Song(
+            self.reqparse['song'], 
+            self.reqparse['artist'], 
+            self.reqparse['album'], 
+            self.reqparse['genre'], 
+            self.reqparse['location'], 
+            self.reqparse['cd_id'], 
+            fetchArtwork(self.reqparse['artist'], self.reqparse['album']))
+
+        db = DB(
+            app.config['DB_USERNAME'], 
+            app.config['DB_PASSWORD'], 
+            app.config['DB_HOSTNAME'], 
+            app.config['DB_PORT'], 
+            app.config['DB_DATABASE'])
+        db.connect()
+        if db.validateKey(self.reqparse['api_key']) is True:
+            post_result = db.addSong(new_song)
+        db.close()
+
+        return post_result, 202
 
 class DiscrepancyAPI(Resource):
     def __init__(self):
@@ -66,7 +84,26 @@ class DiscrepancyAPI(Resource):
         super(DiscrepancyAPI, self).__init__()
 
     def post(self):
-        pass
+        new_discrepancy = Discrepancy(
+            self.reqparse['api_key'], 
+            self.reqparse['song'], 
+            self.reqparse['artist'], 
+            self.reqparse['dj_name'], 
+            self.reqparse['word'], 
+            self.reqparse['button_hit'])
+
+        db = DB(
+            app.config['DB_USERNAME'], 
+            app.config['DB_PASSWORD'], 
+            app.config['DB_HOSTNAME'], 
+            app.config['DB_PORT'], 
+            app.config['DB_DATABASE'])
+        db.connect()
+        if db.validateKey(self.reqparse['api_key']) is True:
+            post_result = db.addDiscrepancy(new_discrepancy)
+        db.close()
+
+        return post_result, 202
 
 class RequestAPI(Resource):
     def __init__(self):
@@ -91,7 +128,25 @@ class RequestAPI(Resource):
         super(RequestAPI, self).__init__()
 
     def post(self):
-        pass
+        new_req = Request(
+            self.reqparse['song'], 
+            self.reqparse['artist'], 
+            self.reqparse['album'], 
+            self.reqparse['rq_name'], 
+            self.reqparse['rq_message'])
+
+        db = DB(
+            app.config['DB_USERNAME'], 
+            app.config['DB_PASSWORD'], 
+            app.config['DB_HOSTNAME'], 
+            app.config['DB_PORT'], 
+            app.config['DB_DATABASE'])
+        db.connect()
+        if db.validateKey(self.reqparse['api_key']) is True:
+            post_result = db.addRequest(new_req)
+        db.close()
+
+        return post_result, 202
 
 class LogAPI(Resource):
     def __init__(self):
@@ -105,12 +160,22 @@ class LogAPI(Resource):
         self.reqparse.add_argument('delay', type = bool, required = False, 
             default = False, location = 'args')
         self.reqparse.add_argument('date', type = str, required = False, 
-            default = "", location = 'args')
+            default = None, location = 'args')
 
         super(LogAPI, self).__init__()
 
     def get(self):
-        pass
+        db = DB(
+            app.config['DB_USERNAME'], 
+            app.config['DB_PASSWORD'], 
+            app.config['DB_HOSTNAME'], 
+            app.config['DB_PORT'], 
+            app.config['DB_DATABASE'])
+        db.connect()
+        log_result = db.getLog(self.reqparse['type'], self.reqparse['n'], self.reqparse['delay'], self.reqparse['date'])
+        db.close()
+
+        return log_result, 200
 
 # add endpoints for the api
 api.add_resource(SongAPI, 'api/2.0/song', endpoint = 'song')

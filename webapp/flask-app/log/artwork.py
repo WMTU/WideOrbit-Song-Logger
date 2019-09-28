@@ -17,7 +17,7 @@ def fetchArtwork(artist, album):
         username      = app.config['LASTFM_USERNAME'],
         password_hash = pylast.md5(app.config['LASTFM_PASSWORD']))
 
-    if (album):
+    if album is not "":
         lfm_album = lastfm.get_album(artist, album)
         image = album.get_cover_image()
     else:

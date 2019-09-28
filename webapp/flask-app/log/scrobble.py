@@ -55,4 +55,4 @@ def scrobbleSong(song, artist, album, timestamp):
     ti_request = urllib.request.Request(ti_url)
     urllib.request.urlopen(ti_request)
 
-    return
+    return True

@@ -175,6 +175,17 @@ rq_message      => request message
 '*' = key
 ```
 
+### User Table
+
+**users**
+
+```text
+uid             => User ID number (auto incrementing)
+username        => username
+password        => password
+api_key         => api key for access to resources
+```
+
 ## Nginx
 
 We use Nginx as our webserver of choice. We have an example vhost configuration included.
