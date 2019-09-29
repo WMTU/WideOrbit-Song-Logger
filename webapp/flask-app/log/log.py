@@ -75,6 +75,8 @@ class SongAPI(Resource):
             # publish the song to scrobble sources
             if app.config['SCROBBLE'] is "True":
                 scrobbleSong(datetime.datetime.utcnow().strftime("%s"), new_song)
+        else:
+            return "Invalid API Key!", 400
         
         # close the database connection
         db.close()
@@ -128,6 +130,8 @@ class DiscrepancyAPI(Resource):
         # validate the API key and log the discrepancy
         if db.validateKey(self.args['api_key']) is True:
             post_result = db.addDiscrepancy(new_discrepancy)
+        else:
+            return "Invalid API Key!", 400
         
         # close the database connection
         db.close()
@@ -182,6 +186,8 @@ class RequestAPI(Resource):
         # validate the API key and log the request
         if db.validateKey(self.args['api_key']) is True:
             post_result = db.addRequest(new_req)
+        else:
+            return "Invalid API Key!", 400
         
         # close the connection to the database
         db.close()
@@ -301,4 +307,4 @@ api.add_resource(LogAPI,            '/api/2.0/log',         endpoint = 'log')
 api.add_resource(StatsAPI,          '/api/2.0/stats',       endpoint = 'stats')
 
 if app.config['KEY_API'] is "True":
-    api.add_resource(KeyAPI,            '/api/2.0/key',         endpoint = 'key')
+    api.add_resource(KeyAPI, '/api/2.0/key', endpoint = 'key')
