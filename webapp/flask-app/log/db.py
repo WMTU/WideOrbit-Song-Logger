@@ -6,6 +6,7 @@ from log import app
 
 # import system libraries
 from datetime import datetime, date, time, timedelta
+from json import dumps
 import secrets
 
 # postgres library
@@ -35,8 +36,7 @@ class DB:
                 database    = self.database
             )
             self.conn.set_session(autocommit = True)
-            self.cursor = self.conn.cursor()
-            #self.cursor = self.conn.cursor(cursor_factory = RealDictCursor)
+            self.cursor = self.conn.cursor(cursor_factory = RealDictCursor)
 
         except (Exception, psycopg2.DatabaseError) as error :
             print ("Error connecting to database! => ", error)
@@ -46,6 +46,12 @@ class DB:
         if(self.cursor):
             self.cursor.close()
             self.conn.close()
+
+    # JSON serializer for datetime objects
+    def __clean_datetime(self, obj):
+        if isinstance(obj, (datetime, date)):
+            return obj.isoformat()
+        raise TypeError ("Type %s not serializable" % type(obj))
 
     # function to generate a valid key
     def genKey(self):
@@ -313,7 +319,7 @@ class DB:
 
                 # return the query results
                 query_result = self.cursor.fetchall()
-                return query_result
+                return dumps(query_result, default=self.__clean_datetime)
             
             except (Exception, psycopg2.DatabaseError) as error :
                 print ("Error executing log query! => ", error)
@@ -372,7 +378,7 @@ class DB:
 
                 # return the query results
                 query_result = self.cursor.fetchall()
-                return query_result
+                return dumps(query_result, default=self.__clean_datetime)
             
             except (Exception, psycopg2.DatabaseError) as error :
                 print ("Error executing stats query! => ", error)
