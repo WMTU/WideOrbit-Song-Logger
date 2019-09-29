@@ -9,6 +9,7 @@ from .scrobble import *
 
 # import system libraries
 from datetime import datetime, date, time
+from json import loads
 
 # import Flask libraries
 from flask import jsonify, request
@@ -237,7 +238,7 @@ class LogAPI(Resource):
         db.connect()
 
         # get the requested log(s) from the database
-        log_result = db.getLog(self.args['type'], self.args['n'], self.args['date'], self.args['delay'], self.args['desc'])
+        log_result = loads(db.getLog(self.args['type'], self.args['n'], self.args['date'], self.args['delay'], self.args['desc']))
         
         # close the connection to the database
         db.close()
@@ -281,7 +282,7 @@ class StatsAPI(Resource):
         db.connect()
 
         # get the requested log(s) from the database
-        stats_result = db.getStats(self.args['song'], self.args['artist'], self.args['album'], self.args['order_by'], self.args['desc'])
+        stats_result = loads(db.getStats(self.args['song'], self.args['artist'], self.args['album'], self.args['order_by'], self.args['desc']))
         
         # close the connection to the database
         db.close()
