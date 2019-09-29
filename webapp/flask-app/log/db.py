@@ -50,7 +50,7 @@ class DB:
     # JSON serializer for datetime objects
     def __clean_datetime(self, obj):
         if isinstance(obj, (datetime, date)):
-            return obj.str()
+            return str(obj)
         raise TypeError ("Type %s not serializable" % type(obj))
 
     # function to generate a valid key
