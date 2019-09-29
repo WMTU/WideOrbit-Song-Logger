@@ -5,7 +5,7 @@ from log import app
 
 # import system libraries
 import base64
-import urllib, urllib.parse, urllib.request
+import urllib, urllib.parse, urllib.request, urllib.error
 
 # import pylast for lastfm api calls
 import pylast
@@ -40,10 +40,17 @@ def scrobbleSong(timestamp, song):
     for m in app.config['ICECAST_MOUNTPOINTS']:
         ic_query['mount'] = m
         ic_url_m = ic_url + '?' + urllib.parse.urlencode(ic_query)
-        ic_request = urllib.request.Request(ic_url_m)
+        
+        try:
+            ic_request = urllib.request.Request(ic_url_m)
+            opener.open(ic_request)
+            urllib.request.install_opener(opener)
+        
+        except (Exception, urllib.error.URLError) as error :
+            print ("URL Error! => ", error)
 
-        opener.open(ic_request)
-        urllib.request.install_opener(opener)
+        except (Exception, urllib.error.HTTPError) as error :
+            print ("HTTP Error! => ", error)
 
     # scrobble to last.fm
     lastfm.scrobble(
@@ -59,7 +66,15 @@ def scrobbleSong(timestamp, song):
         ti_query['album'] = song.album
     
     ti_url = app.config['TUNEIN_API_URL'] + '?' + urllib.parse.urlencode(ti_query)
-    ti_request = urllib.request.Request(ti_url)
-    urllib.request.urlopen(ti_request)
+
+    try:
+        ti_request = urllib.request.Request(ti_url)
+        urllib.request.urlopen(ti_request)
+    
+    except (Exception, urllib.error.URLError) as error :
+        print ("URL Error! => ", error)
+
+    except (Exception, urllib.error.HTTPError) as error :
+        print ("HTTP Error! => ", error)
 
     return True

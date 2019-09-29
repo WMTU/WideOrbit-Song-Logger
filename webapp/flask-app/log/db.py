@@ -1,4 +1,5 @@
 # module for working with the database
+# all the functions to query the database are in here
 
 # import app
 from log import app

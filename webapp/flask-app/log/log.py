@@ -1,4 +1,5 @@
 # core log module
+# this module defines the API endpoints and arguments
 
 # import the app
 from log import app
@@ -7,8 +8,7 @@ from .artwork import *
 from .scrobble import *
 
 # import system libraries
-from datetime import datetime, date, time, timedelta
-from re import sub
+from datetime import datetime, date, time
 
 # import Flask libraries
 from flask import jsonify, request
@@ -69,7 +69,12 @@ class SongAPI(Resource):
 
         # validate the API key and add the song log
         if db.validateKey(self.args['api_key']) is True:
+            # add song log to the db
             post_result = db.addSong(new_song)
+
+            # publish the song to scrobble sources
+            if app.config['SCROBBLE'] is "True":
+                scrobbleSong(datetime.datetime.utcnow().strftime("%s"), new_song)
         
         # close the database connection
         db.close()
@@ -294,4 +299,6 @@ api.add_resource(DiscrepancyAPI,    '/api/2.0/discrepancy', endpoint = 'discrepa
 api.add_resource(RequestAPI,        '/api/2.0/request',     endpoint = 'request')
 api.add_resource(LogAPI,            '/api/2.0/log',         endpoint = 'log')
 api.add_resource(StatsAPI,          '/api/2.0/stats',       endpoint = 'stats')
-api.add_resource(KeyAPI,            '/api/2.0/key',         endpoint = 'key')
+
+if app.config['KEY_API'] is "True":
+    api.add_resource(KeyAPI,            '/api/2.0/key',         endpoint = 'key')

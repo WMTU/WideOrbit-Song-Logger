@@ -3,9 +3,6 @@
 # import app
 from log import app
 
-# import system libraries
-import json
-
 # imports pylast for lastfm api calls
 import pylast
 
