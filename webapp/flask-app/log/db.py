@@ -304,6 +304,7 @@ class DB:
         if(self.cursor):
             try:
                 # execute the query
+                print(query)
                 self.cursor.execute(query, query_args)
 
                 # return the query results
