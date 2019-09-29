@@ -35,7 +35,7 @@ class DB:
                 port        = self.port,
                 database    = self.database
             )
-            
+
             self.conn.set_session(autocommit = True)
             self.cursor = self.conn.cursor(cursor_factory = RealDictCursor)
 
@@ -252,7 +252,7 @@ class DB:
         end_query_asc = "ORDER BY {} ASC LIMIT %(n)s;"
         query_args = {'n': n}
 
-        # process a request for song logs
+        # process a log request for a given type
         if type is "song":
             order_by = "play_id"
             base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM play_log "
@@ -272,11 +272,8 @@ class DB:
                 else:
                     query = base_query + delay_query
 
-            # final query
-            if date is None or delay is False:
+            if date is None and delay is False:
                 query = base_query
-
-        # process a request for discrepancy logs
         elif type is "discrepancy":
             order_by = "dis_id"
             base_query = "SELECT dis_id, timestamp, song, artist, dj_name, word, button_hit FROM discrepancy_log "
@@ -288,8 +285,6 @@ class DB:
                 query = base_query + date_query
             else:
                 query = base_query
-
-        # process a request for song request logs
         elif type is "request":
             order_by = "rq_id"
             base_query = "SELECT rq_id, timestamp, song, artist, album, rq_name, rq_message FROM song_requests "
@@ -301,7 +296,6 @@ class DB:
                 query = base_query + date_query
             else:
                 query = base_query
-
         else:
             return False
 
@@ -360,7 +354,6 @@ class DB:
             else:
                 query = base_query + album_query
 
-        # final assembled query
         if song is None and artist is None and album is None:
             query = base_query
 
