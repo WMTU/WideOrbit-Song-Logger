@@ -36,7 +36,8 @@ class DB:
                 database    = self.database
             )
             self.conn.set_session(autocommit = True)
-            self.cursor = self.conn.cursor(cursor_factory = RealDictCursor)
+            #self.cursor = self.conn.cursor(cursor_factory = RealDictCursor)
+            self.cursor = self.conn.cursor()
 
         except (Exception, psycopg2.DatabaseError) as error :
             print ("Error connecting to database! => ", error)
