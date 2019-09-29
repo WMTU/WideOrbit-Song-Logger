@@ -77,7 +77,7 @@ class SongAPI(Resource):
             if app.config['SCROBBLE'] is "True":
                 scrobbleSong(datetime.datetime.utcnow().strftime("%s"), new_song)
         else:
-            return "Invalid API Key!", 400
+            return {"message": {"api_key": "Invalid API Key!"}}, 400
         
         # close the database connection
         db.close()
@@ -86,7 +86,7 @@ class SongAPI(Resource):
         if post_result is not False:
             return post_result, 202
         else:
-            return "Error submitting Song!", 500
+            return {"message": {"error": "Error submitting Song!"}}, 500
 
 class DiscrepancyAPI(Resource):
     def __init__(self):
@@ -115,7 +115,6 @@ class DiscrepancyAPI(Resource):
 
         # build a new Discrepancy object
         new_discrepancy = Discrepancy(
-            self.args['api_key'], 
             self.args['song'], 
             self.args['artist'], 
             self.args['dj_name'], 
@@ -135,7 +134,7 @@ class DiscrepancyAPI(Resource):
         if db.validateKey(self.args['api_key']) is True:
             post_result = db.addDiscrepancy(new_discrepancy)
         else:
-            return "Invalid API Key!", 400
+            return {"message": {"api_key": "Invalid API Key!"}}, 400
         
         # close the database connection
         db.close()
@@ -144,7 +143,7 @@ class DiscrepancyAPI(Resource):
         if post_result is not False:
             return post_result, 202
         else:
-            return "Error submitting Discrepancy!", 500
+            return {"message": {"error": "Error submitting Discrepancy!"}}, 500
 
 class RequestAPI(Resource):
     def __init__(self):
@@ -194,7 +193,7 @@ class RequestAPI(Resource):
         if db.validateKey(self.args['api_key']) is True:
             post_result = db.addRequest(new_req)
         else:
-            return "Invalid API Key!", 400
+            return {"message": {"api_key": "Invalid API Key!"}}, 400
         
         # close the connection to the database
         db.close()
@@ -203,7 +202,7 @@ class RequestAPI(Resource):
         if post_result is not False:
             return post_result, 202
         else:
-            return "Error submitting Request!", 500
+            return {"message": {"error": "Error submitting Request!"}}, 500
 
 class LogAPI(Resource):
     def __init__(self):
@@ -247,7 +246,7 @@ class LogAPI(Resource):
         if log_result is not False:
             return loads(log_result), 200
         else:
-            return "Error fetching log!", 500
+            return {"message": {"error": "Error fetching log!"}}, 500
 
 class StatsAPI(Resource):
     def __init__(self):
@@ -291,7 +290,7 @@ class StatsAPI(Resource):
         if stats_result is not False:
             return loads(stats_result), 200
         else:
-            return "Error fetching stats!", 500
+            return {"message": {"error": "Error fetching stats!"}}, 500
 
 class KeyAPI(Resource):
     def get(self):
@@ -316,7 +315,7 @@ class KeyAPI(Resource):
         if key_result is not False:
             return key_result, 200
         else:
-            return "Error generating key!", 500
+            return {"message": {"error": "Error generating key!"}}, 500
 
 # add endpoints for the api
 api.add_resource(SongAPI,           '/api/2.0/song',        endpoint = 'song')
