@@ -165,9 +165,9 @@ This table is for keeping track of songs that swear on air:
 **discrepancy_log**
 
 ```text
-dis_count*      => incrementing count of discrepancies
-play_date       => date the song was played (yyyy-mm-dd)
-play_time       => time the song was played (hh:mm:ss)
+dis_id*         => incrementing count of discrepancies
+dis_date        => date the song was played (yyyy-mm-dd)
+dis_time        => time the song was played (hh:mm:ss)
 timestamp       => timestamp with date and time
 song            => song name
 artist          => artist name
