@@ -8,6 +8,7 @@ from .scrobble import *
 
 # import system libraries
 from datetime import datetime, date, time, timedelta
+from re import sub
 
 # import Flask libraries
 from flask import jsonify, request

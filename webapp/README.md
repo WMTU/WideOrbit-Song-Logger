@@ -128,10 +128,10 @@ Here is our table for keeping track of play statistics:
 **play_stats**
 
 ```text
-song_id         => incrementing count of played songs
-song*           => song name
-artist*         => artist name
-album*          => album name
+song_id*        => incrementing count of played songs
+song            => song name
+artist          => artist name
+album           => album name
 play_count      => number of times played
 
 '*' = key

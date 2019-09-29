@@ -22,12 +22,12 @@ lastfm = pylast.LastFMNetwork(
 
 # TuneIn API Info
 ti_query = {
-        'partnerId':  app.config['TUNEIN_PARTNER_ID'],
+        'partnerId' : app.config['TUNEIN_PARTNER_ID'],
         'partnerKey': app.config['TUNEIN_PARTNER_KEY'],
-        'id':         app.config['TUNEIN_STATION_ID']}
+        'id'        : app.config['TUNEIN_STATION_ID']}
 
 # takes the played song and publishes it to various places
-def scrobbleSong(song, artist, album, timestamp):
+def scrobbleSong(timestamp, song):
     
     # push song to Icecast
     password_mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
@@ -36,7 +36,7 @@ def scrobbleSong(song, artist, album, timestamp):
     handler = urllib.request.HTTPBasicAuthHandler(password_mgr)
     opener = urllib.request.build_opener(handler)
 
-    ic_query = {'mode': 'updinfo', 'song': artist + " | " + song}
+    ic_query = {'mode': 'updinfo', 'song': song.artist + " | " + song.song}
     for m in app.config['ICECAST_MOUNTPOINTS']:
         ic_query['mount'] = m
         ic_url_m = ic_url + '?' + urllib.parse.urlencode(ic_query)
@@ -46,13 +46,17 @@ def scrobbleSong(song, artist, album, timestamp):
         urllib.request.install_opener(opener)
 
     # scrobble to last.fm
-    lastfm.scrobble(artist = artist, title = song, timestamp = timestamp, album = album)
+    lastfm.scrobble(
+        title     = song.song, 
+        artist    = song.artist, 
+        album     = song.album, 
+        timestamp = timestamp)
 
     # scrobble to TuneIn
-    ti_query['title']   = song
-    ti_query['artist']  = artist
-    if (album):
-        ti_query['album'] = album
+    ti_query['title']   = song.song
+    ti_query['artist']  = song.artist
+    if song.album is not "":
+        ti_query['album'] = song.album
     
     ti_url = app.config['TUNEIN_API_URL'] + '?' + urllib.parse.urlencode(ti_query)
     ti_request = urllib.request.Request(ti_url)
