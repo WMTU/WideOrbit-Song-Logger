@@ -82,7 +82,10 @@ class SongAPI(Resource):
         db.close()
 
         # return the logged song
-        return post_result, 202
+        if post_result is not False:
+            return post_result, 202
+        else:
+            return "Error submitting Song!", 500
 
 class DiscrepancyAPI(Resource):
     def __init__(self):
@@ -137,7 +140,10 @@ class DiscrepancyAPI(Resource):
         db.close()
 
         # return the logged discrepancy
-        return post_result, 202
+        if post_result is not False:
+            return post_result, 202
+        else:
+            return "Error submitting Discrepancy!", 500
 
 class RequestAPI(Resource):
     def __init__(self):
@@ -193,7 +199,10 @@ class RequestAPI(Resource):
         db.close()
 
         # return the logged request
-        return post_result, 202
+        if post_result is not False:
+            return post_result, 202
+        else:
+            return "Error submitting Request!", 500
 
 class LogAPI(Resource):
     def __init__(self):
@@ -234,7 +243,10 @@ class LogAPI(Resource):
         db.close()
 
         # return the requested log(s)
-        return log_result, 200
+        if log_result is not False:
+            return log_result, 200
+        else:
+            return "Error fetching log!", 500
 
 class StatsAPI(Resource):
     def __init__(self):
@@ -275,7 +287,10 @@ class StatsAPI(Resource):
         db.close()
 
         # return the requested log(s)
-        return stats_result, 200
+        if stats_result is not False:
+            return stats_result, 200
+        else:
+            return "Error fetching stats!", 500
 
 class KeyAPI(Resource):
     def get(self):
@@ -297,7 +312,10 @@ class KeyAPI(Resource):
         db.close()
 
         # return the generated key
-        return key_result, 200
+        if key_result is not False:
+            return key_result, 200
+        else:
+            return "Error generating key!", 500
 
 # add endpoints for the api
 api.add_resource(SongAPI,           '/api/2.0/song',        endpoint = 'song')
