@@ -239,8 +239,8 @@ class DB:
 
         # start building the query
         query = ""
-        end_query_desc = "ORDER BY %(order_by)s DESC LIMIT %(n)s;"
-        end_query_asc = "ORDER BY %(order_by)s ASC LIMIT %(n)s;"
+        end_query_desc = "ORDER BY {} DESC LIMIT %(n)s;"
+        end_query_asc = "ORDER BY {} ASC LIMIT %(n)s;"
         query_args = {'n': n}
 
         # process a request for song logs
@@ -306,7 +306,9 @@ class DB:
             try:
                 # execute the query
                 print(query)
-                self.cursor.execute(query, query_args)
+                self.cursor.execute(
+                    psycopg2.sql.SQL(query).format(psycopg2.sql.Identifier(query_args['order_by'])), 
+                    query_args)
 
                 # return the query results
                 query_result = self.cursor.fetchall()
@@ -320,8 +322,8 @@ class DB:
         # process a request for song stats
         query = ""
         base_query = "SELECT song_id, song, artist, album, play_count FROM play_stats "
-        end_query_desc = "ORDER BY %(order_by)s DESC;"
-        end_query_asc = "ORDER BY %(order_by)s ASC;"
+        end_query_desc = "ORDER BY {} DESC;"
+        end_query_asc = "ORDER BY {} ASC;"
         query_args = {'order_by': order_by}
 
         if song is not None:
@@ -363,7 +365,9 @@ class DB:
         if(self.cursor):
             try:
                 # execute the query
-                self.cursor.execute(query, query_args)
+                self.cursor.execute(
+                    psycopg2.sql.SQL(query).format(psycopg2.sql.Identifier(order_by)), 
+                    query_args)
 
                 # return the query results
                 query_result = self.cursor.fetchall()
