@@ -238,14 +238,14 @@ class LogAPI(Resource):
         db.connect()
 
         # get the requested log(s) from the database
-        log_result = loads(db.getLog(self.args['type'], self.args['n'], self.args['date'], self.args['delay'], self.args['desc']))
+        log_result = db.getLog(self.args['type'], self.args['n'], self.args['date'], self.args['delay'], self.args['desc'])
         
         # close the connection to the database
         db.close()
 
         # return the requested log(s)
         if log_result is not False:
-            return log_result, 200
+            return loads(log_result), 200
         else:
             return "Error fetching log!", 500
 
@@ -282,14 +282,14 @@ class StatsAPI(Resource):
         db.connect()
 
         # get the requested log(s) from the database
-        stats_result = loads(db.getStats(self.args['song'], self.args['artist'], self.args['album'], self.args['order_by'], self.args['desc']))
+        stats_result = db.getStats(self.args['song'], self.args['artist'], self.args['album'], self.args['order_by'], self.args['desc'])
         
         # close the connection to the database
         db.close()
 
         # return the requested log(s)
         if stats_result is not False:
-            return stats_result, 200
+            return loads(stats_result), 200
         else:
             return "Error fetching stats!", 500
 
