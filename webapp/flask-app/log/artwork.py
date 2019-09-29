@@ -14,6 +14,8 @@ def fetchArtwork(artist, album):
         username      = app.config['LASTFM_USERNAME'],
         password_hash = pylast.md5(app.config['LASTFM_PASSWORD']))
 
+    image = ""
+
     if album is not "":
         try:
             lfm_album = lastfm.get_album(artist, album)
@@ -21,7 +23,6 @@ def fetchArtwork(artist, album):
         
         except (Exception, pylast.WSError) as error :
             print ("Error fetching album artwork! => ", error)
-            image = ""
     
     return image
     

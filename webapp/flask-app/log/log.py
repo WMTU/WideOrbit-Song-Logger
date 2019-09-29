@@ -254,7 +254,7 @@ class StatsAPI(Resource):
 
         self.args = self.reqparse.parse_args()
 
-        super(LogAPI, self).__init__()
+        super(StatsAPI, self).__init__()
 
     def get(self):
         stats_result = None

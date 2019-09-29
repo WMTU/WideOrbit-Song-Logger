@@ -59,12 +59,13 @@ class DB:
 
     # function to validate a supplied key
     def validateKey(self, key):
-        query = "SELECT api_key FROM users WHERE api_key = %s;"
+        query = "SELECT api_key FROM users WHERE api_key = %(key)s;"
+        query_args = {'key': key}
 
         if(self.cursor):
             try:
                 # query the database
-                self.cursor.execute(query, key)
+                self.cursor.execute(query, query_args)
                 query_result = self.cursor.fetchall()
 
                 # if the key is found (1 result) then it's valid
@@ -266,7 +267,7 @@ class DB:
                     query = base_query + delay_query
 
             # final query
-            if (date is not None) or (delay is True):
+            if date is not None or delay is True:
                 query = query + end_query
             else:
                 query = base_query + end_query
@@ -296,6 +297,7 @@ class DB:
                 query = base_query + date_query + end_query
             else:
                 query = base_query + end_query
+
         else:
             return False
 
@@ -346,13 +348,13 @@ class DB:
             album_query = "WHERE album = %(album)s "
             query_args['album'] = album
 
-            if (song is not None) or (artist is not None):
+            if song is not None or artist is not None:
                 query = query + "AND " + album_query
             else:
                 query = base_query + album_query
 
         # final assembled query
-        if (song is not None) or (artist is not None) or (album is not None):
+        if song is not None or artist is not None or album is not None:
             query = query + end_query
         else:
             query = base_query + end_query

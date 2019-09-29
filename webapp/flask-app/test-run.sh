@@ -4,7 +4,7 @@
 API_KEY=$(cat ./key.txt)
 LOG_DIR="./test-logs"
 
-if [! -d $LOG_DIR]; then
+if [ ! -d $LOG_DIR ]; then
     mkdir $LOG_DIR
 else
     rm -rf $LOG_DIR
