@@ -8,6 +8,7 @@ if [ ! -d $LOG_DIR ]; then
     mkdir $LOG_DIR
 else
     rm -rf $LOG_DIR
+    mkdir $LOG_DIR
 fi
 
 #############################################
