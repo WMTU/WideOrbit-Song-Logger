@@ -18,21 +18,21 @@ fi
 # log with all parameters
 printf "\nTest 1\n" > $LOG_DIR/SongAPI.txt
 curl -sS -X POST -H "Content-Type: application/json" \
--d '{"api_key": "$API_KEY", "song": "Test Song", "artist": "Test Artist", "album": "Test Album", "genre": "Test", "location": "WMTU", "cd_id": "XXX"}' \
+-d '{"api_key": $API_KEY, "song": "Test Song", "artist": "Test Artist", "album": "Test Album", "genre": "Test", "location": "WMTU", "cd_id": "XXX"}' \
 http://localhost:9190/api/2.0/song \
 >> $LOG_DIR/SongAPI.txt
 
 # log with only required parameters
 printf "\nTest 2\n" >> $LOG_DIR/SongAPI.txt
 curl -sS -X POST -H "Content-Type: application/json" \
--d '{"api_key": "$API_KEY", "song": "Test Song", "artist": "Test Artist"}' \
+-d '{"api_key": $API_KEY, "song": "Test Song", "artist": "Test Artist"}' \
 http://localhost:9190/api/2.0/song \
 >> $LOG_DIR/SongAPI.txt
 
 # log without required artist
 printf "\nTest 3\n" >> $LOG_DIR/SongAPI.txt
 curl -sS -X POST -H "Content-Type: application/json" \
--d '{"api_key": "$API_KEY", "song": "Test Song"}' \
+-d '{"api_key": $API_KEY, "song": "Test Song"}' \
 http://localhost:9190/api/2.0/song \
 >> $LOG_DIR/SongAPI.txt
 
@@ -58,14 +58,14 @@ http://localhost:9190/api/2.0/song \
 # log with all parameters
 printf "\nTest 1\n" > $LOG_DIR/DiscrepancyAPI.txt
 curl -sS -X POST -H "Content-Type: application/json" \
--d '{"api_key": "$API_KEY", "song": "Test Song", "artist": "Test Artist", "dj_name": "Some DJ", "word": "swear", "button_hit": true}' \
+-d '{"api_key": $API_KEY, "song": "Test Song", "artist": "Test Artist", "dj_name": "Some DJ", "word": "swear", "button_hit": true}' \
 http://localhost:9190/api/2.0/discrepancy \
 >> $LOG_DIR/DiscrepancyAPI.txt
 
 # log with missing parameters
 printf "\nTest 2\n" >> $LOG_DIR/DiscrepancyAPI.txt
 curl -sS -X POST -H "Content-Type: application/json" \
--d '{"api_key": "$API_KEY", "song": "Test Song", "artist": "Test Artist", "dj_name": "Some DJ", "word": "swear"}' \
+-d '{"api_key": $API_KEY, "song": "Test Song", "artist": "Test Artist", "dj_name": "Some DJ", "word": "swear"}' \
 http://localhost:9190/api/2.0/discrepancy \
 >> $LOG_DIR/DiscrepancyAPI.txt
 
@@ -91,21 +91,21 @@ http://localhost:9190/api/2.0/discrepancy \
 # log with all parameters
 printf "\nTest 1\n" > $LOG_DIR/RequestAPI.txt
 curl -sS -X POST -H "Content-Type: application/json" \
--d '{"api_key": "$API_KEY", "song": "Test Song", "artist": "Test Artist", "album": "Test Album", "rq_name": "WMTU Listener", "rq_message": "This is a test message for the song request API!"}' \
+-d '{"api_key": $API_KEY, "song": "Test Song", "artist": "Test Artist", "album": "Test Album", "rq_name": "WMTU Listener", "rq_message": "This is a test message for the song request API!"}' \
 http://localhost:9190/api/2.0/request \
 >> $LOG_DIR/RequestAPI.txt
 
 # log with required parameters
 printf "\nTest 2\n" >> $LOG_DIR/RequestAPI.txt
 curl -sS -X POST -H "Content-Type: application/json" \
--d '{"api_key": "$API_KEY", "song": "Test Song", "artist": "Test Artist"}' \
+-d '{"api_key": $API_KEY, "song": "Test Song", "artist": "Test Artist"}' \
 http://localhost:9190/api/2.0/request \
 >> $LOG_DIR/RequestAPI.txt
 
 # log with missing parameter
 printf "\nTest 3\n" >> $LOG_DIR/RequestAPI.txt
 curl -sS -X POST -H "Content-Type: application/json" \
--d '{"api_key": "$API_KEY", "song": "Test Song"}' \
+-d '{"api_key": $API_KEY, "song": "Test Song"}' \
 http://localhost:9190/api/2.0/request \
 >> $LOG_DIR/RequestAPI.txt
 
