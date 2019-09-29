@@ -589,7 +589,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
       params.put( "album", album );
       params.put( "genre", genre );
       params.put( "location", location );
-      params.put( "asset_id", cdNumber );
+      params.put( "cd_id", cdNumber );
 
       // Form request body from parameter map
       StringBuilder postData = new StringBuilder();
@@ -620,7 +620,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
       // Handle response from Log app
       int status = conn.getResponseCode();
       String message = conn.getResponseMessage();
-      if ( status != 200 && status != 201 && status != 202 ) 
+      if ( status < 200 || status > 202 ) 
       {
         errorMessage = String.format( "Log: HTTP %d: %s", status, message );
         return false;

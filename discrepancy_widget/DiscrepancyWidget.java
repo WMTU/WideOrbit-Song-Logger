@@ -331,7 +331,7 @@ public class DiscrepancyWidget extends BasicWidget implements ActionListener
 			// Handle response from Log app
 			int status = conn.getResponseCode();
 			String message = conn.getResponseMessage();
-			if ( status != 200 && status != 201 && status != 202 ) 
+			if ( status < 200 || status > 202 ) 
 			{
 			  errorMessage = String.format( "Log: HTTP %d: %s", status, message );
 			  return false;
