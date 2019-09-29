@@ -84,6 +84,7 @@ Optional Paramters:
 - n     : number of items to list
 - date  : list items for a specific date (yyyy-mm-dd)
 - delay : (only for song records) apply a 40 second delay to the logged songs list
+- desc  : order descending (true/false)
 
 Default Action:
 
@@ -93,6 +94,26 @@ Example:
 
 ```text
 https://log.wmtu.fm/api/2.0/log?type=<song, discrepancy, request>?n=<#>
+```
+
+**Requesting Song Stats**
+
+Optional Paramters:
+
+- song      : song name
+- artist    : artist name
+- album     : album name
+- order_by  : order the stats by a specific column (song, artist, album, play_count)
+- desc      : order descending (true/false)
+
+Default Action:
+
+If no arguments are supplied the default is to return all the records ordered by play_count descending.
+
+Example:
+
+```text
+https://log.wmtu.fm/api/2.0/stats?song=<song name>?artist=<artist name>?order_by=<song, artist, album, play_count>
 ```
 
 ## PostgreSQL Database

@@ -44,6 +44,7 @@ class DB:
             self.cursor.close()
             self.conn.close()
 
+    # function to generate a valid key
     def genKey(self):
         key = secrets.token_urlsafe(30)
 
@@ -55,13 +56,18 @@ class DB:
         else:
             return False
 
+    # function to validate a supplied key
     def validateKey(self, key):
         query = "SELECT api_key FROM users WHERE api_key = %s;"
 
         if(self.cursor):
             try:
+                # query the database
                 self.cursor.execute(query, key)
                 query_result = self.cursor.fetchall()
+
+                # if the key is found (1 result) then it's valid
+                # note that the api_key column has a unique constraint on it
                 if len(query_result) is 1:
                     return True
                 else:
@@ -74,6 +80,7 @@ class DB:
     def addSong(self, song):
         now = datetime.now()
 
+        # build the query for the database
         query = "INSERT INTO play_log(play_date, play_time, timestamp, song, artist, album, genre, location, cd_id, artwork) \
             VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
@@ -91,8 +98,12 @@ class DB:
 
         if(self.cursor):
             try:
+                # query the database
                 self.cursor.execute(query, query_args)
+                # also add the song to the songs stats table
                 self.addStat(song)
+                
+                # return the added song
                 return {
                     'timestamp': now.strftime('%Y-%m-%d %H:%M:%S'),
                     'song': song.song, 
@@ -110,11 +121,14 @@ class DB:
             return False
 
     def addStat(self, song):
+        # use -- for entries without an album
+        # since a unique entry consists of the song, artist, AND album
         if song.album is "":
             album = "--"
         else:
             album = song.album
 
+        # build the query
         select_query = "SELECT * FROM play_stats \
             WHERE song = %s AND artist = %s AND album = %s;"
         add_query    = "INSERT INTO play_stats(song, artist, album) \
@@ -125,7 +139,10 @@ class DB:
 
         try:
             if(self.cursor):
+                # query the database
                 self.cursor.execute(select_query, query_args)
+
+                # based on the query result either add a new entry or update an existing entry
                 if len(self.cursor.fetchall()) is 0:
                     self.cursor.execute(add_query, query_args)
                 else:
@@ -142,6 +159,7 @@ class DB:
     def addDiscrepancy(self, discrepancy):
         now = datetime.now()
 
+        # build a query
         query = "INSERT INTO discrepancy_log(play_date, play_time, timestamp, song, artist, dj_name, word, button_hit) \
             VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
 
@@ -157,7 +175,10 @@ class DB:
 
         try:
             if(self.cursor):
+                # query the database
                 self.cursor.execute(query, query_args)
+                
+                # return the added discrepancy
                 return {
                     'timestamp': now.strftime('%Y-%m-%d %H:%M:%S'),
                     'song': discrepancy.song, 
@@ -175,6 +196,7 @@ class DB:
     def addRequest(self, request):
         now = datetime.now()
 
+        # build a query
         query = "INSERT INTO song_requests(rq_date, rq_time, timestamp, song, artist, album, rq_name, rq_message) \
             VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
 
@@ -190,7 +212,10 @@ class DB:
 
         try:
             if(self.cursor):
+                # query the database
                 self.cursor.execute(query)
+                
+                # return the added request
                 return {
                     'timestamp': now.strftime('%Y-%m-%d %H:%M:%S'),
                     'song': request.song,
@@ -205,56 +230,68 @@ class DB:
             print ("Error executing addRequest query! => ", error)
             return False
 
-    def getLog(self, type, n, date, delay):
+    def getLog(self, type, n, date, delay, desc):
 
         # current time
         now = datetime.now()
 
-        end_query = " ORDER BY play_id DESC LIMIT %(n)s;"
+        # start building the query
+        query = ""
         query_args = {'n': n}
 
+        if desc is True:
+            query_args['desc'] = "DESC"
+        else:
+            query_args['desc'] = "ASC"
+
+        # process a request for song logs
         if type is "song":
             base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM play_log "
-            date_query = None
-            delay_query = None
+            end_query = "ORDER BY play_id %(desc)s LIMIT %(n)s;"
 
             if date is not None:
-                date_query = "WHERE play_date = %(date)s"
+                date_query = "WHERE play_date = %(date)s "
                 query_args['date'] = date
+
+                query = base_query + date_query
 
             if delay is True:
-                delay_query = "WHERE play_time < %(delay_time)s"
-                query_args['delay_time'] = now - timedelta(seconds = 40).strftime('%H:%M:%S')
+                delay_query = "WHERE play_time < %(delay_time)s "
+                query_args['delay_time'] = (now - timedelta(seconds = 40).strftime('%H:%M:%S'))
 
-            if date_query is not None and delay_query is not None:
-                query = base_query + date_query + " AND " + delay_query + end_query
-            elif date_query is not None and not delay_query is None:
-                query = base_query + date_query + end_query
-            elif delay_query is not None and not date_query is None:
-                query = base_query + delay_query + end_query
+                if date is not None:
+                    query = query + "AND " + delay_query
+                else:
+                    query = base_query + delay_query
+
+            # final query
+            if (date is not None) or (delay is True):
+                query = query + end_query
             else:
                 query = base_query + end_query
 
+        # process a request for discrepancy logs
         elif type is "discrepancy":
             base_query = "SELECT dis_count, timestamp, song, artist, dj_name, word, button_hit FROM discrepancy_log "
+            end_query = "ORDER BY dis_count %(desc)s LIMIT %(n)s;"
 
             if date is not None:
                 date_query = "WHERE play_date = %(date)s"
                 query_args['date'] = date
 
-            if date_query is not None:
                 query = base_query + date_query + end_query
             else:
                 query = base_query + end_query
 
+        # process a request for song request logs
         elif type is "request":
             base_query = "SELECT rq_id, timestamp, song, artist, album, rq_name, rq_message FROM song_requests "
+            end_query = "ORDER BY rq_id %(desc)s LIMIT %(n)s;"
 
             if date is not None:
-                date_query = "WHERE play_date = %(date)s"
+                date_query = "WHERE rq_date = %(date)s"
                 query_args['date'] = date
 
-            if date_query is not None:
                 query = base_query + date_query + end_query
             else:
                 query = base_query + end_query
@@ -263,12 +300,73 @@ class DB:
 
         if(self.cursor):
             try:
+                # execute the query
                 self.cursor.execute(query, query_args)
+
+                # return the query results
                 query_result = self.cursor.fetchall()
                 return query_result
             
             except (Exception, psycopg2.DatabaseError) as error :
-                print ("Error executing query! => ", error)
+                print ("Error executing log query! => ", error)
+                return False
+
+    def getStats(self, song, artist, album, order_by, desc):
+        # process a request for song stats
+        query = ""
+        base_query = "SELECT song_id, song, artist, album, play_count FROM play_stats "
+        end_query = "ORDER BY %(order_by)s %(desc)s;"
+
+        query_args = {'order_by': order_by}
+
+        if desc is True:
+            query_args['desc'] = "DESC"
+        else:
+            query_args['desc'] = "ASC"
+
+        if song is not None:
+            song_query = "WHERE song = %(song)s "
+            query_args['song'] = song
+
+            query = base_query + song_query
+        else:
+            query = base_query
+
+        if artist is not None:
+            artist_query = "WHERE artist = %(artist)s "
+            query_args['artist'] = artist
+
+            if song is not None:
+                query = query + "AND " + artist_query
+            else:
+                query = base_query + artist_query
+
+        if album is not None:
+            album_query = "WHERE album = %(album)s "
+            query_args['album'] = album
+
+            if (song is not None) or (artist is not None):
+                query = query + "AND " + album_query
+            else:
+                query = base_query + album_query
+
+        # final assembled query
+        if (song is not None) or (artist is not None) or (album is not None):
+            query = query + end_query
+        else:
+            query = base_query + end_query
+
+        if(self.cursor):
+            try:
+                # execute the query
+                self.cursor.execute(query, query_args)
+
+                # return the query results
+                query_result = self.cursor.fetchall()
+                return query_result
+            
+            except (Exception, psycopg2.DatabaseError) as error :
+                print ("Error executing stats query! => ", error)
                 return False
 
 
