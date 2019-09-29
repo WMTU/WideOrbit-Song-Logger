@@ -10,6 +10,7 @@ import secrets
 
 # postgres library
 import psycopg2
+from psycopg2 import sql
 from psycopg2.extras import RealDictCursor
 
 class DB:
@@ -245,7 +246,7 @@ class DB:
 
         # process a request for song logs
         if type is "song":
-            query_args['order_by'] = "play_id"
+            order_by = "play_id"
             base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM play_log "
 
             if date is not None:
@@ -269,7 +270,7 @@ class DB:
 
         # process a request for discrepancy logs
         elif type is "discrepancy":
-            query_args['order_by'] = "dis_id"
+            order_by = "dis_id"
             base_query = "SELECT dis_id, timestamp, song, artist, dj_name, word, button_hit FROM discrepancy_log "
 
             if date is not None:
@@ -282,7 +283,7 @@ class DB:
 
         # process a request for song request logs
         elif type is "request":
-            query_args['order_by'] = "rq_id"
+            order_by = "rq_id"
             base_query = "SELECT rq_id, timestamp, song, artist, album, rq_name, rq_message FROM song_requests "
 
             if date is not None:
@@ -305,9 +306,8 @@ class DB:
         if(self.cursor):
             try:
                 # execute the query
-                print(query)
                 self.cursor.execute(
-                    psycopg2.sql.SQL(query).format(psycopg2.sql.Identifier(query_args['order_by'])), 
+                    sql.SQL(query).format(sql.Identifier(order_by)), 
                     query_args)
 
                 # return the query results
@@ -366,7 +366,7 @@ class DB:
             try:
                 # execute the query
                 self.cursor.execute(
-                    psycopg2.sql.SQL(query).format(psycopg2.sql.Identifier(order_by)), 
+                    sql.SQL(query).format(sql.Identifier(order_by)), 
                     query_args)
 
                 # return the query results
