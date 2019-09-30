@@ -248,12 +248,7 @@ class DB:
 
         # start building the query
         query = ""
-        end_query_desc = "ORDER BY {} DESC LIMIT %(n)s;"
-        end_query_asc = "ORDER BY {} ASC LIMIT %(n)s;"
         query_args = {'n': n}
-
-        #print("Log Request\n=> type: {}\n=> n: {}\n=> date: {}\n=> delay: {}\n=> desc: {}".format(
-        #    log_type, n, date, delay, desc))
 
         # process a log request for a given log_type
         if log_type == "song":
@@ -262,7 +257,6 @@ class DB:
 
             if date != "":
                 date_query = "WHERE play_date = %(date)s "
-                query_args['n'] = "ALL"
                 query_args['date'] = date
 
                 query = base_query + date_query
@@ -284,7 +278,6 @@ class DB:
 
             if date != "":
                 date_query = "WHERE play_date = %(date)s"
-                query_args['n'] = "ALL"
                 query_args['date'] = date
 
                 query = base_query + date_query
@@ -296,7 +289,6 @@ class DB:
 
             if date != "":
                 date_query = "WHERE rq_date = %(date)s"
-                query_args['n'] = "ALL"
                 query_args['date'] = date
 
                 query = base_query + date_query
@@ -305,17 +297,26 @@ class DB:
         else:
             return False
 
-        # apply the correct ending based on order choice
+        # apply the row order
+        query = query + "ORDER BY {} {} "
         if desc == True:
-            query = query + end_query_desc
+            query_args['desc'] = "DESC"
         else:
-            query = query + end_query_asc
+            query_args['desc'] = "ASC"
+
+        # apply the correct limit
+        if date != "":
+            query = query + "LIMIT ALL;"
+        else:
+            query = query + "LIMIT %(n)s;"
 
         if(self.cursor):
             try:
                 # execute the query
                 self.cursor.execute(
-                    sql.SQL(query).format(sql.Identifier(order_by)), 
+                    sql.SQL(query).format(
+                        sql.Identifier(order_by), 
+                        sql.Identifier(query_args['desc'])), 
                     query_args)
 
                 # return the query results
