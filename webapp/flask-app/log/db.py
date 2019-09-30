@@ -252,15 +252,15 @@ class DB:
         end_query_asc = "ORDER BY {} ASC LIMIT %(n)s;"
         query_args = {'n': n}
 
-        print("Log Request\n=> type: {}\n=> n: {}\n=> date: {}\n=> delay: {}\n=> desc: {}".format(
-            log_type, n, date, delay, desc))
+        #print("Log Request\n=> type: {}\n=> n: {}\n=> date: {}\n=> delay: {}\n=> desc: {}".format(
+        #    log_type, n, date, delay, desc))
 
         # process a log request for a given log_type
         if log_type is "song":
             order_by = "play_id"
             base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM play_log "
 
-            if date is not None:
+            if date is not "":
                 date_query = "WHERE play_date = %(date)s "
                 query_args['date'] = date
 
@@ -270,18 +270,18 @@ class DB:
                 delay_query = "WHERE play_time < %(delay_time)s "
                 query_args['delay_time'] = (now - timedelta(seconds = 40).strftime('%H:%M:%S'))
 
-                if date is not None:
+                if date is not "":
                     query = query + "AND " + delay_query
                 else:
                     query = base_query + delay_query
 
-            if date is None and delay is False:
+            if date is "" and delay is False:
                 query = base_query
         elif log_type is "discrepancy":
             order_by = "dis_id"
             base_query = "SELECT dis_id, timestamp, song, artist, dj_name, word, button_hit FROM discrepancy_log "
 
-            if date is not None:
+            if date is not "":
                 date_query = "WHERE play_date = %(date)s"
                 query_args['date'] = date
 
@@ -292,7 +292,7 @@ class DB:
             order_by = "rq_id"
             base_query = "SELECT rq_id, timestamp, song, artist, album, rq_name, rq_message FROM song_requests "
 
-            if date is not None:
+            if date is not "":
                 date_query = "WHERE rq_date = %(date)s"
                 query_args['date'] = date
 
@@ -331,7 +331,7 @@ class DB:
         end_query_asc = "ORDER BY {} ASC;"
         query_args = {'order_by': order_by}
 
-        if song is not None:
+        if song is not "":
             song_query = "WHERE %(song)s %% ANY(STRING_TO_ARRAY(song,' ') "
             query_args['song'] = song
 
@@ -339,25 +339,25 @@ class DB:
         else:
             query = base_query
 
-        if artist is not None:
+        if artist is not "":
             artist_query = "WHERE %(artist)s %% ANY(STRING_TO_ARRAY(artist,' ') "
             query_args['artist'] = artist
 
-            if song is not None:
+            if song is not "":
                 query = query + "AND " + artist_query
             else:
                 query = base_query + artist_query
 
-        if album is not None:
+        if album is not "":
             album_query = "WHERE %(album)s %% ANY(STRING_TO_ARRAY(album,' ') "
             query_args['album'] = album
 
-            if song is not None or artist is not None:
+            if song is not "" or artist is not "":
                 query = query + "AND " + album_query
             else:
                 query = base_query + album_query
 
-        if song is None and artist is None and album is None:
+        if song is "" and artist is "" and album is "":
             query = base_query
 
         # apply the correct ending based on order choice

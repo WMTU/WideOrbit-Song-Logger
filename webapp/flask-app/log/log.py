@@ -234,9 +234,9 @@ class StatsAPI(Resource):
     def __init__(self):
 
         self.api_args = {
-            "song":     fields.Str(required=False, location="query", missing=None),
-            "artist":   fields.Str(required=False, location="query", missing=None),
-            "album":    fields.Str(required=False, location="query", missing=None),
+            "song":     fields.Str(required=False, location="query", missing=""),
+            "artist":   fields.Str(required=False, location="query", missing=""),
+            "album":    fields.Str(required=False, location="query", missing=""),
             "order_by": fields.Str(required=False, location="query", missing="play_count",
                 validate=validate.OneOf(choices=["song", "artist", "album", "play_count"],
                 error="Invalid Value for Argument 'order_by'")),
