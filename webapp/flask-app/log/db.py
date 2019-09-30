@@ -241,7 +241,7 @@ class DB:
             print ("Error executing addRequest query! => ", error)
             return False
 
-    def getLog(self, type, n, date, delay, desc):
+    def getLog(self, log_type, n, date, delay, desc):
 
         # current time
         now = datetime.now()
@@ -252,8 +252,12 @@ class DB:
         end_query_asc = "ORDER BY {} ASC LIMIT %(n)s;"
         query_args = {'n': n}
 
-        # process a log request for a given type
-        if type is "song":
+        print("Log Request\n \
+            => type: {}\n=> n: {}\n=> date: {}\n=> delay: {}\n=> desc: {}").format(
+            log_type, n, date, delay, desc)
+
+        # process a log request for a given log_type
+        if log_type is "song":
             order_by = "play_id"
             base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM play_log "
 
@@ -274,7 +278,7 @@ class DB:
 
             if date is None and delay is False:
                 query = base_query
-        elif type is "discrepancy":
+        elif log_type is "discrepancy":
             order_by = "dis_id"
             base_query = "SELECT dis_id, timestamp, song, artist, dj_name, word, button_hit FROM discrepancy_log "
 
@@ -285,7 +289,7 @@ class DB:
                 query = base_query + date_query
             else:
                 query = base_query
-        elif type is "request":
+        elif log_type is "request":
             order_by = "rq_id"
             base_query = "SELECT rq_id, timestamp, song, artist, album, rq_name, rq_message FROM song_requests "
 
@@ -329,7 +333,7 @@ class DB:
         query_args = {'order_by': order_by}
 
         if song is not None:
-            song_query = "WHERE song = %(song)s "
+            song_query = "WHERE %(song)s %% ANY(STRING_TO_ARRAY(song,' ') "
             query_args['song'] = song
 
             query = base_query + song_query
@@ -337,7 +341,7 @@ class DB:
             query = base_query
 
         if artist is not None:
-            artist_query = "WHERE artist = %(artist)s "
+            artist_query = "WHERE %(artist)s %% ANY(STRING_TO_ARRAY(artist,' ') "
             query_args['artist'] = artist
 
             if song is not None:
@@ -346,7 +350,7 @@ class DB:
                 query = base_query + artist_query
 
         if album is not None:
-            album_query = "WHERE album = %(album)s "
+            album_query = "WHERE %(album)s %% ANY(STRING_TO_ARRAY(album,' ') "
             query_args['album'] = album
 
             if song is not None or artist is not None:
