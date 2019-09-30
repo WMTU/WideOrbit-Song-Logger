@@ -26,7 +26,7 @@ api = Api(app)
 class SongAPI(Resource):
     def __init__(self):
 
-        api_args = {
+        self.api_args = {
             "api_key":  fields.Str(required=True, location="json", 
                 validate=validate.Length(equal=30, error="Invalid API Key!")),
             "song":     fields.Str(required=True, location="json"),
@@ -37,12 +37,11 @@ class SongAPI(Resource):
             "cd_id":    fields.Str(required=False, location="json", missing="")
         }
 
-        self.args = parser.parse(api_args, request)
-
         super(SongAPI, self).__init__()
 
     # API takes a POST request
     def post(self):
+        self.args = parser.parse(self.api_args, request)
         post_result = None
 
         # build a new Song object
@@ -87,7 +86,7 @@ class SongAPI(Resource):
 class DiscrepancyAPI(Resource):
     def __init__(self):
 
-        api_args = {
+        self.api_args = {
             "api_key":      fields.Str(required=True, location="json", 
                 validate=validate.Length(equal=30, error="Invalid API Key!")),
             "song":         fields.Str(required=True, location="json"),
@@ -97,11 +96,10 @@ class DiscrepancyAPI(Resource):
             "button_hit":   fields.Bool(required=True, location="json")
         }
 
-        self.args = parser.parse(api_args, request)
-
         super(DiscrepancyAPI, self).__init__()
 
     def post(self):
+        self.args = parser.parse(self.api_args, request)
         post_result = None
 
         # build a new Discrepancy object
@@ -139,7 +137,7 @@ class DiscrepancyAPI(Resource):
 class RequestAPI(Resource):
     def __init__(self):
 
-        api_args = {
+        self.api_args = {
             "api_key":      fields.Str(required=True, location="json", 
                 validate=validate.Length(equal=30, error="Invalid API Key!")),
             "song":         fields.Str(required=True, location="json"),
@@ -149,11 +147,10 @@ class RequestAPI(Resource):
             "rq_message":   fields.Str(required=False, location="json", missing="No Message Given"),
         }
 
-        self.args = parser.parse(api_args, request)
-
         super(RequestAPI, self).__init__()
 
     def post(self):
+        self.args = parser.parse(self.api_args, request)
         post_result = None
 
         # build a new Request object
@@ -191,7 +188,7 @@ class RequestAPI(Resource):
 class LogAPI(Resource):
     def __init__(self):
 
-        api_args = {
+        self.api_args = {
             "type":     fields.Str(required=False, location="query", 
                 validate=validate.OneOf(choices=["song", "discrepancy", "request"],
                 error="Invalid Type Provided!")),
@@ -201,11 +198,10 @@ class LogAPI(Resource):
             "desc":     fields.Bool(required=False, location="query", missing=True)
         }
 
-        self.args = parser.parse(api_args, request)
-
         super(LogAPI, self).__init__()
 
     def get(self):
+        self.args = parser.parse(self.api_args, request)
         log_result = None
 
         # build a new DB object and connect to the database
@@ -232,7 +228,7 @@ class LogAPI(Resource):
 class StatsAPI(Resource):
     def __init__(self):
 
-        api_args = {
+        self.api_args = {
             "song":     fields.Str(required=False, location="query", missing=None),
             "artist":   fields.Str(required=False, location="query", missing=None),
             "album":    fields.Str(required=False, location="query", missing=None),
@@ -242,11 +238,10 @@ class StatsAPI(Resource):
             "desc":     fields.Bool(required=False, location="query", missing=True),
         }
 
-        self.args = parser.parse(api_args, request)
-
         super(StatsAPI, self).__init__()
 
     def get(self):
+        self.args = parser.parse(self.api_args, request)
         stats_result = None
 
         # build a new DB object and connect to the database
