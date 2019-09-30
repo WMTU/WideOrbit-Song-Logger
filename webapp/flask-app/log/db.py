@@ -313,10 +313,7 @@ class DB:
             try:
                 # execute the query
                 self.cursor.execute(
-                    sql.SQL(query).format(
-                        sql.Identifier(order_by), 
-                        sql.Identifier(query_args['desc'])), 
-                    query_args)
+                    sql.SQL(query).format(sql.Identifier(order_by)), query_args)
 
                 # return the query results
                 query_result = self.cursor.fetchall()
