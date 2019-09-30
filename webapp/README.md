@@ -81,9 +81,9 @@ https://log.wmtu.fm/api/2.0/request?api_key=<api key>?song=<song name>?artist=<a
 Optional Paramters:
 
 - type  : the type of record to request (song, discrepancy, request)
-- n     : number of items to list
+- n     : number of items to list (except for requests with a date)
 - date  : list items for a specific date (yyyy-mm-dd)
-- delay : (only for song records) apply a 40 second delay to the logged songs list
+- delay : apply a 40 second delay to the logged songs list (only for song records)
 - desc  : order descending (true/false)
 
 Default Action:

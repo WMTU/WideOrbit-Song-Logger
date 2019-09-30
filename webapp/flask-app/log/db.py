@@ -262,6 +262,7 @@ class DB:
 
             if date != "":
                 date_query = "WHERE play_date = %(date)s "
+                query_args['n'] = "ALL"
                 query_args['date'] = date
 
                 query = base_query + date_query
@@ -283,6 +284,7 @@ class DB:
 
             if date != "":
                 date_query = "WHERE play_date = %(date)s"
+                query_args['n'] = "ALL"
                 query_args['date'] = date
 
                 query = base_query + date_query
@@ -294,6 +296,7 @@ class DB:
 
             if date != "":
                 date_query = "WHERE rq_date = %(date)s"
+                query_args['n'] = "ALL"
                 query_args['date'] = date
 
                 query = base_query + date_query
