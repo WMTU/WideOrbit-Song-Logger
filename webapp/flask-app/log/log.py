@@ -37,11 +37,12 @@ class SongAPI(Resource):
             "cd_id":    fields.Str(required=False, location="json", missing="")
         }
 
+        self.args = parser.parse(self.api_args, request)
+
         super(SongAPI, self).__init__()
 
     # API takes a POST request
     def post(self):
-        self.args = parser.parse(self.api_args, request)
         post_result = None
 
         # build a new Song object
@@ -96,10 +97,11 @@ class DiscrepancyAPI(Resource):
             "button_hit":   fields.Bool(required=True, location="json")
         }
 
+        self.args = parser.parse(self.api_args, request)
+
         super(DiscrepancyAPI, self).__init__()
 
     def post(self):
-        self.args = parser.parse(self.api_args, request)
         post_result = None
 
         # build a new Discrepancy object
@@ -147,10 +149,11 @@ class RequestAPI(Resource):
             "rq_message":   fields.Str(required=False, location="json", missing="No Message Given"),
         }
 
+        self.args = parser.parse(self.api_args, request)
+
         super(RequestAPI, self).__init__()
 
     def post(self):
-        self.args = parser.parse(self.api_args, request)
         post_result = None
 
         # build a new Request object
@@ -191,17 +194,19 @@ class LogAPI(Resource):
         self.api_args = {
             "type":     fields.Str(required=False, location="query", 
                 validate=validate.OneOf(choices=["song", "discrepancy", "request"],
-                error="Invalid Type Provided!")),
+                error="Invalid Type Provided!"),
+                missing="song"),
             "n":        fields.Int(required=False, location="query", missing=1),
             "delay":    fields.Bool(required=False, location="query", missing=False),
             "date":     fields.Str(required=False, location="query", missing=""),
             "desc":     fields.Bool(required=False, location="query", missing=True)
         }
 
+        self.args = parser.parse(self.api_args, request)
+
         super(LogAPI, self).__init__()
 
     def get(self):
-        self.args = parser.parse(self.api_args, request)
         log_result = None
 
         # build a new DB object and connect to the database
@@ -238,10 +243,11 @@ class StatsAPI(Resource):
             "desc":     fields.Bool(required=False, location="query", missing=True),
         }
 
+        self.args = parser.parse(self.api_args, request)
+
         super(StatsAPI, self).__init__()
 
     def get(self):
-        self.args = parser.parse(self.api_args, request)
         stats_result = None
 
         # build a new DB object and connect to the database
