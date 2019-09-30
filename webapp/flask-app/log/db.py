@@ -332,7 +332,7 @@ class DB:
         query_args = {'order_by': order_by}
 
         if song != "":
-            song_query = "WHERE %(song)s %% ANY(STRING_TO_ARRAY(song,' ') "
+            song_query = "WHERE %(song)s %% ANY(STRING_TO_ARRAY(song,' ')) "
             query_args['song'] = song
 
             query = base_query + song_query
@@ -340,7 +340,7 @@ class DB:
             query = base_query
 
         if artist != "":
-            artist_query = "WHERE %(artist)s %% ANY(STRING_TO_ARRAY(artist,' ') "
+            artist_query = "WHERE %(artist)s %% ANY(STRING_TO_ARRAY(artist,' ')) "
             query_args['artist'] = artist
 
             if song != "":
@@ -349,7 +349,7 @@ class DB:
                 query = base_query + artist_query
 
         if album != "":
-            album_query = "WHERE %(album)s %% ANY(STRING_TO_ARRAY(album,' ') "
+            album_query = "WHERE %(album)s %% ANY(STRING_TO_ARRAY(album,' ')) "
             query_args['album'] = album
 
             if song != "" or artist != "":

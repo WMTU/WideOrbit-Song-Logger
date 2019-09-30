@@ -189,6 +189,14 @@ class RequestAPI(Resource):
             return {"message": {"error": "Error submitting Request!"}}, 500
 
 class LogAPI(Resource):
+    # helper function to validate a date
+    def __date_validator(self, date):
+        try:
+            datetime.strptime(date, "%Y-%m-%d")
+            return True
+        except (Exception, ValueError) as error:
+            return False
+
     def __init__(self):
 
         self.api_args = {
@@ -198,7 +206,8 @@ class LogAPI(Resource):
                 missing="song"),
             "n":        fields.Int(required=False, location="query", missing=1),
             "delay":    fields.Bool(required=False, location="query", missing=False),
-            "date":     fields.Str(required=False, location="query", missing=""),
+            "date":     fields.Str(required=False, location="query", 
+                validate=self.__date_validator(val), missing=""),
             "desc":     fields.Bool(required=False, location="query", missing=True)
         }
 
