@@ -253,8 +253,8 @@ class DB:
         query_args = {'n': n}
 
         print("Log Request\n \
-            => type: {}\n=> n: {}\n=> date: {}\n=> delay: {}\n=> desc: {}").format(
-            log_type, n, date, delay, desc)
+            => type: {}\n=> n: {}\n=> date: {}\n=> delay: {}\n=> desc: {}".format(
+            log_type, n, date, delay, desc))
 
         # process a log request for a given log_type
         if log_type is "song":
@@ -271,7 +271,7 @@ class DB:
                 delay_query = "WHERE play_time < %(delay_time)s "
                 query_args['delay_time'] = (now - timedelta(seconds = 40).strftime('%H:%M:%S'))
 
-                if date is not None:
+                if date is not "":
                     query = query + "AND " + delay_query
                 else:
                     query = base_query + delay_query
