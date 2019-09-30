@@ -207,7 +207,7 @@ class LogAPI(Resource):
             "n":        fields.Int(required=False, location="query", missing=1),
             "delay":    fields.Bool(required=False, location="query", missing=False),
             "date":     fields.Str(required=False, location="query", 
-                validate=self.__date_validator(val), missing=""),
+                validate=self.__date_validator, missing=""),
             "desc":     fields.Bool(required=False, location="query", missing=True)
         }
 
