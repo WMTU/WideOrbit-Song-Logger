@@ -261,7 +261,7 @@ class DB:
             order_by = "play_id"
             base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM play_log "
 
-            if date is not None:
+            if date is not "":
                 date_query = "WHERE play_date = %(date)s "
                 query_args['date'] = date
 
@@ -282,7 +282,7 @@ class DB:
             order_by = "dis_id"
             base_query = "SELECT dis_id, timestamp, song, artist, dj_name, word, button_hit FROM discrepancy_log "
 
-            if date is not None:
+            if date is not "":
                 date_query = "WHERE play_date = %(date)s"
                 query_args['date'] = date
 
@@ -293,7 +293,7 @@ class DB:
             order_by = "rq_id"
             base_query = "SELECT rq_id, timestamp, song, artist, album, rq_name, rq_message FROM song_requests "
 
-            if date is not None:
+            if date is not "":
                 date_query = "WHERE rq_date = %(date)s"
                 query_args['date'] = date
 
