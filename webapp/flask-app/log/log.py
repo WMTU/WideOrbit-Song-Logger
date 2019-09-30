@@ -216,7 +216,7 @@ class LogAPI(Resource):
         self.reqparse.add_argument('delay', type = bool, required = False, 
             default = False, location = 'args')
         self.reqparse.add_argument('date', type = str, required = False, 
-            default = "", location = 'args')
+            default = None, location = 'args')
         self.reqparse.add_argument('desc', type = bool, required = False, 
             default = True, location = 'args')
 

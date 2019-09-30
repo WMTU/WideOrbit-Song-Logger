@@ -252,8 +252,7 @@ class DB:
         end_query_asc = "ORDER BY {} ASC LIMIT %(n)s;"
         query_args = {'n': n}
 
-        print("Log Request\n \
-            => type: {}\n=> n: {}\n=> date: {}\n=> delay: {}\n=> desc: {}".format(
+        print("Log Request\n=> type: {}\n=> n: {}\n=> date: {}\n=> delay: {}\n=> desc: {}".format(
             log_type, n, date, delay, desc))
 
         # process a log request for a given log_type
@@ -261,7 +260,7 @@ class DB:
             order_by = "play_id"
             base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM play_log "
 
-            if date is not "":
+            if date is not None:
                 date_query = "WHERE play_date = %(date)s "
                 query_args['date'] = date
 
@@ -271,7 +270,7 @@ class DB:
                 delay_query = "WHERE play_time < %(delay_time)s "
                 query_args['delay_time'] = (now - timedelta(seconds = 40).strftime('%H:%M:%S'))
 
-                if date is not "":
+                if date is not None:
                     query = query + "AND " + delay_query
                 else:
                     query = base_query + delay_query
@@ -282,7 +281,7 @@ class DB:
             order_by = "dis_id"
             base_query = "SELECT dis_id, timestamp, song, artist, dj_name, word, button_hit FROM discrepancy_log "
 
-            if date is not "":
+            if date is not None:
                 date_query = "WHERE play_date = %(date)s"
                 query_args['date'] = date
 
@@ -293,7 +292,7 @@ class DB:
             order_by = "rq_id"
             base_query = "SELECT rq_id, timestamp, song, artist, album, rq_name, rq_message FROM song_requests "
 
-            if date is not "":
+            if date is not None:
                 date_query = "WHERE rq_date = %(date)s"
                 query_args['date'] = date
 
