@@ -298,11 +298,10 @@ class DB:
             return False
 
         # apply the row order
-        query = query + "ORDER BY {} {} "
         if desc == True:
-            query_args['desc'] = "DESC"
+            query = query + "ORDER BY {} DESC "
         else:
-            query_args['desc'] = "ASC"
+            query = query + "ORDER BY {} ASC "
 
         # apply the correct limit
         if date != "":
@@ -331,8 +330,6 @@ class DB:
         # process a request for song stats
         query = ""
         base_query = "SELECT song_id, song, artist, album, play_count FROM play_stats "
-        end_query_desc = "ORDER BY {} DESC;"
-        end_query_asc = "ORDER BY {} ASC;"
         query_args = {'order_by': order_by}
 
         if song != "":
@@ -364,18 +361,17 @@ class DB:
         if song == "" and artist == "" and album == "":
             query = base_query
 
-        # apply the correct ending based on order choice
+        # apply the row order
         if desc == True:
-            query = query + end_query_desc
+            query = query + "ORDER BY {} DESC;"
         else:
-            query = query + end_query_asc
+            query = query + "ORDER BY {} ASC;"
 
         if(self.cursor):
             try:
                 # execute the query
                 self.cursor.execute(
-                    sql.SQL(query).format(sql.Identifier(order_by)), 
-                    query_args)
+                    sql.SQL(query).format(sql.Identifier(order_by)), query_args)
 
                 # return the query results
                 query_result = self.cursor.fetchall()
