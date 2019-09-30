@@ -65,12 +65,12 @@ class SongAPI(Resource):
         db.connect()
 
         # validate the API key and add the song log
-        if db.validateKey(self.args['api_key']) is True:
+        if db.validateKey(self.args['api_key']) == True:
             # add song log to the db
             post_result = db.addSong(new_song)
 
             # publish the song to scrobble sources
-            if app.config['SCROBBLE'] is "True":
+            if app.config['SCROBBLE'] == "True":
                 scrobbleSong(datetime.datetime.utcnow().strftime("%s"), new_song)
         else:
             return {"message": {"api_key": "Invalid API Key!"}}, 400
@@ -79,7 +79,7 @@ class SongAPI(Resource):
         db.close()
 
         # return the logged song
-        if post_result is not False:
+        if post_result != False:
             return post_result, 202
         else:
             return {"message": {"error": "Error submitting Song!"}}, 500
@@ -122,7 +122,7 @@ class DiscrepancyAPI(Resource):
         db.connect()
 
         # validate the API key and log the discrepancy
-        if db.validateKey(self.args['api_key']) is True:
+        if db.validateKey(self.args['api_key']) == True:
             post_result = db.addDiscrepancy(new_discrepancy)
         else:
             return {"message": {"api_key": "Invalid API Key!"}}, 400
@@ -131,7 +131,7 @@ class DiscrepancyAPI(Resource):
         db.close()
 
         # return the logged discrepancy
-        if post_result is not False:
+        if post_result != False:
             return post_result, 202
         else:
             return {"message": {"error": "Error submitting Discrepancy!"}}, 500
@@ -174,7 +174,7 @@ class RequestAPI(Resource):
         db.connect()
 
         # validate the API key and log the request
-        if db.validateKey(self.args['api_key']) is True:
+        if db.validateKey(self.args['api_key']) == True:
             post_result = db.addRequest(new_req)
         else:
             return {"message": {"api_key": "Invalid API Key!"}}, 400
@@ -183,7 +183,7 @@ class RequestAPI(Resource):
         db.close()
 
         # return the logged request
-        if post_result is not False:
+        if post_result != False:
             return post_result, 202
         else:
             return {"message": {"error": "Error submitting Request!"}}, 500
@@ -225,7 +225,7 @@ class LogAPI(Resource):
         db.close()
 
         # return the requested log(s)
-        if log_result is not False:
+        if log_result != False:
             return loads(log_result), 200
         else:
             return {"message": {"error": "Error fetching log!"}}, 500
@@ -266,7 +266,7 @@ class StatsAPI(Resource):
         db.close()
 
         # return the requested log(s)
-        if stats_result is not False:
+        if stats_result != False:
             return loads(stats_result), 200
         else:
             return {"message": {"error": "Error fetching stats!"}}, 500
@@ -291,7 +291,7 @@ class KeyAPI(Resource):
         db.close()
 
         # return the generated key
-        if key_result is not False:
+        if key_result != False:
             return key_result, 200
         else:
             return {"message": {"error": "Error generating key!"}}, 500
@@ -311,5 +311,5 @@ api.add_resource(RequestAPI,        '/api/2.0/request',     endpoint = 'request'
 api.add_resource(LogAPI,            '/api/2.0/log',         endpoint = 'log')
 api.add_resource(StatsAPI,          '/api/2.0/stats',       endpoint = 'stats')
 
-if app.config['KEY_API'] is "True":
+if app.config['KEY_API'] == "True":
     api.add_resource(KeyAPI, '/api/2.0/key', endpoint = 'key')

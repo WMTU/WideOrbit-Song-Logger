@@ -59,7 +59,7 @@ class DB:
         key = secrets.token_urlsafe(30)
 
         if(self.cursor):
-            while self.validateKey(key) is True:
+            while self.validateKey(key) == True:
                 key = secrets.token_urlsafe(30)
 
             return {'key': key}
@@ -79,7 +79,7 @@ class DB:
 
                 # if the key is found (1 result) then it's valid
                 # note that the api_key column has a unique constraint on it
-                if len(query_result) is 1:
+                if len(query_result) == 1:
                     return True
                 else:
                     return False
@@ -134,7 +134,7 @@ class DB:
     def addStat(self, song):
         # use -- for entries without an album
         # since a unique entry consists of the song, artist, AND album
-        if song.album is "":
+        if song.album == "":
             album = "--"
         else:
             album = song.album
@@ -154,7 +154,7 @@ class DB:
                 self.cursor.execute(select_query, query_args)
 
                 # based on the query result either add a new entry or update an existing entry
-                if len(self.cursor.fetchall()) is 0:
+                if len(self.cursor.fetchall()) == 0:
                     self.cursor.execute(add_query, query_args)
                 else:
                     self.cursor.execute(update_query, query_args)
@@ -256,43 +256,43 @@ class DB:
         #    log_type, n, date, delay, desc))
 
         # process a log request for a given log_type
-        if log_type is "song":
+        if log_type == "song":
             order_by = "play_id"
             base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM play_log "
 
-            if date is not "":
+            if date != "":
                 date_query = "WHERE play_date = %(date)s "
                 query_args['date'] = date
 
                 query = base_query + date_query
 
-            if delay is True:
+            if delay == True:
                 delay_query = "WHERE play_time < %(delay_time)s "
                 query_args['delay_time'] = (now - timedelta(seconds = 40).strftime('%H:%M:%S'))
 
-                if date is not "":
+                if date != "":
                     query = query + "AND " + delay_query
                 else:
                     query = base_query + delay_query
 
-            if date is "" and delay is False:
+            if date == "" and delay == False:
                 query = base_query
-        elif log_type is "discrepancy":
+        elif log_type == "discrepancy":
             order_by = "dis_id"
             base_query = "SELECT dis_id, timestamp, song, artist, dj_name, word, button_hit FROM discrepancy_log "
 
-            if date is not "":
+            if date != "":
                 date_query = "WHERE play_date = %(date)s"
                 query_args['date'] = date
 
                 query = base_query + date_query
             else:
                 query = base_query
-        elif log_type is "request":
+        elif log_type == "request":
             order_by = "rq_id"
             base_query = "SELECT rq_id, timestamp, song, artist, album, rq_name, rq_message FROM song_requests "
 
-            if date is not "":
+            if date != "":
                 date_query = "WHERE rq_date = %(date)s"
                 query_args['date'] = date
 
@@ -303,7 +303,7 @@ class DB:
             return False
 
         # apply the correct ending based on order choice
-        if desc is True:
+        if desc == True:
             query = query + end_query_desc
         else:
             query = query + end_query_asc
@@ -331,7 +331,7 @@ class DB:
         end_query_asc = "ORDER BY {} ASC;"
         query_args = {'order_by': order_by}
 
-        if song is not "":
+        if song != "":
             song_query = "WHERE %(song)s %% ANY(STRING_TO_ARRAY(song,' ') "
             query_args['song'] = song
 
@@ -339,29 +339,29 @@ class DB:
         else:
             query = base_query
 
-        if artist is not "":
+        if artist != "":
             artist_query = "WHERE %(artist)s %% ANY(STRING_TO_ARRAY(artist,' ') "
             query_args['artist'] = artist
 
-            if song is not "":
+            if song != "":
                 query = query + "AND " + artist_query
             else:
                 query = base_query + artist_query
 
-        if album is not "":
+        if album != "":
             album_query = "WHERE %(album)s %% ANY(STRING_TO_ARRAY(album,' ') "
             query_args['album'] = album
 
-            if song is not "" or artist is not "":
+            if song != "" or artist != "":
                 query = query + "AND " + album_query
             else:
                 query = base_query + album_query
 
-        if song is "" and artist is "" and album is "":
+        if song == "" and artist == "" and album == "":
             query = base_query
 
         # apply the correct ending based on order choice
-        if desc is True:
+        if desc == True:
             query = query + end_query_desc
         else:
             query = query + end_query_asc
