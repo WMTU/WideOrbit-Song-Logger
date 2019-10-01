@@ -6,10 +6,15 @@ Webapp interface and backend API for logging and querying the song log PostgreSQ
 
 Technologies used:
 
-- [BootStrap](https://getbootstrap.com/)
 - [Python 3](https://www.python.org/)
 - [virtualenv](https://virtualenv.pypa.io/en/latest/)
 - [Flask](https://palletsprojects.com/p/flask/)
+- [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/)
+- [webargs](https://webargs.readthedocs.io/en/latest/)
+- [psycopg2](http://initd.org/psycopg/)
+- [pylast](https://github.com/pylast/pylast)
+- [React](https://reactjs.org/)
+- [BootStrap](https://getbootstrap.com/)
 - [Nginx](https://nginx.org/en/)
 
 ## Web Interface
@@ -40,7 +45,7 @@ Optional Parameters:
 Example:
 
 ```text
-https://log.wmtu.fm/api/2.0/log?api_key=<api key here>?song=<song name>?artist=<artist name>
+https://log.wmtu.fm/api/2.0/log?api_key=<api key here>&song=<song name>&artist=<artist name>
 ```
 
 **Logging a Discrepancy**
@@ -55,7 +60,7 @@ Required Parameters:
 - button_hit    : True/False if the swear button was hit
 
 ```text
-https://log.wmtu.fm/api/2.0/discrepancy?api_key=<api key>?song=<song name>?artist=<artist name>...
+https://log.wmtu.fm/api/2.0/discrepancy?api_key=<api key>&song=<song name>&artist=<artist name>...
 ```
 
 **Submitting a Song Request**
@@ -73,7 +78,7 @@ Optional Parameters:
 - rq_message    : request message
 
 ```text
-https://log.wmtu.fm/api/2.0/request?api_key=<api key>?song=<song name>?artist=<artist name>...
+https://log.wmtu.fm/api/2.0/request?api_key=<api key>&song=<song name>&artist=<artist name>...
 ```
 
 **Requesting a Log**
@@ -93,7 +98,7 @@ If no arguments are supplied the default is to return the last song logged.
 Example:
 
 ```text
-https://log.wmtu.fm/api/2.0/log?type=<song, discrepancy, request>?n=<#>
+https://log.wmtu.fm/api/2.0/log?type=<song, discrepancy, request>&n=<#>
 ```
 
 **Requesting Song Stats**
@@ -113,7 +118,7 @@ If no arguments are supplied the default is to return all the records ordered by
 Example:
 
 ```text
-https://log.wmtu.fm/api/2.0/stats?song=<song name>?artist=<artist name>?order_by=<song, artist, album, play_count>
+https://log.wmtu.fm/api/2.0/stats?song=<song name>&artist=<artist name>&order_by=<song, artist, album, play_count>
 ```
 
 ## PostgreSQL Database

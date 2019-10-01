@@ -1,0 +1,23 @@
+# init service file for the log api
+# copy this file and remove the .example ending
+# edit the .service configuration to fit your needs
+# move the .service configuration to /etc/systemd/system/
+# then enable the service: sudo systemctl enable log-api
+
+# to start the service
+# sudo systemctl start log-api
+
+
+[Unit]
+Description=uWSGI instance to serve log-api
+After=network.target
+
+[Service]
+User=[your user here]
+Group=www-data
+WorkingDirectory=/opt/log-api
+Environment="PATH=/opt/log-api/flask/bin"
+ExecStart=/opt/log-api/flask/bin/uwsgi --ini wsgi.ini
+
+[Install]
+WantedBy=multi-user.target

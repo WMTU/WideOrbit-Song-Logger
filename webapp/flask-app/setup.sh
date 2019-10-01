@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set up a new virtualenv for flask
+# set up a new virtualenv for the api
 python3 -m venv flask
 
 # upgrade the included pip
