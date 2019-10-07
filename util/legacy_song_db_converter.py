@@ -83,8 +83,17 @@ for row in legacy.iterrows():
 new = pd.DataFrame(data=new_rows, columns=["play_date", "play_time", "timestamp", "song", "artist", "album", "genre", "location", "cd_id"])
 
 # add the new rows to the new database
-query = "INSERT INTO play_log(play_date, play_time, timestamp, song, artist, album, genre, location, cd_id) \
+# song log query
+log_query = "INSERT INTO play_log(play_date, play_time, timestamp, song, artist, album, genre, location, cd_id) \
     VALUES(%(play_date)s, %(play_time)s, %(timestamp)s, %(song)s, %(artist)s, %(album)s, %(genre)s, %(location)s, %(cd_id)s);"
+
+# stats log query
+select_query = "SELECT * FROM play_stats \
+    WHERE song = %s AND artist = %s AND album = %s;"
+add_query    = "INSERT INTO play_stats(song, artist, album) \
+    VALUES(%s, %s, %s);"
+update_query = "UPDATE play_stats SET play_count = (play_count + 1) \
+    WHERE song = %s AND artist = %s AND album = %s;"
 
 # set up the database connection
 try:
@@ -100,7 +109,25 @@ try:
 
     if(cursor):
         for row in new_rows:
-            cursor.execute(query, row)
+            # add to song log
+            cursor.execute(log_query, row)
+
+            # add to stats log
+            if row['album'] == "":
+                album = "--"
+            else:
+                album = row['album']
+
+            query_args = {'song': row['song'], 'artist': row['artist'], 'album': album}
+
+            # query the database
+            cursor.execute(select_query, query_args)
+
+            # based on the query result either add a new entry or update an existing entry
+            if len(cursor.fetchall()) == 0:
+                cursor.execute(add_query, query_args)
+            else:
+                cursor.execute(update_query, query_args)
 
 except (Exception, psycopg2.DatabaseError) as error :
     print ("Database Error! => ", error)

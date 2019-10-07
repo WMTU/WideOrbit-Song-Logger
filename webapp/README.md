@@ -210,6 +210,7 @@ uid             => User ID number (auto incrementing)
 username        => username
 password        => password
 api_key         => api key for access to resources
+admin           => true/false if user is an admin
 ```
 
 ## Nginx
