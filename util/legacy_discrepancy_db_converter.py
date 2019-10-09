@@ -41,37 +41,43 @@ import psycopg2
 from psycopg2 import sql
 
 try:
-    opts, args = getopt.getopt(sys.argv, "", ["file="])
+    opts, args = getopt.getopt(sys.argv[1:], "", ["file="])
 
 except getopt.GetoptError:
     print("Specify a file with --file=<file name>")
     sys.exit(1)
 
-for opt, arg in opts:
-    if opt == "--file":
-        csv_file = arg
+if len(opts) < 1:
+    print("Specify a file with --file=<file name>")
+    sys.exit(1)
+
+csv_file = None
+
+for o, a in opts:
+    if o == "--file":
+        csv_file = a
 
 # legacy table
-legacy = pd.read_csv(csv_file, sep=',', header=None)
+legacy = pd.read_csv(csv_file, sep=',', header=None, keep_default_na=False)
 legacy.columns = ["id", "dj_name", "song_name", "artist", "word", "cd_number", "hit_button", "timestamp"]
 
 # convert from legacy to new
 new_rows = []
-for row in legacy.iterrows():
+for row in legacy.itertuples():
     tmp_dict = {}
 
     # strip out the ts and convert to the needed date formats
-    ts = datetime.strptime(row['ts'], "%Y-%m-%d %H:%M:%S")
+    ts = datetime.strptime(row.timestamp, "%m/%d/%Y %h:%M")
     tmp_dict['dis_date'] = ts.strftime("%Y-%m-%d")
     tmp_dict['dis_time'] = ts.strftime("%H:%M:%S")
-    tmp_dict['timestamp'] = row['ts']
+    tmp_dict['timestamp'] = ts.strftime("%Y-%m-%d %H:%M:%S")
 
     # update all of the data for the new row from the legacy
-    tmp_dict['song']        = row['song_name']
-    tmp_dict['artist']      = row['artist']
-    tmp_dict['dj_name']     = row['dj_name']
-    tmp_dict['word']        = row['word']
-    tmp_dict['button_hit']  = row['hit_button']
+    tmp_dict['song']        = row.song_name
+    tmp_dict['artist']      = row.artist
+    tmp_dict['dj_name']     = row.dj_name
+    tmp_dict['word']        = row.word
+    tmp_dict['button_hit']  = row.hit_button
 
     # add the new row to the rows list
     new_rows.append(tmp_dict)
@@ -97,6 +103,16 @@ try:
 
     if(cursor):
         for row in new_rows:
+            # print out discrepancy info
+            print("\n=== Adding Discrepancy ===")
+            print("Song     => " + row['song'])
+            print("Artist   => " + row['artist'])
+            print("DJ Name  => " + row['dj_name'])
+            print("Word     => " + row['word'])
+            print("But Hit  => " + row['button_hit'])
+            print("TS       => " + row['timestamp'])
+
+            # add discrepancy to db
             cursor.execute(query, row)
 
 except (Exception, psycopg2.DatabaseError) as error :

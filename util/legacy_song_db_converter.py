@@ -43,38 +43,44 @@ import psycopg2
 from psycopg2 import sql
 
 try:
-    opts, args = getopt.getopt(sys.argv, "", ["file="])
+    opts, args = getopt.getopt(sys.argv[1:], "", ["file="])
 
 except getopt.GetoptError:
     print("Specify a file with --file=<file name>")
     sys.exit(1)
 
-for opt, arg in opts:
-    if opt == "--file":
-        csv_file = arg
+if len(opts) < 1:
+    print("Specify a file with --file=<file name>")
+    sys.exit(1)
+
+csv_file = None
+
+for o, a in opts:
+    if o == "--file":
+        csv_file = a
 
 # legacy table
-legacy = pd.read_csv(csv_file, sep=',', header=None)
+legacy = pd.read_csv(csv_file, sep=',', header=None, keep_default_na=False)
 legacy.columns = ["id", "cd_number", "song_name", "artist", "genre", "album", "score", "location", "truncated_artist", "ts"]
 
 # convert from legacy to new
 new_rows = []
-for row in legacy.iterrows():
+for row in legacy.itertuples():
     tmp_dict = {}
 
     # strip out the ts and convert to the needed date formats
-    ts = datetime.strptime(row['ts'], "%Y-%m-%d %H:%M:%S")
+    ts = datetime.strptime(row.ts, "%Y-%m-%d %H:%M:%S")
     tmp_dict['play_date'] = ts.strftime("%Y-%m-%d")
     tmp_dict['play_time'] = ts.strftime("%H:%M:%S")
-    tmp_dict['timestamp'] = row['ts']
+    tmp_dict['timestamp'] = row.ts
 
     # update all of the data for the new row from the legacy
-    tmp_dict['song']        = row['song_name']
-    tmp_dict['artist']      = row['artist']
-    tmp_dict['album']       = row['album']
-    tmp_dict['genre']       = row['genre']
-    tmp_dict['location']    = row['location']
-    tmp_dict['cd_id']       = row['cd_number']
+    tmp_dict['song']        = row.song_name
+    tmp_dict['artist']      = row.artist
+    tmp_dict['album']       = row.album
+    tmp_dict['genre']       = row.genre
+    tmp_dict['location']    = row.location
+    tmp_dict['cd_id']       = row.cd_number
 
     # add the new row to the rows list
     new_rows.append(tmp_dict)
@@ -89,11 +95,11 @@ log_query = "INSERT INTO play_log(play_date, play_time, timestamp, song, artist,
 
 # stats log query
 select_query = "SELECT * FROM play_stats \
-    WHERE song = %s AND artist = %s AND album = %s;"
+    WHERE song = %(song)s AND artist = %(artist)s AND album = %(album)s;"
 add_query    = "INSERT INTO play_stats(song, artist, album) \
-    VALUES(%s, %s, %s);"
+    VALUES(%(song)s, %(artist)s, %(album)s);"
 update_query = "UPDATE play_stats SET play_count = (play_count + 1) \
-    WHERE song = %s AND artist = %s AND album = %s;"
+    WHERE song = %(song)s AND artist = %(artist)s AND album = %(album)s;"
 
 # set up the database connection
 try:
@@ -109,6 +115,16 @@ try:
 
     if(cursor):
         for row in new_rows:
+            # print out song info
+            print("\n=== Adding Song ===")
+            print("Song     => " + row['song'])
+            print("Artist   => " + row['artist'])
+            print("Album    => " + row['album'])
+            print("Genre    => " + row['genre'])
+            print("Location => " + row['location'])
+            print("CD ID    => " + row['cd_id'])
+            print("TS       => " + row['timestamp'])
+
             # add to song log
             cursor.execute(log_query, row)
 
