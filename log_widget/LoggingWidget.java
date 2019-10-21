@@ -35,7 +35,8 @@ import javax.swing.JToggleButton;
 // import libraries
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.text.WordUtils;
-import org.apache.logging.log4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 // import woafr libraries
 import com.google.ras.api.core.AsyncCallback;

@@ -22,6 +22,7 @@ Widget package structure: (.zip file)
 +---lib
 |   /---commons-lang3-3.9.jar
 |   /---log4j-1.2-api-2.12.1.jar
+|   /---log4j-core-2.12.1.jar
 +---resources
 |   /---config.properties
 /---plugin.xml

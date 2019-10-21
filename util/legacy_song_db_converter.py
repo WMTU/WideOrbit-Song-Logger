@@ -90,8 +90,8 @@ new = pd.DataFrame(data=new_rows, columns=["play_date", "play_time", "timestamp"
 
 # add the new rows to the new database
 # song log query
-log_query = "INSERT INTO play_log(play_date, play_time, timestamp, song, artist, album, genre, location, cd_id) \
-    VALUES(%(play_date)s, %(play_time)s, %(timestamp)s, %(song)s, %(artist)s, %(album)s, %(genre)s, %(location)s, %(cd_id)s);"
+log_query = "INSERT INTO play_log(play_date, play_time, timestamp, song, artist, album, genre, location, cd_id, artwork) \
+    VALUES(%(play_date)s, %(play_time)s, %(timestamp)s, %(song)s, %(artist)s, %(album)s, %(genre)s, %(location)s, %(cd_id)s, '');"
 
 # stats log query
 select_query = "SELECT * FROM play_stats \

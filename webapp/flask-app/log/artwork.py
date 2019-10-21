@@ -16,7 +16,7 @@ def fetchArtwork(artist, album):
 
     image = ""
 
-    if album is not "":
+    if album != "":
         try:
             lfm_album = lastfm.get_album(artist, album)
             image = lfm_album.get_cover_image()
