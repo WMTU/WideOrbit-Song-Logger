@@ -34,7 +34,7 @@ import javax.swing.JToggleButton;
 
 // import libraries
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -236,8 +236,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     gbc.anchor = GridBagConstraints.EAST;
     gbc.fill = GridBagConstraints.NONE;
     toggleAutomation = new JToggleButton( "Automation" );
-    automationButton = new NButtonUI( toggleAutomation, ButtonStyle.RED_GLOSSY );
-    toggleAutomation.setUI( automationButton );
+    toggleAutomation.setUI( new NButtonUI( toggleAutomation, ButtonStyle.RED_GLOSSY ) );
     toggleAutomation.setActionCommand( "toggle" );
     toggleAutomation.addActionListener( this );
     panel.add( toggleAutomation, gbc );
@@ -318,8 +317,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     gbc = createGbc( 0, 7 );
     gbc.fill = GridBagConstraints.NONE;
     addLog = new JButton( "Log Song" );
-    logButton = new NButtonUI( addLog, ButtonStyle.GREEN_GLOSSY );
-    addLog.setUI( logButton );
+    addLog.setUI( new NButtonUI( addLog, ButtonStyle.GREEN_GLOSSY ) );
     addLog.setActionCommand( "submit" );
     addLog.addActionListener( this );
     panel.add( addLog, gbc );

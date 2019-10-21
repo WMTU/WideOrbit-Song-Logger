@@ -25,7 +25,7 @@ import javax.swing.JTextField;
 
 // import libraries
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 
 // import wideorbit libraries
 import com.google.ras.api.core.plugin.BasicWidget;

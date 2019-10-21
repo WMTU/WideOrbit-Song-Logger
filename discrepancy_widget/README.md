@@ -23,6 +23,12 @@ Widget package structure: (.zip file)
 /---plugin.xml
 ```
 
+Compiling:
+
+```text
+javac -cp .:lib/commons-lang3-3.9.jar:lib/ras-core-api.jar DiscrepancyWidget.java
+```
+
 ## DiscrepancyWidget.java
 
 The java source of the widget.

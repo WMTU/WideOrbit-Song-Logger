@@ -28,6 +28,12 @@ Widget package structure: (.zip file)
 /---plugin.xml
 ```
 
+Compiling:
+
+```text
+javac -cp .:lib/commons-lang3-3.9.jar:lib/log4j-1.2-api-2.12.1.jar:lib/log4j-api-2.12.1.jar:lib/log4j-core-2.12.1.jar:log/ras-core-api.jar LoggingWidget.java
+```
+
 ## LoggingWidget.java
 
 The java source of the widget.
