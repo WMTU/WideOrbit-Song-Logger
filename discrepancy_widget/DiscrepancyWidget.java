@@ -44,13 +44,10 @@ import com.google.ras.api.core.ui.resources.Resources;
 
 public class DiscrepancyWidget extends BasicWidget implements ActionListener 
 {
-	private static final Resources R = 
-			new PackageResources( DiscrepancyWidget.class );
+	private static final Resources R = new PackageResources( DiscrepancyWidget.class );
+	
 	private static final Insets WEST_INSETS = new Insets( 5, 10, 5, 10 );
 	private static final Insets EAST_INSETS = new Insets( 5, 10, 5, 10 );
-	private static final String QUERY = "INSERT INTO discrepency_logs "
-			+ "(dj_name, song_name, artist, word, hit_button) VALUES "
-			+ "(?, ?, ?, ?, ?)";
 	
 	private JLabel messageLabel;
 	private JLabel yourNameLabel;
@@ -66,6 +63,9 @@ public class DiscrepancyWidget extends BasicWidget implements ActionListener
 	private JRadioButton buttonNo;
 	
 	private String errorMessage;
+
+	private String log_endpoint;
+  	private String log_key;
 	
 	public DiscrepancyWidget() throws FileNotFoundException, IOException
 	{
