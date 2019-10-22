@@ -71,6 +71,11 @@ public class DiscrepancyWidget extends BasicWidget implements ActionListener
 	{
 		super( "Discrepancy", R.getImage("DiscrepancyWidget.png") );
 
+		// Load config file
+		InputStream input = getClass().getClassLoader().getResourceAsStream( "config.properties" );
+		if ( input == null )
+		  throw new FileNotFoundException( "Widget configuration file not found in the classpath" );
+
 		// Load properties into new config object
 		Properties config = new Properties();
 		config.load( input );
