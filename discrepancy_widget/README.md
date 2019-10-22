@@ -4,7 +4,8 @@ Java widget for logging DNP events to the webapp backend from WideOrbit Automati
 
 Required Java libraries:
 
-- [Apache Commons Lang3 3.9](http://mirror.cc.columbia.edu/pub/software/apache//commons/lang/binaries/commons-lang3-3.9-bin.zip)
+- [Apache Commons Lang 3.9](https://commons.apache.org/proper/commons-lang/download_lang.cgi)
+- [Apache Commons Text 1.8](https://commons.apache.org/proper/commons-text/download_text.cgi)
 
 Widget package structure: (.zip file)
 
@@ -18,6 +19,7 @@ Widget package structure: (.zip file)
 |           \---DiscrepancyWidget.class (make sure to include all subclass files here too)
 +---lib
 |   /---commons-lang3-3.9.jar
+|   /---commons-text-1.8.jar
 +---resources
 |   /---config.properties
 /---plugin.xml
@@ -26,7 +28,7 @@ Widget package structure: (.zip file)
 Compiling:
 
 ```text
-javac -cp .:lib/commons-lang3-3.9.jar:lib/ras-core-api.jar DiscrepancyWidget.java
+javac -cp .:lib/commons-text-1.8.jar:lib/commons-lang3-3.9.jar:lib/ras-core-api.jar DiscrepancyWidget.java
 ```
 
 ## DiscrepancyWidget.java
