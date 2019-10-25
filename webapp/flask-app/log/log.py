@@ -9,7 +9,7 @@ from .scrobble import *
 
 # import system libraries
 from datetime import datetime, date, time
-from json import loads
+from json import loads, dumps
 
 # import Flask libraries
 from flask import jsonify, request
@@ -67,7 +67,7 @@ class SongAPI(Resource):
         if db.validateKey(self.args['api_key']) == True:
             # add song log to the db
             post_result = db.addSong(new_song)
-            message, code = post_result, 202
+            message, code = loads(post_result), 202
 
             # publish the song to scrobble sources
             if app.config['SCROBBLE'] == "True":
@@ -123,7 +123,7 @@ class DiscrepancyAPI(Resource):
         # validate the API key and log the discrepancy
         if db.validateKey(self.args['api_key']) == True:
             post_result = db.addDiscrepancy(new_discrepancy)
-            message, code = post_result, 202
+            message, code = loads(post_result), 202
         else:
             message, code = {"message": {"api_key": "Invalid API Key!"}}, 400
         
@@ -175,7 +175,7 @@ class RequestAPI(Resource):
         # validate the API key and log the request
         if db.validateKey(self.args['api_key']) == True:
             post_result = db.addRequest(new_req)
-            message, code = post_result, 202
+            message, code = loads(post_result), 202
         else:
             message, code = {"message": {"api_key": "Invalid API Key!"}}, 400
         
@@ -229,7 +229,7 @@ class LogAPI(Resource):
 
         # get the requested log(s) from the database
         log_result = db.getLog(self.args['type'], self.args['n'], self.args['date'], self.args['delay'], self.args['desc'])
-        message, code = log_result, 200
+        message, code = loads(log_result), 200
         
         # close the connection to the database
         db.close()
@@ -271,7 +271,7 @@ class StatsAPI(Resource):
 
         # get the requested log(s) from the database
         stats_result = db.getStats(self.args['song'], self.args['artist'], self.args['album'], self.args['order_by'], self.args['desc'])
-        message, code = stats_result, 200
+        message, code = loads(stats_result), 200
         
         # close the connection to the database
         db.close()
@@ -297,14 +297,14 @@ class KeyAPI(Resource):
 
         # generate a new key
         key_result = db.genKey()
-        message, code = key_result, 200
+        message, code = loads(key_result), 200
 
         # close the connection to the database
         db.close()
 
         # return the generated key
         if key_result == False:
-            message, code = {"message": {"error": "Error generating key!"}}, 500
+            message, code {"message": {"error": "Error generating key!"}}, 500
 
         return message, code
 
