@@ -304,7 +304,7 @@ class KeyAPI(Resource):
 
         # return the generated key
         if key_result == False:
-            message, code {"message": {"error": "Error generating key!"}}, 500
+            message, code = {"message": {"error": "Error generating key!"}}, 500
 
         return message, code
 
