@@ -27,8 +27,7 @@ class SongAPI(Resource):
     def __init__(self):
 
         self.api_args = {
-            "api_key":  fields.Str(required=True, location="json", 
-                validate=validate.Length(equal=30, error="Invalid API Key!")),
+            "api_key":  fields.Str(required=True, location="json"),
             "song":     fields.Str(required=True, location="json"),
             "artist":   fields.Str(required=True, location="json"),
             "album":    fields.Str(required=False, location="json", missing=""),
@@ -68,28 +67,28 @@ class SongAPI(Resource):
         if db.validateKey(self.args['api_key']) == True:
             # add song log to the db
             post_result = db.addSong(new_song)
+            message, code = post_result, 202
 
             # publish the song to scrobble sources
             if app.config['SCROBBLE'] == "True":
                 scrobbleSong(datetime.datetime.utcnow().strftime("%s"), new_song)
         else:
-            return {"message": {"api_key": "Invalid API Key!"}}, 400
+            message, code = {"message": {"api_key": "Invalid API Key!"}}, 400
         
         # close the database connection
         db.close()
 
         # return the logged song
-        if post_result != False:
-            return post_result, 202
-        else:
-            return {"message": {"error": "Error submitting Song!"}}, 500
+        if post_result == False:
+            message, code = {"message": {"error": "Error submitting Song!"}}, 500
+
+        return message, code
 
 class DiscrepancyAPI(Resource):
     def __init__(self):
 
         self.api_args = {
-            "api_key":      fields.Str(required=True, location="json", 
-                validate=validate.Length(equal=30, error="Invalid API Key!")),
+            "api_key":      fields.Str(required=True, location="json"),
             "song":         fields.Str(required=True, location="json"),
             "artist":       fields.Str(required=True, location="json"),
             "dj_name":      fields.Str(required=True, location="json"),
@@ -124,24 +123,24 @@ class DiscrepancyAPI(Resource):
         # validate the API key and log the discrepancy
         if db.validateKey(self.args['api_key']) == True:
             post_result = db.addDiscrepancy(new_discrepancy)
+            message, code = post_result, 202
         else:
-            return {"message": {"api_key": "Invalid API Key!"}}, 400
+            message, code = {"message": {"api_key": "Invalid API Key!"}}, 400
         
         # close the database connection
         db.close()
 
         # return the logged discrepancy
-        if post_result != False:
-            return post_result, 202
-        else:
-            return {"message": {"error": "Error submitting Discrepancy!"}}, 500
+        if post_result == False:
+            message, code = {"message": {"error": "Error submitting Discrepancy!"}}, 500
+
+        return message, code
 
 class RequestAPI(Resource):
     def __init__(self):
 
         self.api_args = {
-            "api_key":      fields.Str(required=True, location="json", 
-                validate=validate.Length(equal=30, error="Invalid API Key!")),
+            "api_key":      fields.Str(required=True, location="json"),
             "song":         fields.Str(required=True, location="json"),
             "artist":       fields.Str(required=True, location="json"),
             "album":        fields.Str(required=False, location="json", missing="No Album Given"),
@@ -176,17 +175,18 @@ class RequestAPI(Resource):
         # validate the API key and log the request
         if db.validateKey(self.args['api_key']) == True:
             post_result = db.addRequest(new_req)
+            message, code = post_result, 202
         else:
-            return {"message": {"api_key": "Invalid API Key!"}}, 400
+            message, code = {"message": {"api_key": "Invalid API Key!"}}, 400
         
         # close the connection to the database
         db.close()
 
         # return the logged request
-        if post_result != False:
-            return post_result, 202
-        else:
-            return {"message": {"error": "Error submitting Request!"}}, 500
+        if post_result == False:
+            message, code = {"message": {"error": "Error submitting Request!"}}, 500
+
+        return message, code
 
 class LogAPI(Resource):
     # helper function to validate a date
@@ -229,15 +229,16 @@ class LogAPI(Resource):
 
         # get the requested log(s) from the database
         log_result = db.getLog(self.args['type'], self.args['n'], self.args['date'], self.args['delay'], self.args['desc'])
+        message, code = log_result, 200
         
         # close the connection to the database
         db.close()
 
         # return the requested log(s)
-        if log_result != False:
-            return loads(log_result), 200
-        else:
-            return {"message": {"error": "Error fetching log!"}}, 500
+        if log_result == False:
+            message, code = {"message": {"error": "Error fetching log!"}}, 500
+
+        return message, code
 
 class StatsAPI(Resource):
     def __init__(self):
@@ -270,15 +271,16 @@ class StatsAPI(Resource):
 
         # get the requested log(s) from the database
         stats_result = db.getStats(self.args['song'], self.args['artist'], self.args['album'], self.args['order_by'], self.args['desc'])
+        message, code = stats_result, 200
         
         # close the connection to the database
         db.close()
 
         # return the requested log(s)
-        if stats_result != False:
-            return loads(stats_result), 200
-        else:
-            return {"message": {"error": "Error fetching stats!"}}, 500
+        if stats_result == False:
+            message, code = {"message": {"error": "Error fetching stats!"}}, 500
+
+        return message, code
 
 class KeyAPI(Resource):
     def get(self):
@@ -295,15 +297,16 @@ class KeyAPI(Resource):
 
         # generate a new key
         key_result = db.genKey()
+        message, code = key_result, 200
 
         # close the connection to the database
         db.close()
 
         # return the generated key
-        if key_result != False:
-            return key_result, 200
-        else:
-            return {"message": {"error": "Error generating key!"}}, 500
+        if key_result == False:
+            message, code = {"message": {"error": "Error generating key!"}}, 500
+
+        return message, code
 
 # This error handler is necessary for usage with Flask-RESTful
 @parser.error_handler
