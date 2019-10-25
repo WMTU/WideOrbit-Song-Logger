@@ -171,7 +171,7 @@ class DB:
         now = datetime.now()
 
         # build a query
-        query = "INSERT INTO discrepancy_log(play_date, play_time, timestamp, song, artist, dj_name, word, button_hit) \
+        query = "INSERT INTO discrepancy_log(dis_date, dis_time, timestamp, song, artist, dj_name, word, button_hit) \
             VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
 
         query_args = (
