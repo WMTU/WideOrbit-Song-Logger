@@ -67,7 +67,7 @@ class SongAPI(Resource):
         if db.validateKey(self.args['api_key']) == True:
             # add song log to the db
             post_result = db.addSong(new_song)
-            message, code = loads(post_result), 202
+            message, code = post_result, 202
 
             # publish the song to scrobble sources
             if app.config['SCROBBLE'] == "True":
@@ -123,7 +123,7 @@ class DiscrepancyAPI(Resource):
         # validate the API key and log the discrepancy
         if db.validateKey(self.args['api_key']) == True:
             post_result = db.addDiscrepancy(new_discrepancy)
-            message, code = loads(post_result), 202
+            message, code = post_result, 202
         else:
             message, code = {"message": {"api_key": "Invalid API Key!"}}, 400
         
@@ -175,7 +175,7 @@ class RequestAPI(Resource):
         # validate the API key and log the request
         if db.validateKey(self.args['api_key']) == True:
             post_result = db.addRequest(new_req)
-            message, code = loads(post_result), 202
+            message, code = post_result, 202
         else:
             message, code = {"message": {"api_key": "Invalid API Key!"}}, 400
         
