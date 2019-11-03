@@ -24,5 +24,8 @@ def fetchArtwork(artist, album):
         except (Exception, pylast.WSError) as error :
             print ("Error fetching album artwork! => ", error)
     
+    if image is not str:
+        image = ""
+
     return image
     

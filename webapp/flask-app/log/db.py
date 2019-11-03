@@ -12,7 +12,7 @@ import secrets
 # postgres library
 import psycopg2
 from psycopg2 import sql
-from psycopg2.extras import RealDictCursor
+from psycopg2.extras import DictCursor, RealDictCursor
 
 class DB:
 
@@ -38,6 +38,7 @@ class DB:
 
             self.conn.set_session(autocommit = True)
             self.cursor = self.conn.cursor(cursor_factory = RealDictCursor)
+            #self.cursor = self.conn.cursor(cursor_factory = DictCursor)
 
         except (Exception, psycopg2.DatabaseError) as error :
             print ("Error connecting to database! => ", error)
@@ -68,7 +69,7 @@ class DB:
 
     # function to validate a supplied key
     def validateKey(self, key):
-        query = "SELECT api_key FROM users WHERE api_key = %(key)s;"
+        query = "SELECT username, api_key FROM users WHERE api_key = %(key)s;"
         query_args = {'key': key}
 
         if(self.cursor):
@@ -80,7 +81,7 @@ class DB:
                 # if the key is found (1 result) then it's valid
                 # note that the api_key column has a unique constraint on it
                 if len(query_result) == 1:
-                    return True
+                    return dumps(query_result)
                 else:
                     return False
             
@@ -88,12 +89,12 @@ class DB:
                 print ("Error executing validateKey query! => ", error)
                 return False
 
-    def addSong(self, song):
+    def addSong(self, song, user):
         now = datetime.now()
 
         # build the query for the database
-        query = "INSERT INTO play_log(play_date, play_time, timestamp, song, artist, album, genre, location, cd_id, artwork) \
-            VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        query = "INSERT INTO play_log(play_date, play_time, timestamp, song, artist, album, genre, location, cd_id, artwork, logged_by) \
+            VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
         query_args = (
             now.strftime('%Y-%m-%d'), 
@@ -105,7 +106,8 @@ class DB:
             song.genre, 
             song.location, 
             song.cd_id, 
-            song.artwork)
+            song.artwork,
+            user)
 
         if(self.cursor):
             try:
@@ -167,12 +169,12 @@ class DB:
             print ("Error executing addStat query! => ", error)
             return False
 
-    def addDiscrepancy(self, discrepancy):
+    def addDiscrepancy(self, discrepancy, user):
         now = datetime.now()
 
         # build a query
-        query = "INSERT INTO discrepancy_log(dis_date, dis_time, timestamp, song, artist, dj_name, word, button_hit) \
-            VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
+        query = "INSERT INTO discrepancy_log(dis_date, dis_time, timestamp, song, artist, dj_name, word, button_hit, logged_by) \
+            VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
         query_args = (
             now.strftime('%Y-%m-%d'), 
@@ -182,7 +184,8 @@ class DB:
             discrepancy.artist, 
             discrepancy.dj_name, 
             discrepancy.word, 
-            discrepancy.button_hit)
+            discrepancy.button_hit,
+            user)
 
         try:
             if(self.cursor):
@@ -204,11 +207,11 @@ class DB:
             print ("Error executing addDiscrepancy query! => ", error)
             return False
 
-    def addRequest(self, request):
+    def addRequest(self, request, user):
         now = datetime.now()
 
         # build a query
-        query = "INSERT INTO song_requests(rq_date, rq_time, timestamp, song, artist, album, rq_name, rq_message) \
+        query = "INSERT INTO song_requests(rq_date, rq_time, timestamp, song, artist, album, rq_name, rq_message, logged_by) \
             VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
 
         query_args = (
@@ -219,7 +222,8 @@ class DB:
             request.artist, 
             request.album, 
             request.rq_name, 
-            request.rq_message)
+            request.rq_message,
+            user)
 
         try:
             if(self.cursor):

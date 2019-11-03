@@ -64,9 +64,10 @@ class SongAPI(Resource):
         db.connect()
 
         # validate the API key and add the song log
-        if db.validateKey(self.args['api_key']) == True:
+        api_user = loads(db.validateKey(self.args['api_key']))
+        if api_user != False:
             # add song log to the db
-            post_result = db.addSong(new_song)
+            post_result = db.addSong(new_song, api_user[0]['username'])
             message, code = post_result, 202
 
             # publish the song to scrobble sources
@@ -121,8 +122,9 @@ class DiscrepancyAPI(Resource):
         db.connect()
 
         # validate the API key and log the discrepancy
-        if db.validateKey(self.args['api_key']) == True:
-            post_result = db.addDiscrepancy(new_discrepancy)
+        api_user = db.validateKey(self.args['api_key'])
+        if api_user != False:
+            post_result = db.addDiscrepancy(new_discrepancy, api_user['username'])
             message, code = post_result, 202
         else:
             message, code = {"message": {"api_key": "Invalid API Key!"}}, 400
@@ -173,8 +175,9 @@ class RequestAPI(Resource):
         db.connect()
 
         # validate the API key and log the request
-        if db.validateKey(self.args['api_key']) == True:
-            post_result = db.addRequest(new_req)
+        api_user = db.validateKey(self.args['api_key'])
+        if api_user != False:
+            post_result = db.addRequest(new_req, api_user['username'])
             message, code = post_result, 202
         else:
             message, code = {"message": {"api_key": "Invalid API Key!"}}, 400
@@ -297,7 +300,7 @@ class KeyAPI(Resource):
 
         # generate a new key
         key_result = db.genKey()
-        message, code = loads(key_result), 200
+        message, code = key_result, 200
 
         # close the connection to the database
         db.close()

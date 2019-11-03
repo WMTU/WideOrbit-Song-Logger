@@ -143,6 +143,7 @@ genre           => genre of song
 location        => library the song came from
 cd_id           => WMTU library CD ID
 artwork         => url for artwork
+logged_by       => user doing the logging
 
 '*' = key
 ```
@@ -179,6 +180,7 @@ artist          => artist name
 dj_name         => name of the current dj
 word            => swear word played
 button_hit      => boolean for if the swear button was pressed
+logged_by       => user doing the logging
 
 '*' = key
 ```
@@ -197,6 +199,7 @@ artist          => artist name
 album           => album name
 rq_name         => name of the requester
 rq_message      => request message
+logged_by       => user doing the logging
 
 '*' = key
 ```
