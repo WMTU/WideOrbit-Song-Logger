@@ -310,7 +310,7 @@ class DB:
         if date != "":
             query = query + "LIMIT ALL;"
         else:
-            query = query + "LIMIT " + n + ";"
+            query = query + "LIMIT " + str(n) + ";"
 
         if(self.cursor):
             try:
@@ -369,7 +369,7 @@ class DB:
 
         # fetch a specified number of stats
         if n > 0:
-            query = query + "LIMIT " + n + ";"
+            query = query + "LIMIT " + str(n) + ";"
         else:
             query = query + "LIMIT ALL;"
 
