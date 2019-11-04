@@ -252,7 +252,6 @@ class DB:
 
         # start building the query
         query = ""
-        query_args = {'n': n}
 
         # process a log request for a given log_type
         if log_type == "song":
@@ -311,7 +310,7 @@ class DB:
         if date != "":
             query = query + "LIMIT ALL;"
         else:
-            query = query + "LIMIT %(n)s;"
+            query = query + "LIMIT " + n + ";"
 
         if(self.cursor):
             try:
@@ -327,7 +326,7 @@ class DB:
                 print ("Error executing log query! => ", error)
                 return False
 
-    def getStats(self, song, artist, album, order_by, desc):
+    def getStats(self, n, song, artist, album, order_by, desc):
         # process a request for song stats
         query = ""
         base_query = "SELECT song_id, song, artist, album, play_count FROM play_stats "
@@ -364,9 +363,15 @@ class DB:
 
         # apply the row order
         if desc == True:
-            query = query + "ORDER BY {} DESC;"
+            query = query + "ORDER BY {} DESC "
         else:
-            query = query + "ORDER BY {} ASC;"
+            query = query + "ORDER BY {} ASC "
+
+        # fetch a specified number of stats
+        if n > 0:
+            query = query + "LIMIT " + n + ";"
+        else:
+            query = query + "LIMIT ALL;"
 
         if(self.cursor):
             try:

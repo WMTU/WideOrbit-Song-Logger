@@ -66,13 +66,16 @@ class SongAPI(Resource):
         # validate the API key and add the song log
         api_user = loads(db.validateKey(self.args['api_key']))
         if api_user != False:
-            # add song log to the db
-            post_result = db.addSong(new_song, api_user[0]['username'])
-            message, code = post_result, 202
+            if new_song.artist != "WMTU":
+                # add song log to the db
+                post_result = db.addSong(new_song, api_user[0]['username'])
+                message, code = post_result, 202
 
-            # publish the song to scrobble sources
-            if app.config['SCROBBLE'] == "True":
-                scrobbleSong(datetime.datetime.utcnow().strftime("%s"), new_song)
+                # publish the song to scrobble sources
+                if app.config['SCROBBLE'] == "True":
+                    scrobbleSong(datetime.datetime.utcnow().strftime("%s"), new_song)
+            else:
+                message, code = {"message": {"WMTU": "Not logging song tagged with WMTU artist!"}}, 202
         else:
             message, code = {"message": {"api_key": "Invalid API Key!"}}, 400
         
@@ -247,6 +250,7 @@ class StatsAPI(Resource):
     def __init__(self):
 
         self.api_args = {
+            "n":        fields.Int(required=False, location="query", missing=0),
             "song":     fields.Str(required=False, location="query", missing=""),
             "artist":   fields.Str(required=False, location="query", missing=""),
             "album":    fields.Str(required=False, location="query", missing=""),
@@ -273,7 +277,7 @@ class StatsAPI(Resource):
         db.connect()
 
         # get the requested log(s) from the database
-        stats_result = db.getStats(self.args['song'], self.args['artist'], self.args['album'], self.args['order_by'], self.args['desc'])
+        stats_result = db.getStats(self.args['n'], self.args['song'], self.args['artist'], self.args['album'], self.args['order_by'], self.args['desc'])
         message, code = loads(stats_result), 200
         
         # close the connection to the database

@@ -62,7 +62,7 @@ def scrobbleSong(timestamp, song):
     # scrobble to TuneIn
     ti_query['title']   = song.song
     ti_query['artist']  = song.artist
-    if song.album is not "":
+    if song.album != "":
         ti_query['album'] = song.album
     
     ti_url = app.config['TUNEIN_API_URL'] + '?' + urllib.parse.urlencode(ti_query)
