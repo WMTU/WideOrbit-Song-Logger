@@ -252,6 +252,7 @@ class DB:
 
         # start building the query
         query = ""
+        query_args = {}
 
         # process a log request for a given log_type
         if log_type == "song":
