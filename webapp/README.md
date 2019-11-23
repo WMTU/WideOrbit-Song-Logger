@@ -105,6 +105,7 @@ https://log.wmtu.fm/api/2.0/log?type=<song, discrepancy, request>&n=<#>
 
 Optional Paramters:
 
+- n         : the number of entries to list
 - song      : song name
 - artist    : artist name
 - album     : album name
