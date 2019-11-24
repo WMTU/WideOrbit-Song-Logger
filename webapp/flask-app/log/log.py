@@ -127,7 +127,7 @@ class DiscrepancyAPI(Resource):
         # validate the API key and log the discrepancy
         api_user = db.validateKey(self.args['api_key'])
         if api_user != False:
-            post_result = db.addDiscrepancy(new_discrepancy, api_user['username'])
+            post_result = db.addDiscrepancy(new_discrepancy, api_user[0]['username'])
             message, code = post_result, 202
         else:
             message, code = {"message": {"api_key": "Invalid API Key!"}}, 400
@@ -180,7 +180,7 @@ class RequestAPI(Resource):
         # validate the API key and log the request
         api_user = db.validateKey(self.args['api_key'])
         if api_user != False:
-            post_result = db.addRequest(new_req, api_user['username'])
+            post_result = db.addRequest(new_req, api_user[0]['username'])
             message, code = post_result, 202
         else:
             message, code = {"message": {"api_key": "Invalid API Key!"}}, 400

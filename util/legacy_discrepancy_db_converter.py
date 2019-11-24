@@ -86,8 +86,8 @@ for row in legacy.itertuples():
 new = pd.DataFrame(data=new_rows, columns=["dis_date", "dis_time", "timestamp", "song", "artist", "dj_name", "word", "button_hit"])
 
 # add the new rows to the new database
-query = "INSERT INTO discrepancy_log(dis_date, dis_time, timestamp, song, artist, dj_name, word, button_hit) \
-    VALUES(%(dis_date)s, %(dis_time)s, %(timestamp)s, %(song)s, %(artist)s, %(dj_name)s, %(word)s, %(button_hit)s);"
+query = "INSERT INTO discrepancy_log(dis_date, dis_time, timestamp, song, artist, dj_name, word, button_hit, logged_by) \
+    VALUES(%(dis_date)s, %(dis_time)s, %(timestamp)s, %(song)s, %(artist)s, %(dj_name)s, %(word)s, %(button_hit)s, 'nobody');"
 
 # set up the database connection
 try:
