@@ -85,6 +85,10 @@ for row in legacy.itertuples():
     # add the new row to the rows list
     new_rows.append(tmp_dict)
 
+# get some number counts
+song_total = len(new_rows)
+song_count = 0
+
 # new table
 new = pd.DataFrame(data=new_rows, columns=["play_date", "play_time", "timestamp", "song", "artist", "album", "genre", "location", "cd_id"])
 
@@ -116,7 +120,8 @@ try:
     if(cursor):
         for row in new_rows:
             # print out song info
-            print("\n=== Adding Song ===")
+            song_count += 1
+            print("\n=== Adding Song {}/{} ===".format(song_count, song_total))
             print("Song     => " + row['song'])
             print("Artist   => " + row['artist'])
             print("Album    => " + row['album'])

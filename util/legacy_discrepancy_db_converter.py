@@ -67,7 +67,7 @@ for row in legacy.itertuples():
     tmp_dict = {}
 
     # strip out the ts and convert to the needed date formats
-    ts = datetime.strptime(row.timestamp, "%m/%d/%Y %h:%M")
+    ts = datetime.strptime(row.timestamp, "%m/%d/%y %H:%M")
     tmp_dict['dis_date'] = ts.strftime("%Y-%m-%d")
     tmp_dict['dis_time'] = ts.strftime("%H:%M:%S")
     tmp_dict['timestamp'] = ts.strftime("%Y-%m-%d %H:%M:%S")
