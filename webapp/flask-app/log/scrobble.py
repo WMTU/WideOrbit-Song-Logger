@@ -37,7 +37,7 @@ def scrobbleSong(timestamp, song):
     opener = urllib.request.build_opener(handler)
 
     ic_query = {'mode': 'updinfo', 'song': song.artist + " | " + song.song}
-    for m in app.config['ICECAST_MOUNTPOINTS']:
+    for m in app.config['ICECAST_MOUNTPOINT']:
         ic_query['mount'] = m
         ic_url_m = ic_url + '?' + urllib.parse.urlencode(ic_query)
         
