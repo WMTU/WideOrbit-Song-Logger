@@ -212,7 +212,7 @@ class DB:
 
         # build a query
         query = "INSERT INTO song_requests(rq_date, rq_time, timestamp, song, artist, album, rq_name, rq_message, logged_by) \
-            VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
+            VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
         query_args = (
             now.strftime('%Y-%m-%d'), 
@@ -228,7 +228,7 @@ class DB:
         try:
             if(self.cursor):
                 # query the database
-                self.cursor.execute(query)
+                self.cursor.execute(query, query_args)
                 
                 # return the added request
                 return {
