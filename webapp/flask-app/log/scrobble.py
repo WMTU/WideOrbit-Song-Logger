@@ -5,7 +5,8 @@ from log import app
 
 # import system libraries
 import base64
-import urllib, urllib.parse, urllib.request, urllib.error
+import urllib, urllib.parse
+import requests
 
 # import pylast for lastfm api calls
 import pylast
@@ -28,12 +29,6 @@ ti_query = {
 
 # takes the played song and publishes it to various places
 def scrobbleSong(timestamp, song):
-    
-    # push song to Icecast
-    password_mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
-    password_mgr.add_password(None, app.config['ICECAST_URL'], app.config['ICECAST_USERNAME'], app.config['ICECAST_PASSWORD'])
-    handler = urllib.request.HTTPBasicAuthHandler(password_mgr)
-    opener = urllib.request.build_opener(handler)
 
     ic_query = {'mode': 'updinfo', 'song': song.artist + " | " + song.song}
     for m in app.config['ICECAST_MOUNTPOINT']:
@@ -41,15 +36,10 @@ def scrobbleSong(timestamp, song):
         ic_url_m = ic_url + '?' + urllib.parse.urlencode(ic_query)
         
         try:
-            ic_request = urllib.request.Request(ic_url_m)
-            opener.open(ic_request)
-            urllib.request.install_opener(opener)
+            r = requests.get(ic_url_m, auth=(app.config['ICECAST_USERNAME'], app.config['ICECAST_PASSWORD']))
         
-        except (Exception, urllib.error.URLError) as error :
-            print ("Icecast URL Error! => ", error)
-
-        except (Exception, urllib.error.HTTPError) as error :
-            print ("Icecast HTTP Error! => ", error)
+        except (Exception, requests.RequestException) as error :
+            print ("Icecast Connection Error! => ", error)
 
     # scrobble to last.fm
     lastfm.scrobble(
@@ -67,13 +57,9 @@ def scrobbleSong(timestamp, song):
     ti_url = app.config['TUNEIN_API_URL'] + '?' + urllib.parse.urlencode(ti_query)
 
     try:
-        ti_request = urllib.request.Request(ti_url)
-        urllib.request.urlopen(ti_request)
+        r = requests.get(ti_url)
     
-    except (Exception, urllib.error.URLError) as error :
-        print ("TuneIn URL Error! => ", error)
-
-    except (Exception, urllib.error.HTTPError) as error :
-        print ("TuneIn HTTP Error! => ", error)
+    except (Exception, requests.RequestException) as error :
+        print ("TuneIn Connection Error! => ", error)
 
     return True
