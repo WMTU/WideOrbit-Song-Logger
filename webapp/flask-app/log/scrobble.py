@@ -31,7 +31,7 @@ def scrobbleSong(timestamp, song):
     
     # push song to Icecast
     password_mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
-    server_url = "app.config['ICECAST_URL']"
+    server_url = app.config['ICECAST_URL']
     password_mgr.add_password(None, server_url, app.config['ICECAST_USERNAME'], app.config['ICECAST_PASSWORD'])
     handler = urllib.request.HTTPBasicAuthHandler(password_mgr)
     opener = urllib.request.build_opener(handler)
