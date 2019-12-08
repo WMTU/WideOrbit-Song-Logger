@@ -46,10 +46,10 @@ def scrobbleSong(timestamp, song):
             urllib.request.install_opener(opener)
         
         except (Exception, urllib.error.URLError) as error :
-            print ("URL Error! => ", error)
+            print ("Icecast URL Error! => ", error)
 
         except (Exception, urllib.error.HTTPError) as error :
-            print ("HTTP Error! => ", error)
+            print ("Icecast HTTP Error! => ", error)
 
     # scrobble to last.fm
     lastfm.scrobble(
@@ -71,9 +71,9 @@ def scrobbleSong(timestamp, song):
         urllib.request.urlopen(ti_request)
     
     except (Exception, urllib.error.URLError) as error :
-        print ("URL Error! => ", error)
+        print ("TuneIn URL Error! => ", error)
 
     except (Exception, urllib.error.HTTPError) as error :
-        print ("HTTP Error! => ", error)
+        print ("TuneIn HTTP Error! => ", error)
 
     return True
