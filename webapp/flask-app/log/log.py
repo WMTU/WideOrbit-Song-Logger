@@ -125,7 +125,7 @@ class DiscrepancyAPI(Resource):
         db.connect()
 
         # validate the API key and log the discrepancy
-        api_user = db.validateKey(self.args['api_key'])
+        api_user = loads(db.validateKey(self.args['api_key']))
         if api_user != False:
             post_result = db.addDiscrepancy(new_discrepancy, api_user[0]['username'])
             message, code = post_result, 202
@@ -178,7 +178,7 @@ class RequestAPI(Resource):
         db.connect()
 
         # validate the API key and log the request
-        api_user = db.validateKey(self.args['api_key'])
+        api_user = loads(db.validateKey(self.args['api_key']))
         if api_user != False:
             post_result = db.addRequest(new_req, api_user[0]['username'])
             message, code = post_result, 202
