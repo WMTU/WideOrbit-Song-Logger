@@ -73,7 +73,7 @@ class SongAPI(Resource):
 
                 # publish the song to scrobble sources
                 if app.config['SCROBBLE'] == "True":
-                    scrobbleSong(datetime.datetime.utcnow().strftime("%s"), new_song)
+                    scrobbleSong(datetime.utcnow().strftime("%s"), new_song)
             else:
                 message, code = {"message": {"WMTU": "Not logging song tagged with WMTU artist!"}}, 202
         else:
