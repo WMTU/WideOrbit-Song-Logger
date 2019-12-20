@@ -73,7 +73,7 @@ class SongAPI(Resource):
 
                 # publish the song to scrobble sources
                 if app.config['SCROBBLE'] == "True":
-                    scrobbleSong(datetime.utcnow().strftime("%s"), new_song)
+                    scrobbleSong(datetime.now().strftime("%s"), new_song)
             else:
                 message, code = {"message": {"WMTU": "Not logging song tagged with WMTU artist!"}}, 202
         else:
@@ -234,7 +234,7 @@ class LogAPI(Resource):
         db.connect()
 
         # get the requested log(s) from the database
-        log_result = db.getLog(self.args['type'], self.args['n'], self.args['date'], self.args['delay'], self.args['desc'])
+        log_result = db.getLog(self.args['type'], self.args['n'], self.args['date'], self.args['delay'], app.config['DELAY_TIME'], self.args['desc'])
         message, code = loads(log_result), 200
         
         # close the connection to the database

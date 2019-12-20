@@ -245,7 +245,7 @@ class DB:
             print ("Error executing addRequest query! => ", error)
             return False
 
-    def getLog(self, log_type, n, date, delay, desc):
+    def getLog(self, log_type, n, date, delay, delay_time, desc):
 
         # current time
         now = datetime.now()
@@ -267,7 +267,7 @@ class DB:
 
             if delay == True:
                 delay_query = "WHERE play_time < %(delay_time)s "
-                query_args['delay_time'] = (now - timedelta(seconds = 40).strftime('%H:%M:%S'))
+                query_args['delay_time'] = (now - timedelta(seconds = delay_time)).strftime('%H:%M:%S')
 
                 if date != "":
                     query = query + "AND " + delay_query
