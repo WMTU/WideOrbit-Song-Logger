@@ -234,7 +234,7 @@ class LogAPI(Resource):
         db.connect()
 
         # get the requested log(s) from the database
-        log_result = db.getLog(self.args['type'], self.args['n'], self.args['date'], self.args['delay'], app.config['DELAY_TIME'], self.args['desc'])
+        log_result = db.getLog(self.args['type'], self.args['n'], self.args['date'], self.args['delay'], int(app.config['DELAY_TIME']), self.args['desc'])
         message, code = loads(log_result), 200
         
         # close the connection to the database
