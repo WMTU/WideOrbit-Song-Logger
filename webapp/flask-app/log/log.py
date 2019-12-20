@@ -146,9 +146,9 @@ class RequestAPI(Resource):
 
         self.api_args = {
             "api_key":      fields.Str(required=True, location="json"),
-            "song":         fields.Str(required=True, location="json"),
-            "artist":       fields.Str(required=True, location="json"),
-            "album":        fields.Str(required=False, location="json", missing="No Album Given"),
+            "song":         fields.Str(required=False, location="json", missing="-"),
+            "artist":       fields.Str(required=False, location="json", missing="-"),
+            "album":        fields.Str(required=False, location="json", missing="-"),
             "rq_name":      fields.Str(required=False, location="json", missing="WMTU Listener"),
             "rq_message":   fields.Str(required=False, location="json", missing="No Message Given"),
         }
