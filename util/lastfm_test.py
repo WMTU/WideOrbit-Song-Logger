@@ -138,7 +138,7 @@ if __name__ == "__main__":
         else:
             run = True
 
-            np = fetchNP()
+            np = fetchNP(api)
             fetchArtwork(lastfm, np['artist'], np['album'])
             scrobbleSong(lastfm, np['title'], np['artist'], np['album'], np['ts'])
 
