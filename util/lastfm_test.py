@@ -31,15 +31,14 @@ def fetchArtwork(api, artist, album):
     if album != "":
         try:
             lfm_album = api.get_album(artist, album)
-            image = lfm_album.get_cover_image()
+            image = str(lfm_album.get_cover_image())
         
         except (Exception, pylast.WSError) as error :
             print ("Error fetching album artwork! => ", error)
     else:
         print("  => No album specified!")
     
-    if image is not str:
-        image = ""
+    if image == "":
         print("  => No album artwork found!")
     else:
         print("  => Album Artwork: " + image)
@@ -84,8 +83,8 @@ def fetchNP(url):
         song['album']   = np[0]['album']
         song['ts']      = np[0]['timestamp']
 
-        print("  => NP: " + song['title'] + " by " + song['artist'] + " from the album " + song['album'])
-        print("  => Song Logged " + song['ts'])
+        print("  => NP: " + song['title'] + " - " + song['artist'] + " - " + song['album'])
+        print("  => Logged on: " + song['ts'])
     else:
         print("!!! Error fetching song from log API !!!")
 
@@ -129,7 +128,7 @@ if __name__ == "__main__":
     run = True
 
     while run == True:
-        prompt = input("Fetch Song? (Y/N) => ")
+        prompt = input("\nFetch Song? (Y/N) => ")
 
         if prompt != "Y":
             run = False
