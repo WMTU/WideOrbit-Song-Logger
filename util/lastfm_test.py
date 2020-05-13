@@ -3,7 +3,7 @@
 # import helper libraries
 import os, sys, getopt, configparser, ast
 from datetime import datetime, date, time
-from json import loads, dumps
+from json import json, loads, dumps
 import requests
 
 # imports pylast for lastfm api calls
