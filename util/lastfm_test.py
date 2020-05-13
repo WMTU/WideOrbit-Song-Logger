@@ -1,9 +1,8 @@
 # testing pylast functions for lastfm api calls
 
 # import helper libraries
-import os, sys, getopt, configparser, ast
+import os, sys, getopt, configparser, ast, json
 from datetime import datetime, date, time
-from json import json, loads, dumps
 import requests
 
 # imports pylast for lastfm api calls
