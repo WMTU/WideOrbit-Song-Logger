@@ -2,9 +2,9 @@
 
 # import helper libraries
 import os, sys, getopt, configparser, ast
-import datetime
+from datetime import datetime, date, time
+from json import loads, dumps
 import requests
-import json
 
 # imports pylast for lastfm api calls
 import pylast
