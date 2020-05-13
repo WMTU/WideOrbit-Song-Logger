@@ -19,12 +19,12 @@ def fetchArtwork(artist, album):
     if album != "":
         try:
             lfm_album = lastfm.get_album(artist, album)
-            image = lfm_album.get_cover_image()
+            image = str(lfm_album.get_cover_image())
         
         except (Exception, pylast.WSError) as error :
             print ("Error fetching album artwork! => ", error)
     
-    if image is not str:
+    if image == "None":
         image = ""
 
     return image
