@@ -80,10 +80,10 @@ def fetchNP(url):
     if response.status_code == 200:
         np = json.loads(response.content.decode('utf-8'))
 
-        song['title']   = np['song']
-        song['artist']  = np['artist']
-        song['album']   = np['album']
-        song['ts']      = np['timestamp']
+        song['title']   = np[0]['song']
+        song['artist']  = np[0]['artist']
+        song['album']   = np[0]['album']
+        song['ts']      = np[0]['timestamp']
 
         print("  => NP: " + song['title'] + " by " + song['artist'] + " from the album " + song['album'])
         print("  => Song Logged " + song['ts'])
