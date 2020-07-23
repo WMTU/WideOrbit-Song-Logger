@@ -26,7 +26,7 @@ This version has updated libraries and now submits using the API instead of writ
 
 View the README in the widget directory for more information.
 
-## Webapp
+## Web frontend and flask-app
 
 The webapp is a full rewrite of the WMTU legacy song logging API from 2015.
 
@@ -36,4 +36,4 @@ The goal is to provide better operational support for current WMTU infrastructur
 
 We also want to provide a web based interface to easily pull and check logs without needing to work with the database directly.
 
-View the README in the webapp directory for more information.
+View the README in the webapp directory and flask-app directory for more information.

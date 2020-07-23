@@ -9,21 +9,27 @@ from .scrobble import *
 
 # import system libraries
 from datetime import datetime, date, time
-from json import loads, dumps
+from json import loads, dumps, dump
+import io, os, sys
 
 # import Flask libraries
-from flask import jsonify, request
+from flask import jsonify, request, make_response, abort
+from flask import send_file, send_from_directory, safe_join
 from flask_restful import Resource, Api, reqparse
 
 # import webargs argument handling for flask-restful
 from webargs import fields, validate
 from webargs.flaskparser import use_args, use_kwargs, parser, abort
 
+# import pandas (lol) to convert json to csv
+import pandas as pd
+
 # define the api
 api = Api(app)
 
 # API for logging songs
 class SongAPI(Resource):
+    
     def __init__(self):
 
         self.api_args = {
@@ -42,7 +48,6 @@ class SongAPI(Resource):
 
     # API takes a POST request
     def post(self):
-        post_result = None
 
         # build a new Song object
         new_song = Song(
@@ -89,6 +94,7 @@ class SongAPI(Resource):
         return message, code
 
 class DiscrepancyAPI(Resource):
+    
     def __init__(self):
 
         self.api_args = {
@@ -105,7 +111,6 @@ class DiscrepancyAPI(Resource):
         super(DiscrepancyAPI, self).__init__()
 
     def post(self):
-        post_result = None
 
         # build a new Discrepancy object
         new_discrepancy = Discrepancy(
@@ -142,6 +147,7 @@ class DiscrepancyAPI(Resource):
         return message, code
 
 class RequestAPI(Resource):
+    
     def __init__(self):
 
         self.api_args = {
@@ -158,7 +164,6 @@ class RequestAPI(Resource):
         super(RequestAPI, self).__init__()
 
     def post(self):
-        post_result = None
 
         # build a new Request object
         new_req = Request(
@@ -195,34 +200,90 @@ class RequestAPI(Resource):
         return message, code
 
 class LogAPI(Resource):
+    
     # helper function to validate a date
     def __date_validator(self, date):
         try:
             datetime.strptime(date, "%Y-%m-%d")
             return True
+        
         except (Exception, ValueError) as error:
+            return False
+
+    # helper function to validate a timestamp
+    # note that this is basically the same as the date validator
+    # except timestamps can also include date AND time
+    def __ts_validator(self, date):
+        try:
+            datetime.strptime(date, "%Y-%m-%d")
+            return True
+        
+        except (Exception, ValueError) as error:
+            try:
+                datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+                return True
+            
+            except (Exception, ValueError) as error:
+                return False
+
             return False
 
     def __init__(self):
 
         self.api_args = {
-            "type":     fields.Str(required=False, location="query", 
+            "type":     fields.Str(required=False, 
                 validate=validate.OneOf(choices=["song", "discrepancy", "request"],
                 error="Invalid Type Provided!"),
                 missing="song"),
-            "n":        fields.Int(required=False, location="query", missing=1),
-            "delay":    fields.Bool(required=False, location="query", missing=False),
-            "date":     fields.Str(required=False, location="query", 
-                validate=self.__date_validator, missing=""),
-            "desc":     fields.Bool(required=False, location="query", missing=True)
+            "n":        fields.Int(required=False, missing=1),
+            "delay":    fields.Bool(required=False, missing=False),
+            "date":     fields.Str(required=False, validate=self.__date_validator, missing=""),
+            "ts_start": fields.Str(required=False, validate=self.__ts_validator, missing=""),
+            "ts_end":   fields.Str(required=False, validate=self.__ts_validator, missing=""),
+            "desc":     fields.Bool(required=False, missing=True),
+            "format":   fields.Str(required=False, 
+                validate=validate.OneOf(choices=["json", "csv"], 
+                error="Invalid return format!"),
+                missing="json")
         }
 
-        self.args = parser.parse(self.api_args, request)
+        self.args = parser.parse(self.api_args, request, location="query")
 
         super(LogAPI, self).__init__()
 
     def get(self):
-        log_result = None
+
+        # validate date and timestamp selections
+        # only allow a date OR a timestamp selection
+        if self.args['date'] != "" and (self.args['ts_start'] != "" or self.args['ts_end'] != ""):
+            return {"message": {"error": "Please provide either a date OR a timestamp!"}}, 500
+        elif self.args['ts_start'] != "" and self.args['ts_end'] == "":
+            return {"message": {"error": "Please provide an ending timestamp!"}}, 500
+        elif self.args['ts_start'] == "" and self.args['ts_end'] != "":
+            return {"message": {"error": "Please provide a starting timestamp!"}}, 500
+
+        # turn a date into a timestamp
+        if self.args['date'] != "":
+            self.args['ts_start'] = self.args['date'] + " 00:00:00"
+            self.args['ts_end'] = self.args['date'] + " 23:59:59"
+        
+        # reformat timestamps as needed
+        if self.args['ts_start'] != "":
+            # ts_start
+            try:
+                print(self.args['ts_start'])
+                datetime.strptime(self.args['ts_start'], "%Y-%m-%d %H:%M:%S")
+            except (Exception, ValueError) as error:
+                self.args['ts_start'] = self.args['ts_start'] + " 00:00:00"
+                print(self.args['ts_start'])
+
+            # ts_end
+            try:
+                print(self.args['ts_end'])
+                datetime.strptime(self.args['ts_end'], "%Y-%m-%d %H:%M:%S")
+            except (Exception, ValueError) as error:
+                self.args['ts_end'] = self.args['ts_end'] + " 23:59:59"
+                print(self.args['ts_end'])
 
         # build a new DB object and connect to the database
         db = DB(
@@ -234,19 +295,52 @@ class LogAPI(Resource):
         db.connect()
 
         # get the requested log(s) from the database
-        log_result = db.getLog(self.args['type'], self.args['n'], self.args['date'], self.args['delay'], int(app.config['DELAY_TIME']), self.args['desc'])
-        message, code = loads(log_result), 200
-        
+        log_result = db.getLog(
+            self.args['type'], 
+            self.args['n'], 
+            self.args['ts_start'], 
+            self.args['ts_end'], 
+            self.args['delay'], 
+            int(app.config['DELAY_TIME']), 
+            self.args['desc'])
+
         # close the connection to the database
         db.close()
 
         # return the requested log(s)
         if log_result == False:
-            message, code = {"message": {"error": "Error fetching log!"}}, 500
+            return {"message": {"error": "Error fetching log!"}}, 500
+        else:
+            if self.args['format'] == "json":
+                return loads(log_result), 200
+            else:
+                # create a new file for the csv formatted data
+                filename = "log_" + str(datetime.now().timestamp()).replace('.', '') + ".csv"
+                csv_path = app.config['TMP_STOR'] + filename
+                try:
+                    csv_file = open(csv_path, 'w')
+                except FileNotFoundError:
+                    #print("Unable to create file: " + csv_path)
+                    return {"message": {"error": "Error creating CSV file!"}}, 500
 
-        return message, code
+                # format data from the db as csv
+                # put the csv data into the csv file
+                df = pd.read_json(log_result, orient="records")
+                df.to_csv(csv_file, index=False)
+                csv_file.close()
+                
+                # send the generated file to the user
+                try:
+                    #print("Sending file: " + filename)
+                    return send_file(csv_path, mimetype='text/csv', as_attachment=True)
+                except FileNotFoundError:
+                    message, code = {"message": {"error": "File not found!"}}, 404
+                finally:
+                    # remove the file
+                    os.unlink(csv_path)
 
 class StatsAPI(Resource):
+    
     def __init__(self):
 
         self.api_args = {
@@ -265,7 +359,6 @@ class StatsAPI(Resource):
         super(StatsAPI, self).__init__()
 
     def get(self):
-        stats_result = None
 
         # build a new DB object and connect to the database
         db = DB(
@@ -290,8 +383,8 @@ class StatsAPI(Resource):
         return message, code
 
 class KeyAPI(Resource):
+    
     def get(self):
-        key_result = None
 
         # build a new DB object and connect to the database
         db = DB(

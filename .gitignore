@@ -1,0 +1,6 @@
+flask-app/__pycache__/
+flask-app/config.py
+flask-app/logs/
+flask-app/temp/
+flask-app/log/__pycache__/
+

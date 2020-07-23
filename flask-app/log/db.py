@@ -245,7 +245,7 @@ class DB:
             print ("Error executing addRequest query! => ", error)
             return False
 
-    def getLog(self, log_type, n, date, delay, delay_time, desc):
+    def getLog(self, log_type, n, ts_start, ts_end, delay, delay_time, desc):
 
         # current time
         now = datetime.now()
@@ -259,47 +259,36 @@ class DB:
             order_by = "play_id"
             base_query = "SELECT play_id, timestamp, song, artist, album, genre, location, cd_id, artwork FROM play_log "
 
-            if date != "":
-                date_query = "WHERE play_date = %(date)s "
-                query_args['date'] = date
-
-                query = base_query + date_query
-
-            if delay == True:
-                delay_query = "WHERE play_time < %(delay_time)s "
-                query_args['delay_time'] = (now - timedelta(seconds = delay_time)).strftime('%H:%M:%S')
-
-                if date != "":
-                    query = query + "AND " + delay_query
-                else:
-                    query = base_query + delay_query
-
-            if date == "" and delay == False:
-                query = base_query
         elif log_type == "discrepancy":
             order_by = "dis_id"
             base_query = "SELECT dis_id, timestamp, song, artist, dj_name, word, button_hit FROM discrepancy_log "
 
-            if date != "":
-                date_query = "WHERE play_date = %(date)s"
-                query_args['date'] = date
-
-                query = base_query + date_query
-            else:
-                query = base_query
         elif log_type == "request":
             order_by = "rq_id"
             base_query = "SELECT rq_id, timestamp, song, artist, album, rq_name, rq_message FROM song_requests "
-
-            if date != "":
-                date_query = "WHERE rq_date = %(date)s"
-                query_args['date'] = date
-
-                query = base_query + date_query
-            else:
-                query = base_query
+        
         else:
             return False
+
+        query = base_query
+
+        # apply a timestamp filter
+        if ts_start != "":
+            ts_query = "WHERE timestamp >= %(ts_start)s AND timestamp <= %(ts_end)s "
+            query_args['ts_start'] = ts_start
+            query_args['ts_end'] = ts_end
+
+            query = query + ts_query
+
+        # apply a time delay filter
+        if log_type == "song" and delay == True:
+            delay_query = "WHERE play_time < %(delay_time)s "
+            query_args['delay_time'] = (now - timedelta(seconds = delay_time)).strftime('%H:%M:%S')
+
+            if ts_start != "":
+                query = query + "AND " + delay_query
+            else:
+                query = query + delay_query
 
         # apply the row order
         if desc == True:
@@ -308,7 +297,7 @@ class DB:
             query = query + "ORDER BY {} ASC "
 
         # apply the correct limit
-        if date != "":
+        if ts_start != "":
             query = query + "LIMIT ALL;"
         else:
             query = query + "LIMIT " + str(n) + ";"

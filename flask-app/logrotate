@@ -1,5 +1,5 @@
 # cp logrotate /etc/logrotate.d/log-api
-/opt/log-api/logs/api.log {
+/opt/log-api/logs/error.log {
 	daily
 	rotate 7
 	compress

@@ -6,7 +6,6 @@ Webapp interface for managing the log API.
 
 Technologies used:
 
-- [React](https://reactjs.org/)
 - [BootStrap](https://getbootstrap.com/)
 - [Nginx](https://nginx.org/en/)
 

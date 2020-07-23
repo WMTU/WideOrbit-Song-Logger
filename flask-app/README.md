@@ -13,6 +13,7 @@ Technologies used:
 - [webargs](https://webargs.readthedocs.io/en/latest/)
 - [psycopg2](http://initd.org/psycopg/)
 - [pylast](https://github.com/pylast/pylast)
+- [pandas](https://pandas.pydata.org/)
 - [Nginx](https://nginx.org/en/)
 
 ## Flask API backend
@@ -94,11 +95,14 @@ https://log.wmtu.fm/api/2.0/request?api_key=<api key>&song=<song name>&artist=<a
 
 Optional Paramters:
 
-- type  : the type of record to request (song, discrepancy, request)
-- n     : number of items to list (except for requests with a date)
-- date  : list items for a specific date (yyyy-mm-dd)
-- delay : apply a 40 second delay to the logged songs list (only for song records)
-- desc  : order descending (true/false)
+- type     : the type of record to request (song, discrepancy, request)
+- n        : number of items to list (except for requests with a date)
+- date     : list items for a specific date (yyyy-mm-dd)
+- ts_start : starting timestamp for logs, using format yyyy-mm-dd hh:mm:ss
+- ts_end   : ending timestamp for logs, using format yyyy-mm-dd hh:mm:ss
+- delay    : apply a 40 second delay to the logged songs list (only for song records)
+- desc     : order descending (true/false)
+- format   : choose which format to present data in, either json or csv
 
 Default Action:
 
