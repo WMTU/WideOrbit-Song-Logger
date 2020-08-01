@@ -1,6 +1,6 @@
 # WideOrbit Song Logger -- Webapp
 
-Current Version: 2.0
+Current Version: 1.0
 
 Webapp interface for managing the log API.
 

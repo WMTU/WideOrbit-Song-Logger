@@ -255,35 +255,42 @@ class LogAPI(Resource):
 
         # validate date and timestamp selections
         # only allow a date OR a timestamp selection
+        # if valid then check provided values and reformat as needed
+        # note that we have already done some initial validation as part of the request
         if self.args['date'] != "" and (self.args['ts_start'] != "" or self.args['ts_end'] != ""):
             return {"message": {"error": "Please provide either a date OR a timestamp!"}}, 500
         elif self.args['ts_start'] != "" and self.args['ts_end'] == "":
             return {"message": {"error": "Please provide an ending timestamp!"}}, 500
         elif self.args['ts_start'] == "" and self.args['ts_end'] != "":
             return {"message": {"error": "Please provide a starting timestamp!"}}, 500
+        else:
+            # turn a date into a timestamp
+            if self.args['date'] != "":
+                self.args['ts_start'] = self.args['date'] + " 00:00:00"
+                self.args['ts_end'] = self.args['date'] + " 23:59:59"
 
-        # turn a date into a timestamp
-        if self.args['date'] != "":
-            self.args['ts_start'] = self.args['date'] + " 00:00:00"
-            self.args['ts_end'] = self.args['date'] + " 23:59:59"
-        
-        # reformat timestamps as needed
-        if self.args['ts_start'] != "":
-            # ts_start
+            # reformat timestamps as needed
+            # timestamps will either be dates or date & time
+            # ultimately we need a date & time
             try:
-                print(self.args['ts_start'])
                 datetime.strptime(self.args['ts_start'], "%Y-%m-%d %H:%M:%S")
             except (Exception, ValueError) as error:
                 self.args['ts_start'] = self.args['ts_start'] + " 00:00:00"
-                print(self.args['ts_start'])
 
-            # ts_end
             try:
-                print(self.args['ts_end'])
                 datetime.strptime(self.args['ts_end'], "%Y-%m-%d %H:%M:%S")
             except (Exception, ValueError) as error:
                 self.args['ts_end'] = self.args['ts_end'] + " 23:59:59"
-                print(self.args['ts_end'])
+
+            # validate start ts comes before the end ts
+            # the timestamps should already be validated (lol like 3 times)
+            try:
+                ts_start = datetime.strptime(self.args['ts_start'], "%Y-%m-%d %H:%M:%S").timestamp()
+                ts_end   = datetime.strptime(self.args['ts_end'], "%Y-%m-%d %H:%M:%S").timestamp()
+            except (Exception, ValueError) as error:
+                return {"message": {"error": "Error processing your timestamps!"}}, 500
+            if ts_start >= ts_end:
+                return {"message": {"error": "Starting timestamp must be BEFORE the ending timestamp!"}}, 500
 
         # build a new DB object and connect to the database
         db = DB(
@@ -331,7 +338,6 @@ class LogAPI(Resource):
                 
                 # send the generated file to the user
                 try:
-                    #print("Sending file: " + filename)
                     return send_file(csv_path, mimetype='text/csv', as_attachment=True)
                 except FileNotFoundError:
                     message, code = {"message": {"error": "File not found!"}}, 404

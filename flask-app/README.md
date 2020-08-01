@@ -1,4 +1,4 @@
-# WideOrbit Song Logger -- Webapp
+# WideOrbit Song Logger -- flask-app
 
 Current Version: 2.0
 
@@ -29,6 +29,7 @@ These instructions are for a ubuntu-based install. The packages and installs sho
 ```bash
 apt update
 apt install libpq-dev python3 python3-venv python3-pip
+./setup.sh
 ```
 
 ## Nginx
