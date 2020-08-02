@@ -263,11 +263,11 @@ class LogAPI(Resource):
             return {"message": {"error": "Please provide an ending timestamp!"}}, 500
         elif self.args['ts_start'] == "" and self.args['ts_end'] != "":
             return {"message": {"error": "Please provide a starting timestamp!"}}, 500
-        else:
+        elif self.args['date'] != "" or self.args['ts_start'] != "":
             # turn a date into a timestamp
             if self.args['date'] != "":
-                self.args['ts_start'] = self.args['date'] + " 00:00:00"
-                self.args['ts_end'] = self.args['date'] + " 23:59:59"
+                self.args['ts_start'] = self.args['date']
+                self.args['ts_end'] = self.args['date']
 
             # reformat timestamps as needed
             # timestamps will either be dates or date & time
