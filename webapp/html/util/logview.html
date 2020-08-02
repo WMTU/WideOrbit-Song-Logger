@@ -7,9 +7,8 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Log API | Log Viewer</title>
-        <meta name="description" content="">
+        <meta name="description" content="WMTU 91.9FM Logging API web frontend">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
 
         <!-- favicon -->
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -30,6 +29,15 @@
             #log_view_body td {position: relative; vertical-align: middle;}
             .album-art {height: 35px; width: auto;}
         </style>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-93906610-4"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-93906610-4');
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-expand-sm navbar-light bg-gold">
@@ -183,7 +191,7 @@
             // queries the API with specified values
             function queryAPI(query_func, query_type, ts_start, ts_end)
             {
-                var log_endpoint = "https://log.wmtu.fm/api/2.0/log";
+                var log_endpoint = "https://log-dev.wmtu.fm/api/2.0/log";
                 var query_args = {'type': query_type, 
                                   'ts_start': ts_start, 
                                   'ts_end': ts_end,
@@ -202,12 +210,23 @@
 
                 console.log("Query:    " + query_url);
 
-                // fetch json data from the API
-                // then send it to the view builder
-                fetch(query_url)
-                    .then(function(response) { return response.json(); })
-                    .then(function(data) { logViewBuilder(query_type, data); })
-                    .catch(function(err) { console.log(err); });
+                // do the API query based on the specified action
+                if (query_func == "down")
+                {
+                    var a = document.createElement("a");
+                    a.href = query_url;
+                    a.setAttribute("disabled", "");
+                    a.click();
+                }
+                else
+                {
+                    // fetch json data from the API
+                    // then send it to the view builder
+                    fetch(query_url)
+                        .then(function(response) { return response.json(); })
+                        .then(function(data) { logViewBuilder(query_type, data); })
+                        .catch(function(err) { console.log(err); });
+                }
             }
 
             // fetches data from the form on submit
