@@ -61,7 +61,27 @@
             </div>
         </nav>
 
-        <div class="container pt-4">
+        <div class="container pt-3">
+            <div class="row"><div class="col">
+                <div class="alert alert-danger alert-dismissable fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>This utility is still a work in progress!</strong><br />
+                    If you run into any issues please let us know.
+                </div>
+            </div></div>
+
+            <div class="row"><div class="col">
+                <div class="alert alert-warning alert-dismissable fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    Ad blocking plugins may cause issues with this utility.<br />
+                    We recommend disabling them for this site if you do not get any results.
+                </div>
+            </div></div>
+
             <div class="row"><div class="col"><div class="card">
                 <h5 class="card-header">Log Query Builder</h5>
                 <div class="card-body">
@@ -79,15 +99,24 @@
                         <div class="form-row justify-content-center">
                             <div class="form-group col col-md-4 col-lg-3">
                                 <label>Starting Date & Time</label>
-                                <input required name="startDate" type="date" class="form-control form-control-sm pr-5 mb-1">
-                                <input name="startTime" type="time" class="form-control form-control-sm pr-5">
-                                <small class="form-text text-muted">Optional; defaults to 00:00:00.</small>
+                                <input required name="startDate" type="date" placeholder="2020-02-29" class="form-control form-control-sm pr-5 mb-1">
+                                <input name="startTime" type="time" placeholder="16:20:00" class="form-control form-control-sm pr-5">
+                                <small class="form-text text-muted">Optional; defaults to 00:00:00</small>
                             </div>
                             <div class="form-group col col-md-4 col-lg-3">
                                 <label>Ending Date & Time</label>
-                                <input required name="endDate" type="date" class="form-control form-control-sm pr-5 mb-1">
-                                <input name="endTime" type="time" class="form-control form-control-sm pr-5">
-                                <small class="form-text text-muted">Optional; defaults to 23:59:59.</small>
+                                <input required name="endDate" type="date" placeholder="2020-02-29" class="form-control form-control-sm pr-5 mb-1">
+                                <input name="endTime" type="time" placeholder="16:20:00" class="form-control form-control-sm pr-5">
+                                <small class="form-text text-muted">Optional; defaults to 23:59:59</small>
+                            </div>
+                        </div>
+                        <div class="form-row justify-content-center">
+                            <div class="form-group col col-sm-5 col-md-4 col-lg-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="artwork_select" id="show_art" checked>
+                                    <label class="form-check-label" for="show_art">Include Album Artwork</label>
+                                </div>
+                                <small class="form-text text-muted">Only applies to song requests</small>
                             </div>
                         </div>
                         <div class="form-row justify-content-center mt-2">
@@ -100,20 +129,13 @@
                 </div>
             </div></div></div>
 
-            <div class="row pt-2" id="table_view"><div class="col"><div class="card">
+            <div class="row pt-2" id="log_view"><div class="col"><div class="card">
                 <h5 class="card-header">Log Query Result</h5>
-                <div class="card-body table-responsive">
-                    <table class="table table-sm table-borderless table-striped table-hover">
+                <div class="card-body table-responsive" id="log_view_card">
+                    <h6 class="card-text text-muted d-none" id="log_view_loading">Please wait, building log view...</h6>
+                    <table class="table table-sm table-borderless table-striped table-hover" id="log_view_table">
                         <thead class="thead-dark" id="log_view_head">
-                            <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">Timestamp</th>
-                                <th scope="col">Song</th>
-                                <th scope="col">Artist</th>
-                                <th scope="col">Album</th>
-                                <th scope="col">Genre</th>
-                                <th scope="col">Artwork</th>
-                            </tr>
+                            <tr></tr>
                         </thead>
                         <tbody id="log_view_body">
                         </tbody>
@@ -121,7 +143,7 @@
                 </div>
             </div></div></div>
 
-            <div class="row pt-2">
+            <div class="row pt-2 pb-2">
                 <div class="col text-center" id="copyright">
                     &copy<script type="text/javascript">document.write(new Date().getFullYear());</script> WMTU 91.9FM - Houghton, MI
                 </div>
@@ -134,6 +156,9 @@
             // builds the log view and displays it on the page
             function logViewBuilder(query_type, data)
             {
+                var start_build = luxon.DateTime.local();
+                console.log("Build Start: " + start_build.toFormat('HH:mm:ss.u').toString());
+
                 // header column names for the table
                 var col_names = {
                     'song': ['ID', 'Timestamp', 'Song', 'Artist', 'Album', 'Genre', 'Artwork'],
@@ -159,11 +184,14 @@
                     'discrepancy': ['dis_id', 'timestamp', 'song', 'artist', 'dj_ame', 'word', 'button_hit'],
                     'request': ['req_id', 'timestamp', 'song', 'artist', 'album', 'requester', 'message']};
 
-                // update the table rows
-                var table_body = document.getElementById("log_view_body");
+                // remove old table body and replace it with the new data
+                document.getElementById("log_view_body").remove();
                 var new_body = document.createElement('tbody');
                 new_body.id = "log_view_body";
+                document.getElementById("log_view_table").appendChild(new_body);
+
                 // add in new rows from the json data
+                var show_art = document.getElementById("show_art").checked;
                 for (var i = data.length - 1; i >= 0; i--)
                 {
                     var row_html = "";
@@ -172,11 +200,20 @@
                         if (item == "artwork") 
                         { 
                             var img_url = data[i][item];
-                            if (img_url == "") { img_url = "https://log.wmtu.fm/assets/wmtu_art.png";}
-                            row_html = row_html 
-                                + '<td class="text-center"><a href="' + img_url + '" target="_blank" class="rounded">'
-                                + '<img src="' + img_url + '" alt="album artwork" class="album-art rounded">'
-                                + '</a></td>'; 
+                            if (show_art && img_url == "") { img_url = "https://log.wmtu.fm/assets/wmtu_art.png"; }
+
+                            // display art as a link or image based on the check box
+                            if (img_url == "") { row_html = row_html + '<td class="text-center">&nbsp;</td>'; }
+                            else if (show_art == false) { 
+                                row_html = row_html + '<td class="text-center">'
+                                    + '<a href="' + img_url + '" target="_blank" class="rounded">Artwork</a></td>'; }    
+                            else 
+                            { 
+                                row_html = row_html + '<td class="text-center">'
+                                    + '<a href="' + img_url + '" target="_blank" class="rounded">'
+                                    + '<img src="' + img_url + '" alt="album artwork" class="album-art rounded">'
+                                    + '</a></td>';
+                            }
                         }
                         else { row_html = row_html + '<td>' + data[i][item] + '</td>'; }
                     });
@@ -184,14 +221,21 @@
                     var new_row = new_body.insertRow(0);
                     new_row.innerHTML = row_html;
                 }
-                // swap the table bodies
-                table_body.parentNode.replaceChild(new_body, table_body);
+
+                var end_build = luxon.DateTime.local();
+                var build_time = luxon.Interval.fromDateTimes(start_build, end_build).toDuration().toFormat('ss.SSS');
+                console.log("Build End:   " + end_build.toFormat('HH:mm:ss.u').toString());
+                console.log("Generated in " + build_time + 's');
+
+                // remove loading message and show table
+                document.getElementById("log_view_loading").classList.add("d-none");
+                document.getElementById("log_view_table").classList.remove("d-none");
             }
 
             // queries the API with specified values
             function queryAPI(query_func, query_type, ts_start, ts_end)
             {
-                var log_endpoint = "https://log-dev.wmtu.fm/api/2.0/log";
+                var log_endpoint = "https://log.wmtu.fm/api/2.0/log";
                 var query_args = {'type': query_type, 
                                   'ts_start': ts_start, 
                                   'ts_end': ts_end,
@@ -246,6 +290,7 @@
                 var start_time = inputs[2].value;
                 var end_date = inputs[3].value;
                 var end_time = inputs[4].value;
+                var show_art = inputs[5].checked;
                 
                 // format time
                 if (start_time == "") {start_time = "00:00:00";} else {start_time = start_time + ":00";}
@@ -255,12 +300,20 @@
                 ts_start = start_date + "+" + start_time;
                 ts_end = end_date + "+" + end_time;
 
-                // verify start timestamp is BEFORE end timestamp
-                var ts_start_ISO = start_date + "T" + start_time;
-                var ts_end_ISO   = end_date + "T" + end_time;
-                if (DateTime.fromISO(ts_start_ISO) >= DateTime.fromISO(ts_end_ISO))
+                // verify provided timestamps
+                // make sure end ts actually comes after the start ts
+                var ts_start_ISO = DateTime.fromISO(start_date + "T" + start_time);
+                var ts_end_ISO   = DateTime.fromISO(end_date + "T" + end_time);
+                if (ts_start_ISO >= ts_end_ISO)
                 {
                     alert("Please provide a starting date and time BEFORE the ending date and time!");
+                    return false;
+                }
+
+                // only allow downloads for intervals longer than a week
+                if (luxon.Interval.fromDateTimes(ts_start_ISO, ts_end_ISO).length('days') > 7)
+                {
+                    alert("Please use the download function for time periods longer than a week!");
                     return false;
                 }
                 
@@ -268,6 +321,11 @@
                 console.log("Type:     " + query_type);
                 console.log("Start TS: " + ts_start);
                 console.log("End TS:   " + ts_end);
+                console.log("Show Art: " + show_art);
+
+                // hide the table and put a loading message
+                document.getElementById("log_view_table").classList.add("d-none");
+                document.getElementById("log_view_loading").classList.remove("d-none");
 
                 queryAPI(query_func, query_type, ts_start, ts_end);
             }
