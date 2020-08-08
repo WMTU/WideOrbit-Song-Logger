@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Log API | Stats Viewer</title>
+        <meta name="description" content="WMTU 91.9FM Logging API web frontend">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- favicon -->
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#ffcd00">
+        <meta name="msapplication-TileColor" content="#ffcd00">
+        <meta name="theme-color" content="#ffcd00">
+
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+        <!-- Custom CSS -->
+        <style type="text/css">
+            .bg-gold {background:#ffcd00; color:#000000;}
+            #log_view_body {font-size: small;}
+            #log_view_body td {position: relative; vertical-align: middle;}
+            .album-art {height: 35px; width: auto;}
+        </style>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-93906610-4"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-93906610-4');
+        </script>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-sm navbar-light bg-gold">
+            <a class="navbar-brand" href="https://log.wmtu.fm">WMTU Log API</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navContent" aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://log.wmtu.fm">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="utilDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Utilities</a>
+                        <div class="dropdown-menu" aria-labelledby="utilDropdown">
+                            <a class="dropdown-item" href="logview.html">Log Viewer</a>
+                            <a class="dropdown-item" href="statsview.html">Stats Viewer<span class="sr-only">(current)</span></a>
+                            <a class="dropdown-item" href="player.html">WMTU Player</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container pt-3">
+            <div class="row"><div class="col">
+                <div class="alert alert-danger alert-dismissable fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>This utility is still a work in progress!</strong><br />
+                    If you run into any issues please let us know.
+                </div>
+            </div></div>
+
+            <div class="row"><div class="col"><div class="card">
+                <h5 class="card-header">Stats Query Builder</h5>
+                <div class="card-body">
+                    <form id="log_query" action="" onsubmit="getFormData(this.submitted); return false;" method="POST">
+                        <div class="form-row d-flex flex-column align-items-center justify-content-center">
+                            <div class="form-group col col-md-6 col-lg-4">
+                                <label>Song</label>
+                                <input type="text">
+                            </div>
+                            <div class="form-group col col-md-6 col-lg-4">
+                                <label>Artist</label>
+                                <input type="text">
+                            </div>
+                            <div class="form-group col col-md-6 col-lg-4">
+                                <label>Album</label>
+                                <input type="text">
+                            </div>
+                        </div>
+                        <div class="form-row d-flex flex-row">
+                            <div class="form-group col col-md-6 col-lg-4">
+                                <label>Order By</label>    
+                                <select required class="form-control" id="sort_column">
+                                    <option value="song">Song</option>
+                                    <option value="discrepancy">Album</option>
+                                    <option value="request">Artist</option>
+                                </select>
+                                <label>Number of Items</label>    
+                                <input type="number">
+                            </div>
+                        </div>
+                        <div class="form-row justify-content-center mt-2">
+                            <div class="form-group col col-sm-5 col-md-4 col-lg-3">
+                                <button type="submit" name="submitBtn" value="view" onclick="this.form.submitted=this;" class="btn btn-primary btn-block">View Play Stats</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div></div></div>
+
+            <div class="row pt-2" id="stats_view"><div class="col"><div class="card">
+                <h5 class="card-header">Stats Result</h5>
+                <div class="card-body table-responsive" id="stats_view_card">
+                    <h6 class="card-text text-muted d-none" id="stats_view_loading">Please wait, building log view...</h6>
+                    <table class="table table-sm table-borderless table-striped table-hover" id="stats_view_table">
+                        <thead class="thead-dark" id="stats_view_head">
+                            <tr></tr>
+                        </thead>
+                        <tbody id="stats_view_body">
+                        </tbody>
+                    </table>
+                </div>
+            </div></div></div>
+
+            <div class="row pt-2 pb-2">
+                <div class="col text-center" id="copyright">
+                    &copy<script type="text/javascript">document.write(new Date().getFullYear());</script> WMTU 91.9FM - Houghton, MI
+                </div>
+            </div>
+        </div>
+
+    <!-- Get data from the form and do validation -->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@1.21.3/build/global/luxon.min.js"></script>
+    <script src="../js/statsview.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>

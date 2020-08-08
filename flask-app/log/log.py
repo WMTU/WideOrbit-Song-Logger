@@ -33,16 +33,16 @@ class SongAPI(Resource):
     def __init__(self):
 
         self.api_args = {
-            "api_key":  fields.Str(required=True, location="json"),
-            "song":     fields.Str(required=True, location="json"),
-            "artist":   fields.Str(required=True, location="json"),
-            "album":    fields.Str(required=False, location="json", missing=""),
-            "genre":    fields.Str(required=False, location="json", missing=""),
-            "location": fields.Str(required=False, location="json", missing="CD Library"),
-            "cd_id":    fields.Str(required=False, location="json", missing="")
+            "api_key":  fields.Str(required=True),
+            "song":     fields.Str(required=True),
+            "artist":   fields.Str(required=True),
+            "album":    fields.Str(required=False, missing=""),
+            "genre":    fields.Str(required=False, missing=""),
+            "location": fields.Str(required=False, missing="CD Library"),
+            "cd_id":    fields.Str(required=False, missing="")
         }
 
-        self.args = parser.parse(self.api_args, request)
+        self.args = parser.parse(self.api_args, request, location="json")
 
         super(SongAPI, self).__init__()
 
@@ -98,15 +98,15 @@ class DiscrepancyAPI(Resource):
     def __init__(self):
 
         self.api_args = {
-            "api_key":      fields.Str(required=True, location="json"),
-            "song":         fields.Str(required=True, location="json"),
-            "artist":       fields.Str(required=True, location="json"),
-            "dj_name":      fields.Str(required=True, location="json"),
-            "word":         fields.Str(required=True, location="json"),
-            "button_hit":   fields.Bool(required=True, location="json")
+            "api_key":      fields.Str(required=True),
+            "song":         fields.Str(required=True),
+            "artist":       fields.Str(required=True),
+            "dj_name":      fields.Str(required=True),
+            "word":         fields.Str(required=True),
+            "button_hit":   fields.Bool(required=True)
         }
 
-        self.args = parser.parse(self.api_args, request)
+        self.args = parser.parse(self.api_args, request, location="json")
 
         super(DiscrepancyAPI, self).__init__()
 
@@ -151,15 +151,15 @@ class RequestAPI(Resource):
     def __init__(self):
 
         self.api_args = {
-            "api_key":      fields.Str(required=True, location="json"),
-            "song":         fields.Str(required=False, location="json", missing="-"),
-            "artist":       fields.Str(required=False, location="json", missing="-"),
-            "album":        fields.Str(required=False, location="json", missing="-"),
-            "rq_name":      fields.Str(required=False, location="json", missing="WMTU Listener"),
-            "rq_message":   fields.Str(required=False, location="json", missing="No Message Given"),
+            "api_key":      fields.Str(required=True),
+            "song":         fields.Str(required=False, missing="-"),
+            "artist":       fields.Str(required=False, missing="-"),
+            "album":        fields.Str(required=False, missing="-"),
+            "rq_name":      fields.Str(required=False, missing="WMTU Listener"),
+            "rq_message":   fields.Str(required=False, missing="No Message Given"),
         }
 
-        self.args = parser.parse(self.api_args, request)
+        self.args = parser.parse(self.api_args, request, location="json")
 
         super(RequestAPI, self).__init__()
 
@@ -350,17 +350,17 @@ class StatsAPI(Resource):
     def __init__(self):
 
         self.api_args = {
-            "n":        fields.Int(required=False, location="query", missing=0),
-            "song":     fields.Str(required=False, location="query", missing=""),
-            "artist":   fields.Str(required=False, location="query", missing=""),
-            "album":    fields.Str(required=False, location="query", missing=""),
-            "order_by": fields.Str(required=False, location="query", missing="play_count",
+            "n":        fields.Int(required=False, missing=1),
+            "song":     fields.Str(required=False, missing=""),
+            "artist":   fields.Str(required=False, missing=""),
+            "album":    fields.Str(required=False, missing=""),
+            "order_by": fields.Str(required=False, missing="play_count",
                 validate=validate.OneOf(choices=["song", "artist", "album", "play_count"],
                 error="Invalid Value for Argument 'order_by'")),
-            "desc":     fields.Bool(required=False, location="query", missing=True),
+            "desc":     fields.Bool(required=False, missing=True),
         }
 
-        self.args = parser.parse(self.api_args, request)
+        self.args = parser.parse(self.api_args, request, location="query")
 
         super(StatsAPI, self).__init__()
 

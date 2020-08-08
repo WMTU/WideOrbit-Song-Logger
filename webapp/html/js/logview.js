@@ -124,6 +124,7 @@ function getFormData(submit_btn)
 {
     // use luxon for dates
     var DateTime = luxon.DateTime;
+    var Interval = luxon.Interval;
 
     // get the function type from button press
     var query_func = submit_btn.value;
@@ -156,21 +157,25 @@ function getFormData(submit_btn)
     }
 
     // only allow downloads for intervals longer than a week
-    if (luxon.Interval.fromDateTimes(ts_start_ISO, ts_end_ISO).length('days') > 7)
+    // do some inital set up for the table view
+    if (query_func == "view" && Interval.fromDateTimes(ts_start_ISO, ts_end_ISO).length('days') <= 7)
+    {
+        // hide the table and put a loading message
+        document.getElementById("log_view").scrollIntoView();
+        document.getElementById("log_view_table").classList.add("d-none");
+        document.getElementById("log_view_loading").classList.remove("d-none");       
+    }
+    else
     {
         alert("Please use the download function for time periods longer than a week!");
         return false;
     }
-    
+
     console.log("Function: " + query_func);
     console.log("Type:     " + query_type);
     console.log("Start TS: " + ts_start);
     console.log("End TS:   " + ts_end);
     console.log("Show Art: " + show_art);
-
-    // hide the table and put a loading message
-    document.getElementById("log_view_table").classList.add("d-none");
-    document.getElementById("log_view_loading").classList.remove("d-none");
 
     queryAPI(query_func, query_type, ts_start, ts_end);
 }
