@@ -151,7 +151,7 @@ class RequestAPI(Resource):
     def __init__(self):
 
         self.api_args = {
-            "api_key":      fields.Str(required=True),
+            "api_key":      fields.Str(required=False, missing=app.config['PUB_KEY']),
             "song":         fields.Str(required=False, missing="-"),
             "artist":       fields.Str(required=False, missing="-"),
             "album":        fields.Str(required=False, missing="-"),

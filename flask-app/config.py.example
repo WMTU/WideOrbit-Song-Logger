@@ -3,7 +3,8 @@
 # Misc Options
 DELAY_TIME  = "40"
 SCROBBLE    = "True"
-KEY_API     = "False"
+KEY_API     = "True"
+PUB_KEY     = ""
 ERR_LOG     = "/opt/log-api/logs/error.log"
 TMP_STOR    = "/opt/log-api/temp/"
 
