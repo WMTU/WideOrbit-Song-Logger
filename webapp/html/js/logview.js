@@ -111,7 +111,7 @@ function queryAPI(query_func, query_type, ts_start, ts_end)
     {
         // fetch json data from the API
         // then send it to the view builder
-        fetch(query_url, {mode: 'no-cors'})
+        fetch(query_url)
             .then(function(response) { return response.json(); })
             .then(function(data) { logViewBuilder(query_type, data); })
             .catch(function(err) { console.log(err); });
@@ -188,7 +188,7 @@ function defaultLogView()
 
     // fetch json data from the API
     // then send it to the view builder
-    fetch(url, {mode: 'no-cors'})
+    fetch(url)
         .then(function(response) { return response.json(); })
         .then(function(data) { logViewBuilder("song", data); })
         .catch(function(err) { console.log(err); });

@@ -10,18 +10,17 @@ async function submitRequest()
     var album = inputs[2].value;
     var name = inputs[3].value;
     var message = inputs[4].value;
-    var form_json = { 'song': song, 'artist': artist, 'album': album, 'name': name, 'message': message };
+    var form_json = { 'song': song, 'artist': artist, 'album': album, 'rq_name': name, 'rq_message': message };
 
     var api = "https://log.wmtu.fm/api/2.0/request";
     var http_headers = {'Content-Type': 'application/json'};
     await fetch(api, {
             method: 'POST', 
-            mode: 'no-cors', 
             headers: http_headers, 
             body: JSON.stringify(form_json) })
-        .then(function(response) { console.log("Response: " + response); })
         .catch(function(err) { console.log(err); });
 
+    document.getElementById('new_rq').reset();
     queryAPI(5);
 }
 
@@ -59,7 +58,7 @@ function queryAPI(n)
 
     // fetch json data from the API
     // then send it to the view builder
-    fetch(url, {mode: 'no-cors'})
+    fetch(url)
         .then(function(response) { return response.json(); })
         .then(function(data) { requestBuilder(data); })
         .catch(function(err) { console.log(err); });
