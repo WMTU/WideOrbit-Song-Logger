@@ -25,6 +25,8 @@
         <!-- Custom CSS -->
         <style type="text/css">
             .bg-gold {background:#ffcd00; color:#000000;}
+            #requests_body {font-size: small;}
+            #requests_body td {position: relative; vertical-align: middle;}
         </style>
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -64,19 +66,24 @@
             <div class="row"><div class="col"><div class="card">
                 <h5 class="card-header">Song Request</h5>
                 <div class="card-body">
-                    <form id="new_rq" onsubmit="submitRequest();" method="POST">
+                    <form id="new_rq" onsubmit="submitRequest(); return false;" method="POST">
                         <div class="form-row justify-content-center">
                             <div class="form-group col col-md-7 col-lg-5">
                                 <label>Song Info</label>
+                                <small class="form-text text-muted my-0">Song Name</small>
                                 <input required name="song" type="text" placeholder="Gettin' Jiggy Wit It" class="form-control form-control-sm pr-5 mb-1">
+                                <small class="form-text text-muted my-0">Artist</small>
                                 <input required name="artist" type="text" placeholder="Will Smith" class="form-control form-control-sm pr-5 mb-1">
+                                <small class="form-text text-muted my-0">Album</small>
                                 <input name="album" type="text" placeholder="Big Willie Style" class="form-control form-control-sm pr-5">
                             </div>
                         </div>
                         <div class="form-row justify-content-center">
                             <div class="form-group col col-md-7 col-lg-5">
                                 <label>Request Info</label>
+                                <small class="form-text text-muted my-0">Name</small>
                                 <input name="name" type="text" placeholder="Sullivan Ape" class="form-control form-control-sm pr-5 mb-1">
+                                <small class="form-text text-muted my-0">Message</small>
                                 <textarea name="message" type="textarea" rows="3" placeholder="Great job DJ! Thanks for playing my song!" class="form-control form-control-sm pr-5 mb-1"></textarea>
                             </div>
                         </div>
