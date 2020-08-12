@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Log API | Log Viewer</title>
+        <title>Log API | Song Request</title>
         <meta name="description" content="WMTU 91.9FM Logging API web frontend">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -25,9 +25,6 @@
         <!-- Custom CSS -->
         <style type="text/css">
             .bg-gold {background:#ffcd00; color:#000000;}
-            #log_view_body {font-size: small;}
-            #log_view_body td {position: relative; vertical-align: middle;}
-            .album-art {height: 35px; width: auto;}
         </style>
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -54,8 +51,8 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle active" href="#" id="utilDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Utilities</a>
                         <div class="dropdown-menu" aria-labelledby="utilDropdown">
-                            <a class="dropdown-item" href="logview.html">Log Viewer<span class="sr-only">(current)</span></a>
-                            <a class="dropdown-item" href="request.html">Song Request</a>
+                            <a class="dropdown-item" href="logview.html">Log Viewer</a>
+                            <a class="dropdown-item" href="request.html">Song Request<span class="sr-only">(current)</span></a>
                             <a class="dropdown-item" href="player.html">WMTU Player</a>
                         </div>
                     </li>
@@ -64,67 +61,28 @@
         </nav>
 
         <div class="container pt-3">
-            <div class="row"><div class="col">
-                <div class="alert alert-danger alert-dismissable fade show" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>This utility is still a work in progress!</strong><br />
-                    If you run into any issues please let us know.
-                </div>
-            </div></div>
-
-            <div class="row"><div class="col">
-                <div class="alert alert-warning alert-dismissable fade show" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    Ad blocking plugins may cause issues with this utility.<br />
-                    We recommend disabling them for this site if you do not get any results.
-                </div>
-            </div></div>
-
             <div class="row"><div class="col"><div class="card">
-                <h5 class="card-header">Log Query Builder</h5>
+                <h5 class="card-header">Song Request</h5>
                 <div class="card-body">
-                    <form id="log_query" action="" onsubmit="getFormData(this.submitted); return false;" method="POST">
+                    <form id="new_rq" onsubmit="submitRequest();" method="POST">
                         <div class="form-row justify-content-center">
-                            <div class="form-group col col-md-8 col-lg-6">
-                                <label>Log Type</label>    
-                                <select required class="form-control" id="request_type">
-                                    <option value="song">Song</option>
-                                    <option value="discrepancy">Discrepancy</option>
-                                    <option value="request">Request</option>
-                                </select>
+                            <div class="form-group col col-md-7 col-lg-5">
+                                <label>Song Info</label>
+                                <input required name="song" type="text" placeholder="Gettin' Jiggy Wit It" class="form-control form-control-sm pr-5 mb-1">
+                                <input required name="artist" type="text" placeholder="Will Smith" class="form-control form-control-sm pr-5 mb-1">
+                                <input name="album" type="text" placeholder="Big Willie Style" class="form-control form-control-sm pr-5">
                             </div>
                         </div>
                         <div class="form-row justify-content-center">
-                            <div class="form-group col col-md-4 col-lg-3">
-                                <label>Starting Date & Time</label>
-                                <input required name="startDate" type="date" placeholder="2020-02-29" class="form-control form-control-sm pr-5 mb-1">
-                                <input name="startTime" type="time" placeholder="16:20:00" class="form-control form-control-sm pr-5">
-                                <small class="form-text text-muted">Optional; defaults to 00:00:00</small>
-                            </div>
-                            <div class="form-group col col-md-4 col-lg-3">
-                                <label>Ending Date & Time</label>
-                                <input required name="endDate" type="date" placeholder="2020-02-29" class="form-control form-control-sm pr-5 mb-1">
-                                <input name="endTime" type="time" placeholder="16:20:00" class="form-control form-control-sm pr-5">
-                                <small class="form-text text-muted">Optional; defaults to 23:59:59</small>
-                            </div>
-                        </div>
-                        <div class="form-row justify-content-center">
-                            <div class="form-group col col-sm-5 col-md-4 col-lg-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="artwork_select" id="show_art" checked>
-                                    <label class="form-check-label" for="show_art">Include Album Artwork</label>
-                                </div>
-                                <small class="form-text text-muted">Only applies to song requests</small>
+                            <div class="form-group col col-md-7 col-lg-5">
+                                <label>Request Info</label>
+                                <input name="name" type="text" placeholder="Sullivan Ape" class="form-control form-control-sm pr-5 mb-1">
+                                <textarea name="message" type="textarea" rows="3" placeholder="Great job DJ! Thanks for playing my song!" class="form-control form-control-sm pr-5 mb-1"></textarea>
                             </div>
                         </div>
                         <div class="form-row justify-content-center mt-2">
                             <div class="form-group col col-sm-5 col-md-4 col-lg-3">
-                                <button type="submit" name="submitBtn" value="view" onclick="this.form.submitted=this;" class="btn btn-primary btn-block">View Log</button>
-                                <button type="submit" name="submitBtn" value="down" onclick="this.form.submitted=this;" class="btn btn-primary btn-block">Download Log (.csv)</button>
+                                <button type="submit" name="submitBtn" class="btn btn-primary btn-block">Submit</button>
                             </div>
                         </div>
                     </form>
@@ -132,14 +90,24 @@
             </div></div></div>
 
             <div class="row pt-2" id="log_view"><div class="col"><div class="card">
-                <h5 class="card-header">Log Query Result</h5>
-                <div class="card-body p-0 table-responsive" id="log_view_card">
-                    <h6 class="card-text text-muted d-none" id="log_view_loading">Please wait, building log view...</h6>
-                    <table class="table table-sm table-borderless table-striped table-hover" id="log_view_table">
-                        <thead class="thead-dark" id="log_view_head">
-                            <tr></tr>
+                <div class="card-header d-flex flex-row justify-content-between">
+                    <h5>Recent Requests</h5>
+                    <button class="btn btn-sm btn-primary" onclick="queryAPI(5);">Refresh</button>
+                </div>
+                <div class="card-body p-0 table-responsive">
+                    <table class="table table-sm table-borderless table-striped table-hover" id="requests">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Timestamp</th>
+                                <th scope="col">Song</th>
+                                <th scope="col">Artist</th>
+                                <th scope="col">Album</th>
+                                <th scope="col">Requester</th>
+                                <th scope="col">Message</th>
+                            </tr>
                         </thead>
-                        <tbody id="log_view_body">
+                        <tbody id="requests_body">
                         </tbody>
                     </table>
                 </div>
@@ -154,7 +122,7 @@
 
         <!-- Get data from the form and do validation -->
         <script src="https://cdn.jsdelivr.net/npm/luxon@1.21.3/build/global/luxon.min.js"></script>
-        <script src="../js/logview.js"></script>
+        <script src="../js/request.js"></script>
 
         <!-- Bootstrap -->
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
