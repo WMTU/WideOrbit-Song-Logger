@@ -38,6 +38,8 @@ We use Nginx as our webserver of choice. We have an example vhost configuration 
 
 ### Using the API
 
+**Note that all logging functions are POST functions and you must submit your data as a JSON formatted body!**
+
 **Logging a Song**
 
 Required Parameters:
@@ -56,7 +58,7 @@ Optional Parameters:
 Example:
 
 ```text
-https://log.wmtu.fm/api/2.0/log?api_key=<api key here>&song=<song name>&artist=<artist name>
+https://log.wmtu.fm/api/2.0/song
 ```
 
 **Logging a Discrepancy**
@@ -71,25 +73,25 @@ Required Parameters:
 - button_hit    : True/False if the swear button was hit
 
 ```text
-https://log.wmtu.fm/api/2.0/discrepancy?api_key=<api key>&song=<song name>&artist=<artist name>...
+https://log.wmtu.fm/api/2.0/discrepancy
 ```
 
-**Submitting a Song Request**
+**Logging a Song Request**
 
 Required Parameters:
 
-- api_key       : API key
 - song          : song name
 - artist        : artist name
 
 Optional Parameters:
 
+- api_key       : API key (when not supplied this defaults to a public account)
 - album         : album name
 - rq_name       : requester name
 - rq_message    : request message
 
 ```text
-https://log.wmtu.fm/api/2.0/request?api_key=<api key>&song=<song name>&artist=<artist name>...
+https://log.wmtu.fm/api/2.0/request
 ```
 
 **Requesting a Log**

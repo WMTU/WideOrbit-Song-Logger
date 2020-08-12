@@ -103,7 +103,7 @@ function queryAPI()
 
     // fetch json data from the API
     // then send it to the view builder
-    fetch(query_url)
+    fetch(query_url, {mode: 'no-cors'})
         .then(function(response) { return response.json(); })
         .then(function(data) { 
             if (data[0]['song'] != cur_song || data[0]['artist'] != cur_artist || data[0]['album'] != cur_album) 

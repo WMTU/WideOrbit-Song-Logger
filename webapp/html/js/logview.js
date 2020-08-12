@@ -27,7 +27,7 @@ function logViewBuilder(query_type, data)
     var data_select = {
         'song': ['play_id', 'timestamp', 'song', 'artist', 'album', 'genre', 'artwork'],
         'discrepancy': ['dis_id', 'timestamp', 'song', 'artist', 'dj_ame', 'word', 'button_hit'],
-        'request': ['req_id', 'timestamp', 'song', 'artist', 'album', 'requester', 'message']};
+        'request': ['rq_id', 'timestamp', 'song', 'artist', 'album', 'rq_name', 'rq_message']};
 
     // remove old table body and replace it with the new data
     document.getElementById("log_view_body").remove();
@@ -111,7 +111,7 @@ function queryAPI(query_func, query_type, ts_start, ts_end)
     {
         // fetch json data from the API
         // then send it to the view builder
-        fetch(query_url)
+        fetch(query_url, {mode: 'no-cors'})
             .then(function(response) { return response.json(); })
             .then(function(data) { logViewBuilder(query_type, data); })
             .catch(function(err) { console.log(err); });
@@ -188,7 +188,7 @@ function defaultLogView()
 
     // fetch json data from the API
     // then send it to the view builder
-    fetch(url)
+    fetch(url, {mode: 'no-cors'})
         .then(function(response) { return response.json(); })
         .then(function(data) { logViewBuilder("song", data); })
         .catch(function(err) { console.log(err); });
