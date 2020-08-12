@@ -152,11 +152,11 @@ class RequestAPI(Resource):
 
         self.api_args = {
             "api_key":      fields.Str(required=False, missing=app.config['PUB_KEY']),
-            "song":         fields.Str(required=False, missing="-"),
-            "artist":       fields.Str(required=False, missing="-"),
+            "song":         fields.Str(required=True),
+            "artist":       fields.Str(required=True),
             "album":        fields.Str(required=False, missing="-"),
-            "rq_name":      fields.Str(required=False, missing="WMTU Listener"),
-            "rq_message":   fields.Str(required=False, missing="No Message Given"),
+            "rq_name":      fields.Str(required=False, missing="Anonymous"),
+            "rq_message":   fields.Str(required=False, missing="None"),
         }
 
         self.args = parser.parse(self.api_args, request, location="json")

@@ -1,6 +1,8 @@
 // submit a new song request
 async function submitRequest()
 {
+    console.log("Submitting Song Request");
+
     // get form data
     var inputs = document.querySelectorAll("#new_rq input, textarea");
     var song = inputs[0].value;
