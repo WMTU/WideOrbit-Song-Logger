@@ -6,5 +6,6 @@ flask-app/temp/
 flask-app/log/__pycache__/
 
 log_widget/lib
+log_widget/LoggingWidget.zip
 log_widget/resources/config.properties
-log_widget/LoggingWidget*.class
+log_widget/classes/fm/wmtu/LoggingWidget*.class
