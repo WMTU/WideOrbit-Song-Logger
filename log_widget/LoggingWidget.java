@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Timer;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -570,7 +571,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
       songGenre.setEnabled( false );
       addLog.setEnabled( false );
       clearForm.setEnabled( false );
-      Runnable task = checkLogger();
+      Runnable task = () -> checkLogger();
       timedExec.schedule(task, log_timer, TimeUnit.MINUTES);
     }
   }
