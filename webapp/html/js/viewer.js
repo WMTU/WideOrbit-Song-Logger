@@ -165,7 +165,7 @@ function getFormData(submit_btn)
         document.getElementById("log_view_table").classList.add("d-none");
         document.getElementById("log_view_loading").classList.remove("d-none");       
     }
-    else
+    else if (query_func != "down")
     {
         alert("Please use the download function for time periods longer than a week!");
         return false;

@@ -99,7 +99,7 @@ var cur_album = "";
 function queryAPI()
 {
     n = 6;
-    var query_url = "https://log.wmtu.fm/api/2.0/log?delay=false&n=" + n;
+    var query_url = "https://log.wmtu.fm/api/2.0/history?delay=false&n=" + n;
 
     // fetch json data from the API
     // then send it to the view builder

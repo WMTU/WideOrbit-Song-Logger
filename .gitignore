@@ -5,3 +5,5 @@ flask-app/logs/
 flask-app/temp/
 flask-app/log/__pycache__/
 
+log_widget/lib
+log_widget/resources/config.properties

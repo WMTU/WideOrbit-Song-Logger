@@ -426,7 +426,7 @@ def handle_request_parsing_error(err, req, schema, error_status_code, error_head
 api.add_resource(SongAPI,           '/api/2.0/song',        endpoint = 'song')
 api.add_resource(DiscrepancyAPI,    '/api/2.0/discrepancy', endpoint = 'discrepancy')
 api.add_resource(RequestAPI,        '/api/2.0/request',     endpoint = 'request')
-api.add_resource(LogAPI,            '/api/2.0/log',         endpoint = 'log')
+api.add_resource(LogAPI,            '/api/2.0/history',     endpoint = 'history')
 api.add_resource(StatsAPI,          '/api/2.0/stats',       endpoint = 'stats')
 
 if app.config['KEY_API'] == "True":

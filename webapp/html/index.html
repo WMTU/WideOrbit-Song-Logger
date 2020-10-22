@@ -48,7 +48,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="utilDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Utilities</a>
                         <div class="dropdown-menu" aria-labelledby="utilDropdown">
-                            <a class="dropdown-item" href="util/logview.html">Log Viewer</a>
+                            <a class="dropdown-item" href="util/viewer.html">Log Viewer</a>
                             <a class="dropdown-item" href="util/request.html">Song Request</a>
                             <a class="dropdown-item" href="util/player.html">WMTU Player</a>
                         </div>
@@ -61,7 +61,15 @@
             <div class="row"><div class="col"><div class="card">
                 <h4 class="card-header">Welcome!</h4>
                 <div class="card-body">
-                    <p class="card-text">Please excuse the mess, the Log API web app is still under development.</p>
+                    <p class="card-text">
+                        This is the front end for the logging API used by WMTU to log songs, discrepancies, and requests.
+                        You can use the tools under the Utilities menu to interact with the API.
+                        Please note that this web app is still under development, so features may be added and removed as necessary.
+                    </p>
+                    <div class="alert alert-danger" role="alert">
+                        Ad blocking extensions have been known to cause issues with the web tools.
+                        <br />Please disable them if you run into issues.
+                    </div>
                     <div class="alert alert-warning" role="alert">
                         Run into an issue using the web app?<br />
                         Shoot us an email at wmtu-tech@mtu.edu with all the relevant info.<br />

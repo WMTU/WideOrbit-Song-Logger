@@ -22,6 +22,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Timer;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 // import ui elements
 import javax.swing.JButton;
@@ -67,6 +70,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
   private String log_endpoint;
   private String log_key;
   private Set<String> log_excluded_wo_categories;
+  private int log_timer;
 
   private SelectionService selectionService;
   private PlaylistEntry selectedEntry;
@@ -99,6 +103,15 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
 
   private String errorMessage;
 
+  // create a new timer executor to use
+  ScheduledExecutorService timedExec = Executors.newSingleThreadScheduledExecutor();
+  private void checkLogger()
+  {
+    // check logging status, enable auto log if set to manual
+    if ( !toggleAutomation.isSelected() ) { toggleAutomation.doClick(); }
+    timedExec.shutdown();
+  }
+
   public LoggingWidget() throws FileNotFoundException, IOException 
   {
     super( "Logging", R.getImage( "LoggingWidget.png" ) );
@@ -118,6 +131,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     {
       log_excluded_wo_categories.add( cat );
     }
+    log_timer = Integer.parseInt(config.getProperty( "log_timer" ));
     input.close();
 
     // Get the SelectionService and add listeners for selecting playlist entries
@@ -235,7 +249,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     gbc = createGbc( 1, 1 );
     gbc.anchor = GridBagConstraints.EAST;
     gbc.fill = GridBagConstraints.NONE;
-    toggleAutomation = new JToggleButton( "Automation" );
+    toggleAutomation = new JToggleButton( "Manual Log" );
     toggleAutomation.setUI( new NButtonUI( toggleAutomation, ButtonStyle.RED_GLOSSY ) );
     toggleAutomation.setActionCommand( "toggle" );
     toggleAutomation.addActionListener( this );
@@ -335,7 +349,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
   }
 
   /**
-   * Helper method for building GridBadConstraints given an object's position on
+   * Helper method for building GridBagConstraints given an object's position on
    * the grid
    * 
    * @param x
@@ -534,18 +548,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
    */
   private void toggleAutomation() 
   {
-    if ( toggleAutomation.isSelected() ) 
-    {
-      toggleAutomation.setText( "Manual Log" );
-      location.setEnabled( false );
-      songTitle.setEnabled( false );
-      songArtist.setEnabled( false );
-      songAlbum.setEnabled( false );
-      songGenre.setEnabled( false );
-      addLog.setEnabled( false );
-      clearForm.setEnabled( false );
-    } 
-    else 
+    if ( toggleAutomation.isSelected() )
     {
       toggleAutomation.setText( "Automation" );
       location.setEnabled( true );
@@ -555,6 +558,20 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
       songGenre.setEnabled( true );
       addLog.setEnabled( true );
       clearForm.setEnabled( true );
+      timedExec.shutdownNow();
+    } 
+    else 
+    {
+      toggleAutomation.setText( "Manual Log" );
+      location.setEnabled( false );
+      songTitle.setEnabled( false );
+      songArtist.setEnabled( false );
+      songAlbum.setEnabled( false );
+      songGenre.setEnabled( false );
+      addLog.setEnabled( false );
+      clearForm.setEnabled( false );
+      Runnable task = checkLogger();
+      timedExec.schedule(task, log_timer, TimeUnit.MINUTES);
     }
   }
 
@@ -719,7 +736,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
   private void checkChangedEntry() 
   {
     // Check if logging from automation is enabled
-    if ( !toggleAutomation.isSelected() )
+    if ( toggleAutomation.isSelected() )
       return;
 
     // Get the current entry in the scheduler
