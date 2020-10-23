@@ -346,6 +346,16 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     clearForm.addActionListener( this );
     panel.add( clearForm, gbc );
 
+    // set fields disabled
+    // default setup is for automation logging
+    location.setEnabled( false );
+    songTitle.setEnabled( false );
+    songArtist.setEnabled( false );
+    songAlbum.setEnabled( false );
+    songGenre.setEnabled( false );
+    addLog.setEnabled( false );
+    clearForm.setEnabled( false );
+
     return panel;
   }
 

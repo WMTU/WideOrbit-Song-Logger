@@ -8,7 +8,7 @@ Required Java libraries:
 
 - [Apache Commons Lang 3.11](https://commons.apache.org/proper/commons-lang/download_lang.cgi)
 - [Apache Commons Text 1.9](https://commons.apache.org/proper/commons-text/download_text.cgi)
-- [Log4J 2.13.3](https://www.apache.org/dyn/closer.lua/logging/log4j/2.13.3/apache-log4j-2.13.3-bin.zip)
+- [Log4J 2.12.1](https://www.apache.org/dyn/closer.lua/logging/log4j/2.12.1/apache-log4j-2.12.1-bin.zip)
 
 Widget package structure: (.zip file)
 
@@ -23,9 +23,9 @@ Widget package structure: (.zip file)
 +---lib
 |   /---commons-lang3-3.11.jar
 |   /---commons-text-1.9.jar
-|   /---log4j-1.2-api-2.13.3.jar
-|   /---log4j-api-2.13.3.jar
-|   /---log4j-core-2.13.3.jar
+|   /---log4j-1.2-api-2.12.1.jar
+|   /---log4j-api-2.12.1.jar
+|   /---log4j-core-2.12.1.jar
 +---resources
 |   /---config.properties
 /---plugin.xml
@@ -34,7 +34,7 @@ Widget package structure: (.zip file)
 Compiling:
 
 ```text
-javac -cp .:lib/commons-text-1.9.jar:lib/commons-lang3-3.11.jar:lib/log4j-1.2-api-2.13.3.jar:lib/log4j-api-2.13.3.jar:lib/log4j-core-2.13.3.jar:lib/ras-core-api.jar LoggingWidget.java
+javac -cp .:lib/commons-text-1.9.jar:lib/commons-lang3-3.11.jar:lib/log4j-1.2-api-2.12.1.jar:lib/log4j-api-2.12.1.jar:lib/log4j-core-2.12.1.jar:lib/ras-core-api.jar LoggingWidget.java
 ```
 
 ## LoggingWidget.java
