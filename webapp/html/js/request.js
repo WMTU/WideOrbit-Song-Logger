@@ -54,7 +54,7 @@ function requestBuilder(data)
 // query the API for new requests
 function queryAPI(n)
 {
-    var url = "https://log.wmtu.fm/api/2.0/log?type=request&n=" + n;
+    var url = "https://log.wmtu.fm/api/2.0/history?type=request&n=" + n;
 
     // fetch json data from the API
     // then send it to the view builder

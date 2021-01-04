@@ -22,6 +22,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Timer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 // import ui elements
 import javax.swing.JButton;
@@ -67,6 +74,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
   private String log_endpoint;
   private String log_key;
   private Set<String> log_excluded_wo_categories;
+  private int log_timer;
 
   private SelectionService selectionService;
   private PlaylistEntry selectedEntry;
@@ -83,7 +91,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
 
   private JLabel messageLabel;
   private JButton dropMeta;
-  private JToggleButton toggleAutomation;
+  private JToggleButton loggingToggle;
   private JLabel locationLabel;
   private JComboBox<String> location;
   private JLabel songTitleLabel;
@@ -118,6 +126,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     {
       log_excluded_wo_categories.add( cat );
     }
+    log_timer = Integer.parseInt(config.getProperty( "log_timer" ));
     input.close();
 
     // Get the SelectionService and add listeners for selecting playlist entries
@@ -235,11 +244,11 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     gbc = createGbc( 1, 1 );
     gbc.anchor = GridBagConstraints.EAST;
     gbc.fill = GridBagConstraints.NONE;
-    toggleAutomation = new JToggleButton( "Automation" );
-    toggleAutomation.setUI( new NButtonUI( toggleAutomation, ButtonStyle.RED_GLOSSY ) );
-    toggleAutomation.setActionCommand( "toggle" );
-    toggleAutomation.addActionListener( this );
-    panel.add( toggleAutomation, gbc );
+    loggingToggle = new JToggleButton( "Manual Log" );
+    loggingToggle.setUI( new NButtonUI( loggingToggle, ButtonStyle.RED_GLOSSY ) );
+    loggingToggle.setActionCommand( "toggle" );
+    loggingToggle.addActionListener( this );
+    panel.add( loggingToggle, gbc );
 
     // Add bin location label and field
     gbc = createGbc( 0, 2 );
@@ -331,11 +340,21 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     clearForm.addActionListener( this );
     panel.add( clearForm, gbc );
 
+    // set fields disabled
+    // default setup is for automation logging
+    location.setEnabled( false );
+    songTitle.setEnabled( false );
+    songArtist.setEnabled( false );
+    songAlbum.setEnabled( false );
+    songGenre.setEnabled( false );
+    addLog.setEnabled( false );
+    clearForm.setEnabled( false );
+
     return panel;
   }
 
   /**
-   * Helper method for building GridBadConstraints given an object's position on
+   * Helper method for building GridBagConstraints given an object's position on
    * the grid
    * 
    * @param x
@@ -388,7 +407,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     } 
     else if ( event.getActionCommand().equals( "toggle" ) ) 
     {
-      toggleAutomation();
+      loggingToggle();
     }
   }
 
@@ -528,26 +547,40 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     }
   }
 
+  // create a new timer executor to use
+  ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+  ScheduledFuture<?> autoToggleHandler = null;
+  boolean waiting = false;
+  
+  private void toggleLogger()
+  {
+    // check logging status, enable auto log if set to manual
+    if ( ! loggingToggle.isSelected() ) 
+    { 
+      loggingToggle.setSelected(false); 
+      loggingToggle();
+    }
+    waiting = false;
+  }
+
+  private ScheduledFuture<?> scheduleAutoToggle() {
+    final Runnable task = new Runnable() { public void run() { toggleLogger(); } };
+    final ScheduledFuture<?> taskHandler = scheduler.schedule(task, log_timer, TimeUnit.MINUTES);
+    waiting = true;
+    return taskHandler;
+  }
+
   /**
    * Toggles input field enable/disable based on whether or not automatic
    * logging has been triggered
+   * Selected => manual logging
+   * Unselected => auto log
    */
-  private void toggleAutomation() 
+  private void loggingToggle() 
   {
-    if ( toggleAutomation.isSelected() ) 
+    if ( loggingToggle.isSelected() )
     {
-      toggleAutomation.setText( "Manual Log" );
-      location.setEnabled( false );
-      songTitle.setEnabled( false );
-      songArtist.setEnabled( false );
-      songAlbum.setEnabled( false );
-      songGenre.setEnabled( false );
-      addLog.setEnabled( false );
-      clearForm.setEnabled( false );
-    } 
-    else 
-    {
-      toggleAutomation.setText( "Automation" );
+      loggingToggle.setText( "Automation" );
       location.setEnabled( true );
       songTitle.setEnabled( true );
       songArtist.setEnabled( true );
@@ -555,6 +588,28 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
       songGenre.setEnabled( true );
       addLog.setEnabled( true );
       clearForm.setEnabled( true );
+      
+      // check if the auto toggle is waiting
+      if (waiting == true) 
+      { 
+        autoToggleHandler.cancel(true);
+        autoToggleHandler = null;
+        waiting = false;
+      }
+    } 
+    else 
+    {
+      loggingToggle.setText( "Manual Log" );
+      location.setEnabled( false );
+      songTitle.setEnabled( false );
+      songArtist.setEnabled( false );
+      songAlbum.setEnabled( false );
+      songGenre.setEnabled( false );
+      addLog.setEnabled( false );
+      clearForm.setEnabled( false );
+
+      // schedule a runnable task for later execution
+      autoToggleHandler = scheduleAutoToggle();
     }
   }
 
@@ -719,7 +774,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
   private void checkChangedEntry() 
   {
     // Check if logging from automation is enabled
-    if ( !toggleAutomation.isSelected() )
+    if ( loggingToggle.isSelected() )
       return;
 
     // Get the current entry in the scheduler
