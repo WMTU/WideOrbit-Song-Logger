@@ -23,8 +23,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Timer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 // import ui elements
@@ -88,7 +91,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
 
   private JLabel messageLabel;
   private JButton dropMeta;
-  private JToggleButton toggleAutomation;
+  private JToggleButton loggingToggle;
   private JLabel locationLabel;
   private JComboBox<String> location;
   private JLabel songTitleLabel;
@@ -103,15 +106,6 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
   private JButton clearForm;
 
   private String errorMessage;
-
-  // create a new timer executor to use
-  ScheduledExecutorService timedExec = Executors.newSingleThreadScheduledExecutor();
-  private void checkLogger()
-  {
-    // check logging status, enable auto log if set to manual
-    if ( !toggleAutomation.isSelected() ) { toggleAutomation.doClick(); }
-    timedExec.shutdown();
-  }
 
   public LoggingWidget() throws FileNotFoundException, IOException 
   {
@@ -250,11 +244,11 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     gbc = createGbc( 1, 1 );
     gbc.anchor = GridBagConstraints.EAST;
     gbc.fill = GridBagConstraints.NONE;
-    toggleAutomation = new JToggleButton( "Manual Log" );
-    toggleAutomation.setUI( new NButtonUI( toggleAutomation, ButtonStyle.RED_GLOSSY ) );
-    toggleAutomation.setActionCommand( "toggle" );
-    toggleAutomation.addActionListener( this );
-    panel.add( toggleAutomation, gbc );
+    loggingToggle = new JToggleButton( "Manual Log" );
+    loggingToggle.setUI( new NButtonUI( loggingToggle, ButtonStyle.RED_GLOSSY ) );
+    loggingToggle.setActionCommand( "toggle" );
+    loggingToggle.addActionListener( this );
+    panel.add( loggingToggle, gbc );
 
     // Add bin location label and field
     gbc = createGbc( 0, 2 );
@@ -413,7 +407,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     } 
     else if ( event.getActionCommand().equals( "toggle" ) ) 
     {
-      toggleAutomation();
+      loggingToggle();
     }
   }
 
@@ -553,15 +547,40 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
     }
   }
 
+  // create a new timer executor to use
+  ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+  ScheduledFuture<?> autoToggleHandler = null;
+  boolean waiting = false;
+  
+  private void toggleLogger()
+  {
+    // check logging status, enable auto log if set to manual
+    if ( ! loggingToggle.isSelected() ) 
+    { 
+      loggingToggle.setSelected(false); 
+      loggingToggle();
+    }
+    waiting = false;
+  }
+
+  private ScheduledFuture<?> scheduleAutoToggle() {
+    final Runnable task = new Runnable() { public void run() { toggleLogger(); } };
+    final ScheduledFuture<?> taskHandler = scheduler.schedule(task, log_timer, TimeUnit.MINUTES);
+    waiting = true;
+    return taskHandler;
+  }
+
   /**
    * Toggles input field enable/disable based on whether or not automatic
    * logging has been triggered
+   * Selected => manual logging
+   * Unselected => auto log
    */
-  private void toggleAutomation() 
+  private void loggingToggle() 
   {
-    if ( toggleAutomation.isSelected() )
+    if ( loggingToggle.isSelected() )
     {
-      toggleAutomation.setText( "Automation" );
+      loggingToggle.setText( "Automation" );
       location.setEnabled( true );
       songTitle.setEnabled( true );
       songArtist.setEnabled( true );
@@ -569,11 +588,18 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
       songGenre.setEnabled( true );
       addLog.setEnabled( true );
       clearForm.setEnabled( true );
-      timedExec.shutdownNow();
+      
+      // check if the auto toggle is waiting
+      if (waiting == true) 
+      { 
+        autoToggleHandler.cancel(true);
+        autoToggleHandler = null;
+        waiting = false;
+      }
     } 
     else 
     {
-      toggleAutomation.setText( "Manual Log" );
+      loggingToggle.setText( "Manual Log" );
       location.setEnabled( false );
       songTitle.setEnabled( false );
       songArtist.setEnabled( false );
@@ -581,8 +607,9 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
       songGenre.setEnabled( false );
       addLog.setEnabled( false );
       clearForm.setEnabled( false );
-      Runnable task = () -> checkLogger();
-      timedExec.schedule(task, log_timer, TimeUnit.MINUTES);
+
+      // schedule a runnable task for later execution
+      autoToggleHandler = scheduleAutoToggle();
     }
   }
 
@@ -747,7 +774,7 @@ public class LoggingWidget extends BasicWidget implements ActionListener {
   private void checkChangedEntry() 
   {
     // Check if logging from automation is enabled
-    if ( toggleAutomation.isSelected() )
+    if ( loggingToggle.isSelected() )
       return;
 
     // Get the current entry in the scheduler

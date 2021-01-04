@@ -14,6 +14,7 @@ if [ -f LoggingWidget.zip ]; then
     rm LoggingWidget.zip 
 fi
 
-zip -rq LoggingWidget.zip classes lib resources plugin.xml
+zip -rq log_widget.zip classes lib resources plugin.xml -x "lib/src/*" -x lib/.DS_Store -x lib/ras-core-api.jar
+mv log_widget.zip log_widget_`date +%Y-%m-%d`.zip
 
 exit 0
