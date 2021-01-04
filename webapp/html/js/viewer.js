@@ -80,7 +80,7 @@ function logViewBuilder(query_type, data)
 // queries the API with specified values
 function queryAPI(query_func, query_type, ts_start, ts_end)
 {
-    var log_endpoint = "https://log.wmtu.fm/api/2.0/log";
+    var log_endpoint = "https://log.wmtu.fm/api/2.0/history";
     var query_args = {'type': query_type, 
                       'ts_start': ts_start, 
                       'ts_end': ts_end,
@@ -184,7 +184,7 @@ function getFormData(submit_btn)
 // this will run on page load
 function defaultLogView()
 {
-    var url = "https://log.wmtu.fm/api/2.0/log?n=10";
+    var url = "https://log.wmtu.fm/api/2.0/history?n=10";
 
     // fetch json data from the API
     // then send it to the view builder
