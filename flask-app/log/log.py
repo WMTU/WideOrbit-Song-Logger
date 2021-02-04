@@ -71,16 +71,13 @@ class SongAPI(Resource):
         # validate the API key and add the song log
         api_user = loads(db.validateKey(self.args['api_key']))
         if api_user != False:
-            if new_song.artist != "WMTU":
-                # add song log to the db
-                post_result = db.addSong(new_song, api_user[0]['username'])
-                message, code = post_result, 202
+            # add song log to the db
+            post_result = db.addSong(new_song, api_user[0]['username'])
+            message, code = post_result, 202
 
-                # publish the song to scrobble sources
-                if app.config['SCROBBLE'] == "True":
-                    scrobbleSong(datetime.now().strftime("%s"), new_song)
-            else:
-                message, code = {"message": {"WMTU": "Not logging song tagged with WMTU artist!"}}, 202
+            # publish the song to scrobble sources
+            if app.config['SCROBBLE'] == "True":
+                scrobbleSong(datetime.now().strftime("%s"), new_song)
         else:
             message, code = {"message": {"api_key": "Invalid API Key!"}}, 400
         
