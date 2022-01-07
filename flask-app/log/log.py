@@ -75,6 +75,10 @@ class SongAPI(Resource):
             post_result = db.addSong(new_song, api_user[0]['username'])
             message, code = post_result, 202
 
+            # update DEVA RDS
+            if app.config['DEVA_RDS'] == "True":
+                updateRDS(new_song)
+
             # publish the song to scrobble sources
             if app.config['SCROBBLE'] == "True":
                 scrobbleSong(datetime.now().strftime("%s"), new_song)
