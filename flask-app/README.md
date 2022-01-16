@@ -24,7 +24,14 @@ The backend API is built as a Flask app using Python 3.
 
 These instructions are for a ubuntu-based install. The packages and installs should be similar for your system.
 
-### Install package requirements
+### App installation
+
+- Copy the entirety of the flask-app directory to a place of your choosing, usually /opt is a good choice
+- Modify the config.py.example and rename to config.py
+- Modify the log-api.service.example and follow the instructions in the file to set up the service
+- Install python requirements, then start the service
+
+### Install python requirements
 
 ```bash
 apt update
